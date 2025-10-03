@@ -1,0 +1,48 @@
+:root {
+	--background-color: #faeee2;
+	--main-color: #e24511;
+	--main-active-color: #a8330c;
+	--footer-background: #d2c6ba;
+	--header-background: #e6dace;
+	--icons-color: #7d7d7d;
+}
+
+body {
+	margin: 0;
+	padding: 0;
+	font-family: Roboto, sans-serif;
+	box-sizing: border-box;
+	background: var(--background-color);
+	display: flex;
+	min-height: 100vh;
+	flex-direction: column;
+	justify-content: flex-start;
+	align-items: stretch;
+	overflow-x: hidden;
+}
+
+body::before {
+	content: '';
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	z-index: -1;
+
+	background-image: url($lib/assets/coffee_beans.png);
+	background-repeat: repeat;
+	background-size: 360px 360px;
+	opacity: 0.1;
+	filter: brightness(1.2);
+}
+
+.content-wrap {
+	flex-grow: 1;
+	width: 100%;
+	overflow: hidden;
+	max-width: 1368px;
+	margin: 0 auto;
+	width: 100%;
+	padding: 0 10px;
+}
