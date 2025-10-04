@@ -1,6 +1,6 @@
 <script>
 	import BurgerMenuButton from '$lib/components/layout/header/BurgerMenuButton.svelte';
-	import SideMenu from '$lib/components/layout/header/SideMenu.svelte';
+	import Menu from '$lib/components/layout/header/Menu.svelte';
 	import ActionIcon from '$lib/components/ui/ActionIcon.svelte';
 	import Phone from '$lib/components/ui/Phone.svelte';
 	import Search from '$lib/components/layout/header/Search.svelte';
@@ -33,7 +33,7 @@
 			<div class="logo-placeholder"></div>
 			<div class="menu-wrapper">
 				<BurgerMenuButton isOpen={isMenuOpen} toggle={toggleMenu} />
-				<SideMenu isOpen={isMenuOpen} close={closeMenu} />
+				<Menu isOpen={isMenuOpen} close={closeMenu} />
 			</div>
 		</div>
 
@@ -71,7 +71,7 @@
 
 	.header-logo {
 		position: absolute;
-		top: 8px;
+		top: 0px;
 		left: 20px;
 		height: 62px;
 		width: 164px;

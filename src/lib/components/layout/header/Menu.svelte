@@ -1,8 +1,16 @@
 <script>
 	import { slide } from 'svelte/transition';
 	import { cubicOut } from 'svelte/easing';
+	import { getCategoryContext } from '$lib/context/categoryContext.js';
 
 	const { isOpen, close } = $props();
+
+	// Получаем категории из контекста.
+	// $derived используется, чтобы гарантировать, что компонент обновится,
+	// если категории из контекста каким-то образом изменятся.
+	/** @typedef {import('$lib/types.js').Category} Category */
+	/** @type {Category[]} */
+	const categories = $derived(getCategoryContext() ?? []);
 
 	// Дополнительный эффект для закрытия меню по нажатию клавиши ESC
 	$effect(() => {
@@ -26,12 +34,17 @@
 {#if isOpen}
 	<aside class="menu-panel" transition:slide={{ duration: 300, easing: cubicOut }}>
 		<div class="menu-content">
-			<h2 class="title">Меню</h2>
+			<h4 class="title">Продукція</h4>
 			<nav class="nav-list">
-				<a href="/" class="nav-link" onclick={close}>Головна</a>
-				<a href="/products" class="nav-link" onclick={close}>Товари</a>
-				<a href="/categories" class="nav-link" onclick={close}>Категорії</a>
-				<a href="/contacts" class="nav-link" onclick={close}>Контакти</a>
+				{#each categories as category (category.slug)}
+					<!-- При клике на ссылку закрываем меню -->
+					<a href="/categories/{category.slug}" class="nav-link" onclick={close}>
+						{category.title}
+					</a>
+				{/each}
+
+				<!-- <a href="/products" class="nav-link" onclick={close}>Товари (Всі)</a>
+				<a href="/contacts" class="nav-link" onclick={close}>Контакти</a> -->
 			</nav>
 		</div>
 	</aside>
@@ -58,16 +71,16 @@
 		/* Устанавливаем z-index выше основного контента, но ниже модальных окон */
 		z-index: 50;
 		overflow-y: auto;
-		padding: 20px;
+		padding: 12px 20px 20px 20px;
 		/* Скругление углов только снизу */
 		border-radius: 0 0 8px 8px;
 	}
 
 	.title {
-		font-size: 1.8rem;
-		font-weight: 700;
+		font-size: 1.2rem;
+		font-weight: bold;
 		color: var(--main-color);
-		margin-bottom: 10px; /* Уменьшаем отступ, чтобы ссылки были ближе */
+		margin: 10px 0px;
 		border-bottom: 2px solid var(--common-border);
 		padding-bottom: 10px;
 	}

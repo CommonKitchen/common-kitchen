@@ -2,7 +2,11 @@
 	import '$lib/styles/global.css';
 	import Header from '$lib/components/layout/header/Header.svelte';
 	import Footer from '$lib/components/layout/Footer.svelte';
-	let { children } = $props();
+	import { setCategoryContext } from '$lib/context/categoryContext.js';
+
+	let { children, data } = $props();
+
+	setCategoryContext(data.shopData?.categories ?? []);
 </script>
 
 <svelte:head>
