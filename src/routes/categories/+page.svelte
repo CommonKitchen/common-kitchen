@@ -1,5 +1,5 @@
 <script>
-	import Categories from '$lib/components/layout/Categories/Categories.svelte';
+	import Categories from '$lib/components/layout/categories/Categories.svelte';
 
 	const { data } = $props();
 	const categories = $derived(data?.shopData?.categories ?? []);

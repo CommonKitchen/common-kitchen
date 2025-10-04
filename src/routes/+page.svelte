@@ -1,7 +1,7 @@
 <script>
 	import Main from '$lib/components/layout/Main.svelte';
 	import Bestsellers from '$lib/components/layout/Bestsellers.svelte';
-	import Categories from '$lib/components/layout/Categories/Categories.svelte';
+	import Categories from '$lib/components/layout/categories/Categories.svelte';
 
 	const { data } = $props();
 	const categories = $derived(data?.shopData?.categories ?? []);

@@ -1,6 +1,6 @@
 <script>
-	import Product from '$lib/components/layout/Products/Product.svelte';
-	import CategoryLink from '$lib/components/layout/Categories/CategoryLink.svelte';
+	import Product from '$lib/components/layout/products/Product.svelte';
+	import CategoryLink from '$lib/components/layout/categories/CategoryLink.svelte';
 
 	const { data, params } = $props();
 
