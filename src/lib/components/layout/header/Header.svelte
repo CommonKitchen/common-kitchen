@@ -1,4 +1,6 @@
 <script>
+	import BurgerMenuButton from '$lib/components/layout/header/BurgerMenuButton.svelte';
+	import SideMenu from '$lib/components/layout/header/SideMenu.svelte';
 	import ActionIcon from '$lib/components/ui/ActionIcon.svelte';
 	import Phone from '$lib/components/ui/Phone.svelte';
 	import Search from '$lib/components/layout/header/Search.svelte';
@@ -8,16 +10,33 @@
 	import { itemCount } from '$lib/stores/cartStore.js';
 
 	const phone = '+380990000101';
+
+	let isMenuOpen = $state(false);
+
+	function toggleMenu() {
+		isMenuOpen = !isMenuOpen;
+	}
+
+	function closeMenu() {
+		isMenuOpen = false;
+	}
 </script>
 
 <header class="main-header">
 	<div class="header-content">
-		<div class="header-logo">
-			<a href="/">
-				<img src={logo} alt="Common.Kitchen" />
-			</a>
+		<div class="logo-and-menu-group">
+			<div class="header-logo">
+				<a href="/">
+					<img src={logo} alt="Common.Kitchen" />
+				</a>
+			</div>
+			<div class="logo-placeholder"></div>
+			<div class="menu-wrapper">
+				<BurgerMenuButton isOpen={isMenuOpen} toggle={toggleMenu} />
+				<SideMenu isOpen={isMenuOpen} close={closeMenu} />
+			</div>
 		</div>
-		<div class="logo-placeholder"></div>
+
 		<div class="header-actions">
 			<Search />
 			<Phone {phone} />
@@ -46,6 +65,8 @@
 		max-width: 1366px;
 		margin: 0 auto;
 		position: relative;
+		padding: 0 20px;
+		gap: 20px;
 	}
 
 	.header-logo {
@@ -56,10 +77,23 @@
 		width: 164px;
 	}
 
+	.logo-and-menu-group {
+		position: relative;
+		display: flex;
+		align-items: center;
+		gap: 15px;
+		margin-right: auto;
+		flex-shrink: 0;
+	}
+
 	.logo-placeholder {
 		width: 194px;
 		height: 1px;
 		flex-shrink: 0;
+	}
+	.menu-wrapper {
+		position: relative; /* КРИТИЧНО: Родитель для абсолютно позиционированного SideMenu */
+		flex-shrink: 0; /* Гарантируем, что обертка не сжимается */
 	}
 
 	.header-actions {

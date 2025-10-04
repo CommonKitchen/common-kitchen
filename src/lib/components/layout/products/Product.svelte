@@ -41,7 +41,7 @@
 		justify-content: center;
 		gap: 8px;
 		padding: 8px;
-		background-color: white;
+		background-color: var(--common-bg-light, #f8f9fa);
 		border-radius: 8px;
 		border: 2px solid transparent;
 		overflow: hidden;

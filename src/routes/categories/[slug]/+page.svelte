@@ -78,7 +78,8 @@
 	.category-sidebar {
 		flex: 0 0 250px; /* Фиксированная ширина */
 		padding: 15px;
-		background-color: #f8f9fa;
+		/* background-color: #f8f9fa; */
+		background-color: var(--common-bg-light, #f8f9fa);
 		border-radius: 8px;
 		height: fit-content; /* Чтобы панель не растягивалась на всю высоту */
 	}
