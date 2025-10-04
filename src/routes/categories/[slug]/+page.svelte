@@ -64,6 +64,10 @@
 		padding: 16px;
 	}
 
+	.category-header {
+		color: #333;
+	}
+
 	.category-main-content {
 		display: flex;
 		gap: 30px; /* Расстояние между боковой панелью и товарами */

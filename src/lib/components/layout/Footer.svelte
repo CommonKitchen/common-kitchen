@@ -18,6 +18,7 @@
 				{#each phones as phone}
 					<li><Phone {phone} /></li>
 				{/each}
+				<li><a href="/">Карта проїзду</a></li>
 			</ul>
 		</div>
 		<div class="footer-column">

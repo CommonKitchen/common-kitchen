@@ -1,87 +1,46 @@
 <script>
+	import { goto } from '$app/navigation';
+	import CartButtons from '$lib/components/ui/CartButtons.svelte';
 	import Button from '$lib/components/ui/Button.svelte';
-	import { error } from '@sveltejs/kit';
-	import { cart, updateCart } from '$lib/stores/cartStore.js';
-	import { get } from 'svelte/store';
+	import { cart } from '$lib/stores/cartStore.js';
 
-	const { data, params } = $props();
+	const { data } = $props();
 
-	/** @typedef {import('$lib/types.js').Product} Product */
-	/** @type {Product[]} */
-	const allProducts = $derived(data?.shopData?.products ?? []);
-	const productId = $derived(Number(params.id));
-	const product = $derived(allProducts.find((p) => p.id === productId));
+	// /** @typedef {import('$lib/types.js').Product} Product */
+	// /** @type {Product[]} */
+	const product = $derived(data.product);
+
+	const cartQuantity = $derived($cart.find((item) => item.id === product?.id)?.quantity || 0);
 
 	let quantity = $state(1);
 
 	$effect(() => {
-		if (product) {
-			// 1. Получаем текущее значение из корзины
-			const currentCart = get(cart);
-			const existingItem = currentCart.find((item) => item.id === product.id);
-			const cartQuantity = existingItem ? existingItem.quantity : 0;
-
-			// 2. Определяем минимально возможное количество (minOrder)
+		if (product && cartQuantity !== undefined) {
 			const minAllowed = product.minOrder || 1;
-
 			let initialQuantity;
 
 			if (cartQuantity > 0) {
-				// Если товар уже в корзине, используем его количество
 				initialQuantity = cartQuantity;
 			} else {
-				// Если товара нет, используем minOrder
 				initialQuantity = minAllowed;
 			}
 
-			// Гарантируем, что quantity никогда не будет ниже minOrder (даже если в корзине был 1 шт, а minOrder стал 5)
 			if (initialQuantity < minAllowed) {
 				initialQuantity = minAllowed;
 			}
 
-			// 3. Устанавливаем начальное реактивное значение для счетчика
 			quantity = initialQuantity;
 		}
 	});
 
-	$effect(() => {
-		if (product && product.minOrder > 1) {
-			quantity = product.minOrder;
-		}
-	});
-
-	$effect(() => {
-		if (allProducts.length > 0 && !product) {
-			throw error(404, 'Товар не знайдено');
-		}
-	});
-
 	const total = $derived((product?.price || 0) * quantity);
-
-	function decrement() {
-		if (quantity > (product?.minOrder || 1)) {
-			quantity -= 1;
-		}
-	}
-
-	function increment() {
-		quantity += 1;
-	}
-
-	const addToCart = () => {
-		if (product) {
-			updateCart({
-				id: product.id,
-				price: product.price,
-				newQuantity: quantity
-			});
-		}
-	};
 </script>
 
 <div class="product-card">
-	<img src={product?.imageUrl} alt={product?.title} class="product-main-image" />
-
+	<div class="image-container">
+		<img src={product?.imageUrl} alt={product?.title} class="product-main-image" />
+		<Button onclick={() => goto('/categories')} />
+	</div>
 	<div class="product-details">
 		<h1 class="product-title">{product?.title}</h1>
 		<div class="product-info">
@@ -98,16 +57,7 @@
 			</div>
 
 			<div class="action-panel">
-				<div class="quantity-selector">
-					<button
-						class="quantity-btn"
-						onclick={decrement}
-						disabled={quantity === (product?.minOrder || 1)}>-</button
-					>
-					<span class="quantity">{quantity}</span>
-					<button class="quantity-btn" onclick={increment}>+</button>
-				</div>
-				<Button title="Додати до кошика" onclick={addToCart} stretch={false} />
+				<CartButtons id={product?.id} price={product?.id} minOrder={product?.minOrder} />
 			</div>
 		</div>
 
@@ -130,13 +80,6 @@
 </div>
 
 <style>
-	:root {
-		--common-text-dark: #333;
-		--common-text-light: #666;
-		--common-bg-light: #fdf7f3;
-		--common-border: #e0e0e0;
-	}
-
 	.product-card {
 		padding: 40px 20px;
 		margin: 20px auto;
@@ -181,12 +124,18 @@
 		line-height: 1.5;
 	}
 
+	.image-container {
+		width: 100%;
+		text-align: center;
+	}
+
 	.product-main-image {
 		width: 100%;
 		max-width: 500px;
 		height: auto;
 		object-fit: contain;
 		border-radius: 8px;
+		margin-bottom: 40px;
 	}
 
 	.product-title {
@@ -202,6 +151,10 @@
 		color: var(--common-text-light);
 		margin-bottom: 5px;
 		text-align: left;
+	}
+
+	.icon-scale {
+		margin-right: 8px;
 	}
 
 	.product-min-order {
@@ -224,6 +177,10 @@
 		border-bottom: 1px solid var(--common-border);
 		padding-bottom: 20px;
 		margin-bottom: 30px;
+	}
+
+	.action-panel {
+		width: 144px;
 	}
 
 	.total-block {
@@ -263,21 +220,21 @@
 			flex-direction: column;
 			align-items: stretch;
 		}
-		.quantity-selector {
+		/* .quantity-selector {
 			width: 100%;
 			margin-bottom: 15px;
-		}
+		} */
 	}
 
-	.quantity-selector {
+	/* .quantity-selector {
 		display: flex;
 		border: 1px solid var(--common-border);
 		border-radius: 8px;
 		overflow: hidden;
 		flex-shrink: 0;
-	}
+	} */
 
-	.quantity-btn {
+	/* .quantity-btn {
 		background-color: var(--common-bg-light);
 		border: none;
 		padding: 12px 18px;
@@ -287,13 +244,13 @@
 		cursor: pointer;
 		color: var(--common-text-dark);
 		transition: background-color 0.2s ease;
-	}
-	.quantity-btn:disabled {
+	} */
+	/* .quantity-btn:disabled {
 		opacity: 0.5;
 		cursor: not-allowed;
-	}
+	} */
 
-	.quantity {
+	/* .quantity {
 		padding: 12px 0px;
 		font-size: 1.2rem;
 		font-weight: 600;
@@ -302,7 +259,7 @@
 		align-items: center;
 		justify-content: center;
 		min-width: 40px;
-	}
+	} */
 
 	.description-block h2 {
 		font-size: 1.4rem;

@@ -1,5 +1,10 @@
 <script>
-	const { class: className = 'default', title, stretch = false, onclick } = $props();
+	const {
+		class: className = 'default',
+		title = 'Перейти до продукції',
+		stretch = false,
+		onclick
+	} = $props();
 </script>
 
 <button class={`${className} ${stretch ? 'stretch' : ''}`} {onclick}>{title}</button>

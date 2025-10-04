@@ -25,4 +25,16 @@
  * @property {number} id
  */
 
+/**
+ * @typedef {object} ShopData
+ * @property {Category[]} categories
+ * @property {Product[]} products
+ * @property {Bestsellers[]} bestsellers
+ */
+
+/**
+ * @typedef {object} LayoutData
+ * @property {ShopData} shopData
+ */
+
 export default {};

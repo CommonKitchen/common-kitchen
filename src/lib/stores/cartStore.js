@@ -1,11 +1,3 @@
-// /**
-//  * @typedef {object} CartStore
-//  * @property {function({ productId: number, title: string, price: number }): void} addItem
-//  * @property {function(number): void} removeItem
-//  * @property {function(): void} clear
-//  * @property {function(number, number): void} updateQuantity
-//  */
-
 import { derived, writable } from 'svelte/store';
 
 /**
@@ -29,12 +21,11 @@ export const itemCount = derived(cart, ($cart) => $cart.length);
 /**
  * Устанавливает количество товара в корзине до указанного значения (newQuantity > 0).
  * Если newQuantity <= 0, функция игнорирует вызов.
- * @param {object} item
- * @param {number} item.id
- * @param {number} item.price
- * @param {number} item.newQuantity
+ * @param {number} id
+ * @param {number} price
+ * @param {number} newQuantity
  */
-export function updateCart({ id, price, newQuantity }) {
+export function updateCart(id, price, newQuantity) {
 	if (newQuantity <= 0) {
 		return;
 	}
@@ -65,6 +56,17 @@ export function removeItem(id) {
 			currentCart.splice(itemIndex, 1);
 		}
 		return currentCart;
+	});
+}
+
+/**
+ * Получает количество товара в корзины по ID.
+ * @param {number} id - ID товара.
+ */
+export function getQuantity(id) {
+	return derived(cart, ($cart) => {
+		const item = $cart.find((i) => i.id === id);
+		return item ? item.quantity : 0;
 	});
 }
 

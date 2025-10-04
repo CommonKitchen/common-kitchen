@@ -6,7 +6,7 @@
 <div class="hero">
 	<h1>Готуємо з любов’ю<br />для кожного закладу</h1>
 	<h3>Замовляй, куштуй<br />та залишайся з нами</h3>
-	<Button title="Перейти до продукції" onclick={() => goto('/categories')} />
+	<Button onclick={() => goto('/categories')} />
 </div>
 
 <style>

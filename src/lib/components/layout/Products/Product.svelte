@@ -1,29 +1,29 @@
 <script>
-	import Button from '$lib/components/ui/Button.svelte';
+	import CartButtons from '$lib/components/ui/CartButtons.svelte';
+
 	const { id, title, price, weight, minOrder, imageUrl } = $props();
 	const productUrl = `/products/${id}`;
-	const addToCart = () => {};
 </script>
 
-<a href={productUrl} class="product-tile-link">
-	<div class="product-tile">
+<div class="product-tile">
+	<a href={productUrl} class="product-tile-link">
 		<div class="image-container">
 			<img src={imageUrl} alt={title} class="product-image" />
 		</div>
-		<div class="product-content">
-			<div class="product-title">{title}</div>
-			<div class="product-info">
-				<div class="product-weight">
-					<span class="icon-scale">⚖</span>
-					{weight}
-				</div>
-				<span class="product-min-order">Від {minOrder} шт.</span>
+	</a>
+	<div class="product-content">
+		<div class="product-title">{title}</div>
+		<div class="product-info">
+			<div class="product-weight">
+				<span class="icon-scale">⚖</span>
+				{weight}
 			</div>
-			<div class="product-price">{price} <span>₴</span></div>
-			<Button title="До кошика" stretch={true} onclick={addToCart} />
+			<span class="product-min-order">Від {minOrder} шт.</span>
 		</div>
+		<div class="product-price">{price} <span>₴</span></div>
+		<CartButtons {id} {price} {minOrder} />
 	</div>
-</a>
+</div>
 
 <style>
 	.product-tile-link {

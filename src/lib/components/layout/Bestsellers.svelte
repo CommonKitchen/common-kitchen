@@ -12,11 +12,6 @@
 	const bestsellers = $derived(data?.shopData?.bestsellers ?? []);
 	const productsId = $derived(new Set(bestsellers.map((item) => item.id)));
 	const products = $derived(AllProducts.filter((product) => productsId.has(product.id)) ?? []);
-
-	// Временно для диагностики
-	// $effect(() => {
-	// 	console.log('Categories array received (Svelte 5):', data);
-	// });
 </script>
 
 <div class="container">

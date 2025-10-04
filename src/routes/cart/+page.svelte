@@ -1,9 +1,12 @@
 <script>
 	import Cart from '$lib/components/layout/cart/Cart.svelte';
+
+	const { data } = $props();
+	const products = $derived(data?.shopData?.products ?? []);
 </script>
 
 <div class="cart-container">
-	<Cart />
+	<Cart {products} />
 </div>
 
 <style>
