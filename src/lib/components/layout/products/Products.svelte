@@ -1,5 +1,5 @@
 <script>
-	import Product from '$lib/components/layout/Products/Product.svelte';
+	import Product from '$lib/components/layout/products/Product.svelte';
 
 	const { products } = $props();
 </script>

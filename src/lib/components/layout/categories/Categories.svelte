@@ -1,5 +1,5 @@
 <script>
-	import Category from '$lib/components/layout/Categories/Category.svelte';
+	import Category from '$lib/components/layout/categories/Category.svelte';
 
 	const { categories } = $props();
 </script>
