@@ -63,7 +63,7 @@
 
 		<div class="description-block">
 			<h2>Опис</h2>
-			<p>{product?.description}</p>
+			<p>{@html product?.description}</p>
 		</div>
 
 		<div class="key-details">

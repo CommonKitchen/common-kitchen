@@ -2,13 +2,21 @@ import { API_SERVER_URL } from '$env/static/private';
 
 import { error } from '@sveltejs/kit';
 
-const API_URL = `${API_SERVER_URL}/shopData`;
+// const API_URL = `${API_SERVER_URL}/shopData`;
+const API_URL = `${API_SERVER_URL}/cakes/hs/initdata`;
 
 export async function load({ fetch }) {
 	let response;
 
+	const requestOptions = {
+		method: 'POST',
+		headers: {
+			Accept: 'application/json'
+		}
+	};
+
 	try {
-		response = await fetch(API_URL);
+		response = await fetch(API_URL, requestOptions);
 	} catch (e) {
 		console.error('Network or critical fetch error:', e);
 		throw error(503, {
@@ -36,11 +44,20 @@ export async function load({ fetch }) {
 			});
 		}
 
+		/** @typedef {import('$lib/types.js').Product} Product */
+		/** @type {Product[]} */
+		const products = allData.products.map(
+			/** @param {Product} item */
+			(item) => ({
+				...item,
+				imageUrl: item.imageUrl || '/nophoto.svg'
+			})
+		);
 		// 6. Возвращение успешных данных
 		return {
 			shopData: {
 				categories: allData.categories,
-				products: allData.products
+				products: products
 			}
 		};
 	} catch (e) {
