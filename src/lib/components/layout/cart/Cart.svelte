@@ -254,6 +254,16 @@
 		border: none;
 	}
 
+	.checkout-btn:hover {
+		background-color: #c43c0f;
+		box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+	}
+
+	.checkout-btn:active {
+		box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+		background-color: var(--main-active-color, #a8330c);
+	}
+
 	.clear-btn,
 	.checkout-btn {
 		padding: 10px 20px;
@@ -261,5 +271,10 @@
 		cursor: pointer;
 		font-weight: 600;
 		transition: opacity 0.2s;
+	}
+
+	.clear-btn:hover {
+		box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+		background: #ededed;
 	}
 </style>
