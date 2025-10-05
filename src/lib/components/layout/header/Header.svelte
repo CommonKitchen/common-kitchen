@@ -9,7 +9,7 @@
 	import bag from '$lib/assets/icon-bag-24x24.svg';
 	import { itemCount } from '$lib/stores/cartStore.js';
 
-	const phone = '+380990001111';
+	const phone = '+380990011111';
 
 	let isMenuOpen = $state(false);
 
