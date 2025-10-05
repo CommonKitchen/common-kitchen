@@ -1,17 +1,7 @@
 <script>
 	import Products from '$lib/components/layout/products/Products.svelte';
 
-	const { data } = $props();
-
-	/** @typedef {import('$lib/types.js').Product} Product */
-	/** @type {Product[]} */
-	const AllProducts = $derived(data?.shopData?.products ?? []);
-
-	/** @typedef {import('$lib/types.js').Bestsellers} Bestsellers */
-	/** @type {Bestsellers[]} */
-	const bestsellers = $derived(data?.shopData?.bestsellers ?? []);
-	const productsId = $derived(new Set(bestsellers.map((item) => item.id)));
-	const products = $derived(AllProducts.filter((product) => productsId.has(product.id)) ?? []);
+	const { products } = $props();
 </script>
 
 <div class="container">

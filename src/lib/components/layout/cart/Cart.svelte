@@ -5,10 +5,7 @@
 	import ButtonRemove from '$lib/components/ui/ButtonRemove.svelte';
 	import { goto } from '$app/navigation';
 
-	/** @typedef {import('$lib/stores/cartStore.js').CartItem} CartItem */
-	/** @typedef {import('$lib/types.js').Product} Product */
-
-	/**
+	/** @typedef {import('$lib/types.js').Product} Product
 	 * @typedef {object} CartProps
 	 * @property {Product[]} products
 	 */

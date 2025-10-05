@@ -18,18 +18,13 @@
  * @property {string} description
  * @property {string} composition
  * @property {string} storageLife
- */
-
-/**
- * @typedef {object} Bestsellers
- * @property {number} id
+ * @property {boolean} bestseller
  */
 
 /**
  * @typedef {object} ShopData
  * @property {Category[]} categories
  * @property {Product[]} products
- * @property {Bestsellers[]} bestsellers
  */
 
 /**

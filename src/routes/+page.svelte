@@ -5,10 +5,14 @@
 
 	const { data } = $props();
 	const categories = $derived(data?.shopData?.categories ?? []);
+	/** @typedef {import('$lib/types.js').Product} Product */
+	/** @type {Product[]} */
+	const products = $derived(data?.shopData?.products ?? []);
+	const bestsellers = $derived(products.filter((product) => product.bestseller));
 </script>
 
 <Main />
-<Bestsellers {data} />
+<Bestsellers products={bestsellers} />
 
 <div class="container">
 	<h2>Наша продукція</h2>

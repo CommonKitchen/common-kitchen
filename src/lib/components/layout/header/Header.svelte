@@ -71,7 +71,7 @@
 
 	.header-logo {
 		position: absolute;
-		top: 0px;
+		top: 2px;
 		left: 20px;
 		height: 62px;
 		width: 164px;
@@ -97,6 +97,7 @@
 	}
 
 	.header-actions {
+		position: relative;
 		display: flex;
 		align-items: center;
 		gap: 24px;

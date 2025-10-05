@@ -29,12 +29,7 @@ export async function load({ fetch }) {
 		const allData = await response.json();
 
 		// 5. ✅ ИСПРАВЛЕНИЕ: Проверка структуры данных (allData.categories)
-		if (
-			!allData ||
-			!Array.isArray(allData.categories) ||
-			!Array.isArray(allData.products) ||
-			!Array.isArray(allData.bestsellers)
-		) {
+		if (!allData || !Array.isArray(allData.categories) || !Array.isArray(allData.products)) {
 			console.error('Invalid data structure received from API:', allData);
 			throw error(500, {
 				message: 'Зовнішній API повернув некоректну структуру даних.'
@@ -45,8 +40,7 @@ export async function load({ fetch }) {
 		return {
 			shopData: {
 				categories: allData.categories,
-				products: allData.products,
-				bestsellers: allData.bestsellers
+				products: allData.products
 			}
 		};
 	} catch (e) {

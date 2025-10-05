@@ -3,10 +3,12 @@
 	import Header from '$lib/components/layout/header/Header.svelte';
 	import Footer from '$lib/components/layout/Footer.svelte';
 	import { setCategoryContext } from '$lib/context/categoryContext.js';
+	import { setProductContext } from '$lib/context/productContext.js';
 
 	let { children, data } = $props();
 
 	setCategoryContext(data.shopData?.categories ?? []);
+	setProductContext(data.shopData?.products ?? []);
 </script>
 
 <svelte:head>
