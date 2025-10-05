@@ -3,7 +3,7 @@ import { API_SERVER_URL } from '$env/static/private';
 import { error } from '@sveltejs/kit';
 
 // const API_URL = `${API_SERVER_URL}/shopData`;
-const API_URL = `${API_SERVER_URL}/cakes/hs/initdata`;
+const API_URL = `https://${API_SERVER_URL}/cakes/hs/initdata`;
 
 export async function load({ fetch }) {
 	let response;
