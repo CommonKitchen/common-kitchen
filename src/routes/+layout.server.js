@@ -50,7 +50,7 @@ export async function load({ fetch }) {
 			/** @param {Product} item */
 			(item) => ({
 				...item,
-				imageUrl: item.imageUrl || '/nophoto.svg'
+				imageUrl: item.imageUrl || '/nophoto.png'
 			})
 		);
 		// 6. Возвращение успешных данных
