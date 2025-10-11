@@ -125,6 +125,6 @@
 		align-items: center;
 		justify-content: center;
 		min-width: 40px;
-		background-color: #fdf7f3;
+		background-color: var(--common-bg-light);
 	}
 </style>

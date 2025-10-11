@@ -2,8 +2,64 @@ import { API_SERVER_URL } from '$env/static/private';
 
 import { error } from '@sveltejs/kit';
 
-// const API_URL = `${API_SERVER_URL}/shopData`;
 const API_URL = `https://${API_SERVER_URL}/cakes/hs/initdata`;
+
+/** @typedef {import('$lib/types.js').Product} Product */
+/* @type {Product[]} */
+/** @typedef {import('$lib/types.js').Category} Category */
+/* @type {Category[]} */
+
+/**
+ * @typedef {object} ApiData
+ * @property {Product[]} products - Массив товаров.
+ * @property {Category[]} categories - Массив категорий.
+ * @property {object} checkoutConfig - Объект конфигурации заказа.
+ * @property {object} customer - Объект конфигурации заказа.
+ */
+
+/**
+ * Проверяет, что полученный JSON-объект содержит необходимые структуры данных.
+ * @param {ApiData} data - Объект, полученный после response.json().
+ * @returns {ApiData} Возвращает проверенный объект с данными (products, categories и checkoutConfig).
+ * @throws {Error} Выбрасывает ошибку, если данные не соответствуют ожидаемой структуре.
+ */ function validateApiData(data) {
+	if (!data || typeof data !== 'object' || Array.isArray(data)) {
+		throw new Error("Помилка валідациї даних: відповідь API не являє собою коректний об'єкт.");
+	}
+
+	// 1. Проверяем products: должен быть массив
+	if (!Array.isArray(data.products)) {
+		throw new Error("Помилка валідациї даних: відсутній або некоректний масив 'products'.");
+	}
+
+	// 2. Проверяем categories: должен быть массив
+	if (!Array.isArray(data.categories)) {
+		throw new Error("Помилка валідациї даних: відсутній або некоректний массив 'categories'.");
+	}
+
+	// 3. Проверяем checkoutConfig: должен быть объект, но не массив и не null
+	if (
+		!(
+			data.checkoutConfig &&
+			typeof data.checkoutConfig === 'object' &&
+			!Array.isArray(data.checkoutConfig)
+		)
+	) {
+		throw new Error("Помилка валідациї даних: відсутній або некоректний об'єкт 'checkoutConfig'.");
+	}
+
+	if (!(data.customer && typeof data.customer === 'object' && !Array.isArray(data.customer))) {
+		throw new Error("Помилка валідациї даних: відсутній або некоректний об'єкт 'customer'.");
+	}
+
+	// Если все проверки пройдены, возвращаем данные.
+	return {
+		products: data.products,
+		categories: data.categories,
+		checkoutConfig: data.checkoutConfig,
+		customer: data.customer
+	};
+}
 
 export async function load({ fetch }) {
 	let response;
@@ -36,32 +92,14 @@ export async function load({ fetch }) {
 	try {
 		const allData = await response.json();
 
-		// 5. ✅ ИСПРАВЛЕНИЕ: Проверка структуры данных (allData.categories)
-		if (!allData || !Array.isArray(allData.categories) || !Array.isArray(allData.products)) {
-			console.error('Invalid data structure received from API:', allData);
-			throw error(500, {
-				message: 'Зовнішній API повернув некоректну структуру даних.'
-			});
-		}
+		const validatedData = validateApiData(allData);
 
-		/** @typedef {import('$lib/types.js').Product} Product */
-		/** @type {Product[]} */
-		const products = allData.products.map(
-			/** @param {Product} item */
-			(item) => ({
-				...item,
-				imageUrl: item.imageUrl || '/nophoto.png'
-			})
-		);
-		// 6. Возвращение успешных данных
-		return {
-			shopData: {
-				categories: allData.categories,
-				products: products
-			}
-		};
+		const products = validatedData.products.map((item) => ({
+			...item,
+			imageUrl: item.imageUrl || '/nophoto.png'
+		}));
+		return { shopData: { ...validatedData, products } };
 	} catch (e) {
-		// 7. Обработка ошибок парсинга JSON
 		console.error('Error parsing JSON:', e);
 		throw error(500, {
 			message: 'Помилка обробки отриманої відповіді (некоректний JSON).'

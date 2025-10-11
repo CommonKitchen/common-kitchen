@@ -1,12 +1,6 @@
 import { derived, writable } from 'svelte/store';
 
-/**
- * @typedef {object} CartItem
- * @property {number} id - ID товара.
- * @property {number} price - Цена за единицу.
- * @property {number} quantity - Количество в корзине.
- */
-
+/** @typedef {import('$lib/types.js').CartItem} CartItem */
 /** @type {import('svelte/store').Writable<CartItem[]>} */
 export const cart = writable([]);
 
