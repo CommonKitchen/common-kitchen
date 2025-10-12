@@ -32,8 +32,6 @@
 		/** @type {number} */
 		minAmount,
 		/** @type {number} */
-		shippingAmount,
-		/** @type {number} */
 		freeShippingAmount,
 		/** @type {DeliveryType[]} */
 		deliveryTypes,
@@ -46,8 +44,29 @@
 	/** @type {string} */
 	let selectedDeliveryType = $state(deliveryTypes[0].id);
 	let selectedPaymentMethod = $state(paymentMethods[0].id);
+	let currentPickupLocationId = $state(pickupLocations[0].id);
+
+	const currentPickupLocation = $derived(() => {
+		/** @type {PickupLocation[]} */
+		const locationList = pickupLocations;
+		return locationList.find((location) => location.id === currentPickupLocationId);
+	});
+
+	const deliveryAmount = $derived(() => {
+		if ($cartAmount >= freeShippingAmount) {
+			return 0;
+		}
+
+		/** @type {DeliveryType[]} */
+		const deliveryList = deliveryTypes;
+		const selectedOption = deliveryList.find((item) => item.id === selectedDeliveryType);
+
+		return selectedOption ? selectedOption.amount : 0;
+	});
 	const isMinOrderReached = $derived($cartAmount >= minAmount);
 	const amountToReachMin = $derived(isMinOrderReached ? 0 : minAmount - $cartAmount);
+
+	const finalTotal = $derived($cartAmount + deliveryAmount());
 
 	const cartItems = $derived(
 		$cart.map((cartItem) => {
@@ -145,15 +164,36 @@
 				groupName="deliveryType"
 			/>
 
-			<div
-				class="deliveryAmount"
-				style:visibility={selectedDeliveryType === 'delivery' ? 'visible' : 'hidden'}
-			>
-				<span class="delivery-description">Вартість доставки:</span>
-				<span class="textAmount">
-					{shippingAmount} <span>₴</span>
-				</span>
-			</div>
+			{#if selectedDeliveryType === 'pickup'}
+				<div class="pickup-block">
+					<label for="pickupLocations">Точки видачі</label>
+					<select
+						id="pickupLocations"
+						class="pickup-locations"
+						bind:value={currentPickupLocationId}
+					>
+						{#each pickupLocations as location (location.id)}
+							<option value={location.id}>{location.label}</option>
+						{/each}
+					</select>
+					<div class="pickup-address">
+						{currentPickupLocation()?.address}
+					</div>
+				</div>
+				<div class="pickup-info">
+					{currentPickupLocation()?.info}
+				</div>
+			{:else}
+				<div
+					class="delivery-block"
+					style:visibility={selectedDeliveryType === 'delivery' ? 'visible' : 'hidden'}
+				>
+					<span class="delivery-description">Сума замовлення для безкоштовной доставки:</span>
+					<span class="text-amount">
+						{freeShippingAmount} <span>₴</span>
+					</span>
+				</div>
+			{/if}
 
 			<RadioOptions
 				title="Спосіб оплати:"
@@ -162,9 +202,16 @@
 				groupName="paymentMetod"
 			/>
 
-			<div class="summary-line total-line">
+			<div class="delivery-block">
+				<span class="delivery-description">Вартість доставки:</span>
+				<span class="text-amount">
+					{deliveryAmount()} <span>₴</span>
+				</span>
+			</div>
+
+			<div class="block-total">
 				<span>Разом до оплати:</span>
-				<span class="total-amount">{$cartAmount} <span>₴</span></span>
+				<span class="total-amount">{finalTotal} <span>₴</span></span>
 			</div>
 
 			<div class="summary-actions">
@@ -295,11 +342,30 @@
 		text-align: center;
 	}
 
-	.deliveryAmount {
+	.delivery-block {
 		display: flex;
 		justify-content: space-between;
+		padding: 39px 0;
+		font-size: 1.1rem;
+	}
+
+	.pickup-block {
 		padding: 16px 0;
 		font-size: 1.1rem;
+		display: flex;
+		align-items: center;
+		justify-content: flex-start;
+	}
+
+	.pickup-locations {
+		padding: 8px;
+		font-size: 1.1rem;
+		margin: 0px 12px;
+		min-width: 180px;
+	}
+
+	.pickup-info {
+		margin-bottom: 8px;
 	}
 
 	.delivery-description {
@@ -310,22 +376,21 @@
 			opacity 0.3s linear; /* Додаємо перехід для видимості */
 	}
 
-	.textAmount {
+	.text-amount {
 		font-weight: 600;
 		font-size: 1.2rem;
 		color: var(--main-color);
 	}
 
-	.textAmount span {
+	.text-amount span {
 		font-size: 1rem;
 	}
 
-	.total-line {
+	.block-total {
 		display: flex;
 		justify-content: space-between;
 		font-size: 1.4rem;
 		font-weight: 600;
-		margin-top: 20px;
 	}
 
 	.total-amount {

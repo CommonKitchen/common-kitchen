@@ -33,6 +33,7 @@
  * @property {string} id
  * @property {string} label
  * @property {string} address
+ * @property {string} info
  */
 
 /**
@@ -45,6 +46,7 @@
  * @typedef {object} DeliveryType
  * @property {string} id
  * @property {string} label
+ * @property {number} amount
  */
 
 /**
