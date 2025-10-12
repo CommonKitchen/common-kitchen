@@ -202,7 +202,7 @@
 				groupName="paymentMetod"
 			/>
 
-			<div class="delivery-block">
+			<div class="delivery-block-amount">
 				<span class="delivery-description">Вартість доставки:</span>
 				<span class="text-amount">
 					{deliveryAmount()} <span>₴</span>
@@ -384,6 +384,13 @@
 
 	.text-amount span {
 		font-size: 1rem;
+	}
+
+	.delivery-block-amount {
+		display: flex;
+		justify-content: space-between;
+		padding: 16px 0;
+		font-size: 1.1rem;
 	}
 
 	.block-total {
