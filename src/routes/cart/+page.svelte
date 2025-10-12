@@ -4,10 +4,11 @@
 	const { data } = $props();
 	const products = $derived(data?.shopData?.products ?? []);
 	const checkoutConfig = $derived(data?.shopData?.checkoutConfig ?? {});
+	const customer = $derived(data?.shopData?.customer ?? {});
 </script>
 
 <div class="cart-container">
-	<Cart {products} {checkoutConfig} />
+	<Cart {products} {checkoutConfig} {customer} />
 </div>
 
 <style>

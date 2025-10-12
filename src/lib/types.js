@@ -22,6 +22,38 @@
  */
 
 /**
+ * @typedef {object} CheckoutConfig
+ * @property {number} minAmount Сумма минимального заказа.
+ * @property {number} shippingAmount Сумма за доставку.
+ * @property {number} freeShippingAmount Сумма, начиная с которой доставка бесплатна.
+ * @property {PickupLocation[]} pickupLocations Точки самовывоза.
+ * @property {PaymentMethod[]} paymentMethods Способы оплаты.
+ * @property {DeliveryType[]} deliveryTypes Способы доставки.
+ */
+
+/**
+ * @typedef {object} Customer
+ * @property {string} name
+ * @property {string} phone
+ * @property {legalEntity[]} legalEntities Контрагенты
+ */
+
+/**
+ * @typedef {object} legalEntity
+ * @property {string} id
+ * @property {string} title
+ * @property {CustomerLocation[]} customerLocations
+ */
+
+/**
+ * @typedef {object} CustomerLocation
+ * @property {string} id
+ * @property {string} title
+ * @property {string} address
+ * @property {number[]} availableDays
+ */
+
+/**
  * @typedef {object} CartItem
  * @property {number} id - ID товара.
  * @property {number} price - Цена за единицу.
@@ -47,16 +79,6 @@
  * @property {string} id
  * @property {string} label
  * @property {number} amount
- */
-
-/**
- * @typedef {object} CheckoutConfig
- * @property {number} minAmount Сумма минимального заказа.
- * @property {number} shippingAmount Сумма за доставку.
- * @property {number} freeShippingAmount Сумма, начиная с которой доставка бесплатна.
- * @property {PickupLocation[]} pickupLocations Точки самовывоза.
- * @property {PaymentMethod[]} paymentMethods Способы оплаты.
- * @property {DeliveryType[]} deliveryTypes Способы доставки.
  */
 
 /**

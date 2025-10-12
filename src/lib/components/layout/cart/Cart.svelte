@@ -20,12 +20,16 @@
 	/** @typedef {import('$lib/types.js').PickupLocation} PickupLocation */
 	/** @typedef {import('$lib/types.js').PaymentMethod} PaymentMethod */
 	/** @typedef {import('$lib/types.js').CartItem} CartItem */
+	/** @typedef {import('$lib/types.js').Customer} Customer */
+	/** @typedef {import('$lib/types.js').legalEntity} legalEntity */
 
 	const {
 		/** @type {Product[]} */
 		products,
 		/** @type {CheckoutConfig} */
-		checkoutConfig
+		checkoutConfig,
+		/** @type {Customer} */
+		customer
 	} = $props();
 
 	const {
@@ -44,12 +48,50 @@
 	/** @type {string} */
 	let selectedDeliveryType = $state(deliveryTypes[0].id);
 	let selectedPaymentMethod = $state(paymentMethods[0].id);
-	let currentPickupLocationId = $state(pickupLocations[0].id);
 
+	let currentPickupLocationId = $state(pickupLocations[0].id);
 	const currentPickupLocation = $derived(() => {
 		/** @type {PickupLocation[]} */
 		const locationList = pickupLocations;
 		return locationList.find((location) => location.id === currentPickupLocationId);
+	});
+
+	const firstEntity = customer.legalEntities.length > 0 ? customer.legalEntities[0] : null;
+	const firstLocation =
+		firstEntity && firstEntity.customerLocations.length > 0
+			? firstEntity.customerLocations[0]
+			: null;
+
+	let currentEntityId = $state(firstEntity ? firstEntity.id : null);
+	let currentCustomerLocationId = $state(firstLocation ? firstLocation.id : null);
+
+	const currentEntity = $derived(() => {
+		/** @type {legalEntity[]} */
+		const entityList = customer.legalEntities;
+		return entityList.find((entity) => entity.id === currentEntityId);
+	});
+
+	const currentCustomerLocation = $derived(() => {
+		const entity = currentEntity();
+		if (entity && entity.customerLocations.length > 0) {
+			return entity.customerLocations.find((loc) => loc.id === currentCustomerLocationId);
+		}
+		return undefined;
+	});
+
+	$effect(() => {
+		const entity = currentEntity();
+		if (entity && entity.customerLocations.length > 0) {
+			const locationExists = entity.customerLocations.some(
+				(loc) => loc.id === currentCustomerLocationId
+			);
+
+			if (!locationExists) {
+				currentCustomerLocationId = entity.customerLocations[0].id;
+			}
+		} else {
+			currentCustomerLocationId = null;
+		}
 	});
 
 	const deliveryAmount = $derived(() => {
@@ -155,6 +197,31 @@
 				</div>
 			{/if}
 
+			<div class="customer-block">
+				<span>Ваші данні: {customer.name} {customer.phone}</span>
+				<div class="entity-container">
+					<div class="entity-block">
+						<label for="legalEntities">Замовник:</label>
+						<select id="legalEntities" bind:value={currentEntityId}>
+							{#each customer.legalEntities as entity}
+								<option value={entity.id}>{entity.title}</option>
+							{/each}
+						</select>
+					</div>
+					<div class="entity-block">
+						<label for="customerLocations">Заклад:</label>
+						<select id="customerLocations" bind:value={currentCustomerLocationId}>
+							{#each currentEntity()?.customerLocations || [] as location (location.id)}
+								<option value={location.id}>{location.title}</option>
+							{/each}
+						</select>
+						<div class="customer-location-address">
+							{currentCustomerLocation()?.address}
+						</div>
+					</div>
+				</div>
+			</div>
+
 			<DatePicker title="Дата доставки (приготування):" />
 
 			<RadioOptions
@@ -184,10 +251,7 @@
 					{currentPickupLocation()?.info}
 				</div>
 			{:else}
-				<div
-					class="delivery-block"
-					style:visibility={selectedDeliveryType === 'delivery' ? 'visible' : 'hidden'}
-				>
+				<div class="delivery-block">
 					<span class="delivery-description">Сума замовлення для безкоштовной доставки:</span>
 					<span class="text-amount">
 						{freeShippingAmount} <span>₴</span>
@@ -342,10 +406,27 @@
 		text-align: center;
 	}
 
+	.entity-block {
+		padding: 16px 0;
+		font-size: 1.1rem;
+		display: flex;
+		align-items: center;
+	}
+
+	.entity-container {
+		display: flex;
+	}
+	.entity-block select {
+		padding: 8px;
+		font-size: 1rem;
+		margin: 0px 12px;
+		min-width: 180px;
+	}
+
 	.delivery-block {
 		display: flex;
 		justify-content: space-between;
-		padding: 39px 0;
+		padding: 38px 0px 37px 0px;
 		font-size: 1.1rem;
 	}
 
@@ -359,7 +440,7 @@
 
 	.pickup-locations {
 		padding: 8px;
-		font-size: 1.1rem;
+		font-size: 1rem;
 		margin: 0px 12px;
 		min-width: 180px;
 	}

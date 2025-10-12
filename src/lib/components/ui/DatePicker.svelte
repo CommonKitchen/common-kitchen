@@ -58,7 +58,7 @@
 
 <style>
 	.delivery-date {
-		margin: 20px 0px;
+		margin: 8px 0px 16px 0px;
 	}
 
 	.input-date {
