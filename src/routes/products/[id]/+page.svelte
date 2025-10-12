@@ -6,8 +6,6 @@
 
 	const { data } = $props();
 
-	// /** @typedef {import('$lib/types.js').Product} Product */
-	// /** @type {Product[]} */
 	const product = $derived(data.product);
 
 	const cartQuantity = $derived($cart.find((item) => item.id === product?.id)?.quantity || 0);
@@ -15,22 +13,22 @@
 	let quantity = $state(1);
 
 	$effect(() => {
+		let initialQuantity;
 		if (product && cartQuantity !== undefined) {
 			const minAllowed = product.minOrder || 1;
-			let initialQuantity;
 
 			if (cartQuantity > 0) {
 				initialQuantity = cartQuantity;
+				if (initialQuantity < minAllowed) {
+					initialQuantity = minAllowed;
+				}
 			} else {
-				initialQuantity = minAllowed;
+				initialQuantity = 0;
 			}
-
-			if (initialQuantity < minAllowed) {
-				initialQuantity = minAllowed;
-			}
-
-			quantity = initialQuantity;
+		} else {
+			initialQuantity = 0;
 		}
+		quantity = initialQuantity;
 	});
 
 	const total = $derived((product?.price || 0) * quantity);
@@ -48,16 +46,19 @@
 			<span class="product-min-order">від {product?.minOrder} шт.</span>
 		</div>
 
-		<div class="product-price">{product?.price} <span>₴</span></div>
+		<div class="price-block">
+			<div class="action-panel">
+				<CartButtons id={product?.id} price={product?.id} minOrder={product?.minOrder} />
+			</div>
+			<div class="product-price">
+				{product?.price} <span>₴</span>
+			</div>
+		</div>
 
 		<div class="action-panel-container">
 			<div class="total-block">
 				<span class="total-label">Сума:</span>
 				<span class="total">{total} <span>₴</span></span>
-			</div>
-
-			<div class="action-panel">
-				<CartButtons id={product?.id} price={product?.id} minOrder={product?.minOrder} />
 			</div>
 		</div>
 
@@ -159,6 +160,12 @@
 
 	.product-min-order {
 		margin-left: 30px;
+	}
+
+	.price-block {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
 	}
 
 	.product-price {

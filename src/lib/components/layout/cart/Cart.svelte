@@ -72,11 +72,7 @@
 	});
 
 	const currentCustomerLocation = $derived(() => {
-		const entity = currentEntity();
-		if (entity && entity.customerLocations.length > 0) {
-			return entity.customerLocations.find((loc) => loc.id === currentCustomerLocationId);
-		}
-		return undefined;
+		return currentEntity()?.customerLocations?.find((loc) => loc.id === currentCustomerLocationId);
 	});
 
 	$effect(() => {
@@ -198,31 +194,35 @@
 			{/if}
 
 			<div class="customer-block">
-				<span>Ваші данні: {customer.name} {customer.phone}</span>
+				<div class="customer-info">Ваші дані: {customer.name} {customer.phone}</div>
 				<div class="entity-container">
-					<div class="entity-block">
+					<div class="select-block">
 						<label for="legalEntities">Замовник:</label>
-						<select id="legalEntities" bind:value={currentEntityId}>
+						<select id="legalEntities" bind:value={currentEntityId} class="select-control">
 							{#each customer.legalEntities as entity}
 								<option value={entity.id}>{entity.title}</option>
 							{/each}
 						</select>
 					</div>
-					<div class="entity-block">
+					<div class="select-block">
 						<label for="customerLocations">Заклад:</label>
-						<select id="customerLocations" bind:value={currentCustomerLocationId}>
+						<select
+							id="customerLocations"
+							bind:value={currentCustomerLocationId}
+							class="select-control"
+						>
 							{#each currentEntity()?.customerLocations || [] as location (location.id)}
-								<option value={location.id}>{location.title}</option>
+								<option value={location.id}>{location.title}, {location.address}</option>
 							{/each}
 						</select>
-						<div class="customer-location-address">
-							{currentCustomerLocation()?.address}
-						</div>
 					</div>
 				</div>
 			</div>
 
-			<DatePicker title="Дата доставки (приготування):" />
+			<DatePicker
+				title="Дата доставки (приготування):"
+				availableDays={currentCustomerLocation()?.availableDays || [1, 2, 3, 4, 5]}
+			/>
 
 			<RadioOptions
 				title="Спосіб отримання:"
@@ -232,20 +232,13 @@
 			/>
 
 			{#if selectedDeliveryType === 'pickup'}
-				<div class="pickup-block">
-					<label for="pickupLocations">Точки видачі</label>
-					<select
-						id="pickupLocations"
-						class="pickup-locations"
-						bind:value={currentPickupLocationId}
-					>
+				<div class="select-block">
+					<label for="pickupLocations">Точки видачі:</label>
+					<select id="pickupLocations" class="select-control" bind:value={currentPickupLocationId}>
 						{#each pickupLocations as location (location.id)}
-							<option value={location.id}>{location.label}</option>
+							<option value={location.id}>{location.label}, {location.address}</option>
 						{/each}
 					</select>
-					<div class="pickup-address">
-						{currentPickupLocation()?.address}
-					</div>
 				</div>
 				<div class="pickup-info">
 					{currentPickupLocation()?.info}
@@ -405,18 +398,36 @@
 		font-weight: 500;
 		text-align: center;
 	}
-
-	.entity-block {
-		padding: 16px 0;
-		font-size: 1.1rem;
-		display: flex;
-		align-items: center;
+	.customer-info {
+		padding-bottom: 15px;
 	}
-
 	.entity-container {
 		display: flex;
+		flex-direction: column;
 	}
-	.entity-block select {
+
+	.select-block {
+		display: grid;
+		grid-template-columns: 112px 1fr;
+		gap: 8px;
+		align-items: center;
+		padding: 0px 15px 15px 0px;
+	}
+
+	.select-block label {
+		grid-column: 1 / 2;
+		margin-bottom: 0; /* Убираем margin-bottom, так как Grid управляет spacing */
+	}
+
+	.select-control {
+		grid-column: 2 / 2;
+		padding: 10px;
+		border: 1px solid #ccc;
+		border-radius: 6px;
+		font-size: 1rem;
+		cursor: pointer;
+		width: 100%;
+		background-color: var(--common-bg-light);
 		padding: 8px;
 		font-size: 1rem;
 		margin: 0px 12px;
@@ -426,27 +437,13 @@
 	.delivery-block {
 		display: flex;
 		justify-content: space-between;
-		padding: 38px 0px 37px 0px;
+		padding: 24px 0px 32px 0px;
 		font-size: 1.1rem;
-	}
-
-	.pickup-block {
-		padding: 16px 0;
-		font-size: 1.1rem;
-		display: flex;
-		align-items: center;
-		justify-content: flex-start;
-	}
-
-	.pickup-locations {
-		padding: 8px;
-		font-size: 1rem;
-		margin: 0px 12px;
-		min-width: 180px;
 	}
 
 	.pickup-info {
 		margin-bottom: 8px;
+		font-style: italic;
 	}
 
 	.delivery-description {

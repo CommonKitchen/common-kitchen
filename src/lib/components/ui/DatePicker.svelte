@@ -1,5 +1,5 @@
 <script>
-	const { title } = $props();
+	const { title, availableDays = [1, 2, 3, 4, 5] } = $props();
 
 	// Определение времени отсечения (например, 10:00 утра)
 	const CUTOFF_HOUR = 10;
@@ -62,8 +62,8 @@
 	}
 
 	.input-date {
-		margin: 0px 20px;
-		padding: 0.75rem 1rem;
+		margin: 0px 15px;
+		padding: 0.55rem 1rem;
 		border-radius: 0.5rem;
 		border: 1px solid var(--common-border);
 		font-size: 1.2rem;

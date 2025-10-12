@@ -22,24 +22,24 @@
 
 <style>
 	.radio-options {
-		border: 1px solid #ddd;
-		padding: 15px;
-		border-radius: 8px;
-		background-color: #fafafa;
+		/* border: 1px solid #ddd; */
+		padding: 15px 15px 15px 0px;
+		/* border-radius: 8px; */
+		/* background-color: #fafafa; */
 	}
 
 	.radio-options h3 {
 		margin-top: 0;
 		font-size: 1.2rem;
-		border-bottom: 1px solid #eee;
-		padding-bottom: 10px;
-		margin-bottom: 15px;
+		/* border-bottom: 1px solid #eee; */
+		/* padding-bottom: 10px; */
+		/* margin-bottom: 15px; */
 	}
 
 	.radio-group {
 		display: flex;
 		gap: 30px;
-		margin-bottom: 15px;
+		margin-bottom: 8px;
 	}
 
 	.radio-label {
