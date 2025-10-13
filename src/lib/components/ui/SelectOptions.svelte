@@ -29,14 +29,13 @@
 	}
 
 	.select-control {
-		padding: 10px;
 		border: 1px solid #ccc;
 		border-radius: 6px;
 		font-size: 1rem;
 		cursor: pointer;
 		width: 100%;
 		background-color: var(--common-bg-light);
-		padding: 8px;
+		padding: 12px;
 		font-size: 1rem;
 		min-width: 180px;
 		transition:

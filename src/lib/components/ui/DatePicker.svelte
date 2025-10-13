@@ -125,6 +125,7 @@
 	function toggleCalendar() {
 		isCalendarOpen = !isCalendarOpen;
 		if (isCalendarOpen) {
+			currentMonth = new Date(selectedDate.getFullYear(), selectedDate.getMonth(), 1);
 			setTimeout(() => {
 				document.getElementById('date-picker-popup')?.focus();
 			}, 0);
@@ -138,8 +139,7 @@
 	);
 
 	function goToPrevMonth() {
-		const dateValue = currentMonth;
-		currentMonth = new Date(dateValue.getFullYear(), dateValue.getMonth() - 1, 1);
+		currentMonth = new Date(currentMonth.getFullYear(), currentMonth.getMonth() - 1, 1);
 	}
 
 	function goToNextMonth() {

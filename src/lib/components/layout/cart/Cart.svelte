@@ -406,12 +406,12 @@
 	.delivery-block {
 		display: flex;
 		justify-content: space-between;
-		padding: 36px 0px 38px 0px;
+		padding: 44px 0px 46px 0px;
 		font-size: 1.1rem;
 	}
 
 	.pickup-info {
-		margin-bottom: 8px;
+		margin: 8px;
 		font-style: italic;
 		color: #555;
 	}
