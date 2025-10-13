@@ -13,6 +13,7 @@
 	import { goto } from '$app/navigation';
 	import DatePicker from '$lib/components/ui/DatePicker.svelte';
 	import RadioOptions from '$lib/components/ui/RadioOptions.svelte';
+	import SelectOptions from '$lib/components/ui/SelectOptions.svelte';
 
 	/** @typedef {import('$lib/types.js').Product} Product */
 	/** @typedef {import('$lib/types.js').CheckoutConfig} CheckoutConfig */
@@ -71,11 +72,16 @@
 		return entityList.find((entity) => entity.id === currentEntityId);
 	});
 
+	const currentCustomerLocations = $derived(() => {
+		return currentEntity()?.customerLocations || [];
+	});
+
 	const currentCustomerLocation = $derived(() => {
-		return currentEntity()?.customerLocations?.find((loc) => loc.id === currentCustomerLocationId);
+		return currentCustomerLocations().find((loc) => loc.id === currentCustomerLocationId);
 	});
 
 	$effect(() => {
+		// const entityId = currentEntityId;
 		const entity = currentEntity();
 		if (entity && entity.customerLocations.length > 0) {
 			const locationExists = entity.customerLocations.some(
@@ -196,26 +202,17 @@
 			<div class="customer-block">
 				<div class="customer-info">Ваші дані: {customer.name} {customer.phone}</div>
 				<div class="entity-container">
-					<div class="select-block">
-						<label for="legalEntities">Замовник:</label>
-						<select id="legalEntities" bind:value={currentEntityId} class="select-control">
-							{#each customer.legalEntities as entity}
-								<option value={entity.id}>{entity.title}</option>
-							{/each}
-						</select>
-					</div>
-					<div class="select-block">
-						<label for="customerLocations">Заклад:</label>
-						<select
-							id="customerLocations"
-							bind:value={currentCustomerLocationId}
-							class="select-control"
-						>
-							{#each currentEntity()?.customerLocations || [] as location (location.id)}
-								<option value={location.id}>{location.title}, {location.address}</option>
-							{/each}
-						</select>
-					</div>
+					<SelectOptions
+						title="Замовник:"
+						bind:value={currentEntityId}
+						items={customer.legalEntities}
+					/>
+
+					<SelectOptions
+						title="Заклад:"
+						bind:value={currentCustomerLocationId}
+						items={currentCustomerLocations()}
+					/>
 				</div>
 			</div>
 
@@ -232,14 +229,19 @@
 			/>
 
 			{#if selectedDeliveryType === 'pickup'}
-				<div class="select-block">
+				<SelectOptions
+					title="Точки видачі:"
+					bind:value={currentPickupLocationId}
+					items={pickupLocations}
+				/>
+				<!-- <div class="select-block">
 					<label for="pickupLocations">Точки видачі:</label>
 					<select id="pickupLocations" class="select-control" bind:value={currentPickupLocationId}>
 						{#each pickupLocations as location (location.id)}
 							<option value={location.id}>{location.label}, {location.address}</option>
 						{/each}
 					</select>
-				</div>
+				</div> -->
 				<div class="pickup-info">
 					{currentPickupLocation()?.info}
 				</div>
@@ -398,40 +400,13 @@
 		font-weight: 500;
 		text-align: center;
 	}
+
 	.customer-info {
 		padding-bottom: 15px;
 	}
 	.entity-container {
 		display: flex;
 		flex-direction: column;
-	}
-
-	.select-block {
-		display: grid;
-		grid-template-columns: 112px 1fr;
-		gap: 8px;
-		align-items: center;
-		padding: 0px 15px 15px 0px;
-	}
-
-	.select-block label {
-		grid-column: 1 / 2;
-		margin-bottom: 0; /* Убираем margin-bottom, так как Grid управляет spacing */
-	}
-
-	.select-control {
-		grid-column: 2 / 2;
-		padding: 10px;
-		border: 1px solid #ccc;
-		border-radius: 6px;
-		font-size: 1rem;
-		cursor: pointer;
-		width: 100%;
-		background-color: var(--common-bg-light);
-		padding: 8px;
-		font-size: 1rem;
-		margin: 0px 12px;
-		min-width: 180px;
 	}
 
 	.delivery-block {

@@ -14,7 +14,7 @@
 					value={option.id}
 					bind:group={selectedOption}
 				/>
-				{option.label}
+				{option.title}
 			</label>
 		{/each}
 	</div>
