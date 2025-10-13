@@ -46,6 +46,9 @@
 		paymentMethods
 	} = checkoutConfig;
 
+	/** @type {Date} */
+	let deliveryDate = $state(new Date());
+
 	/** @type {string} */
 	let selectedDeliveryType = $state(deliveryTypes[0].id);
 	let selectedPaymentMethod = $state(paymentMethods[0].id);
@@ -217,6 +220,7 @@
 			<DatePicker
 				title="Дата доставки (приготування):"
 				availableDays={currentCustomerLocation()?.availableDays || [1, 2, 3, 4, 5]}
+				bind:selectedDate={deliveryDate}
 			/>
 
 			<RadioOptions
@@ -402,7 +406,7 @@
 	.delivery-block {
 		display: flex;
 		justify-content: space-between;
-		padding: 24px 0px 32px 0px;
+		padding: 36px 0px 38px 0px;
 		font-size: 1.1rem;
 	}
 

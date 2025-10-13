@@ -1,4 +1,6 @@
 <script>
+	import { onMount } from 'svelte';
+
 	const DAYS_OF_WEEK = ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Нд'];
 	const MONTH_NAMES = [
 		'Січень',
@@ -17,76 +19,250 @@
 
 	const inputId = `date-input-${Math.random().toString(36).substring(2, 9)}`;
 
-	const { title, availableDays = [1, 2, 3, 4, 5], blockedDays = [] } = $props();
+	let {
+		title,
+		selectedDate = $bindable(),
+		availableDays = [1, 2, 3, 4, 5],
+		blockedDays = []
+	} = $props();
 
-	// Определение времени отсечения (например, 10:00 утра)
+	const NOW = new Date();
+	const today = startOfDay(NOW);
 	const CUTOFF_HOUR = 10;
+	let isCalendarOpen = $state(false);
 
-	/**
-	 * Вспомогательная функция для создания даты с обнуленным временем (начала дня).
-	 * @param {Date} date Исходная дата.
-	 * @returns {Date} Новая дата с временем 00:00:00.
-	 */
+	/** @param {Date} date
+	 * @returns {Date} */
 	function startOfDay(date) {
 		const newDate = new Date(date);
 		newDate.setHours(0, 0, 0, 0);
 		return newDate;
 	}
 
-	// 1. Получаем текущую дату и час (локальный часовой пояс)
-	const NOW = new Date();
-	const currentHour = NOW.getHours();
-
-	// 2. Определяем минимальную дату как неизменяемую константу.
-	const minimalDate = (() => {
-		let date = startOfDay(NOW);
-
-		if (currentHour >= CUTOFF_HOUR) {
-			// Если сейчас 10:00 или позже, минимальная дата — завтра.
-			date.setDate(date.getDate() + 1);
-		}
-		// Если сейчас до 10:00, дата остается сегодняшней (00:00:00).
-		return date;
-	})();
-
-	/** @type {string} Дата, выбранная пользователем. Хранится в формате YYYY-MM-DD. */
-	let selectedDate = $state(minimalDate.toISOString().split('T')[0]);
-
 	/**
-	 * Форматирует дату в YYYY-MM-DD для атрибута min в <input type="date">.
 	 * @param {Date} date
-	 * @returns {string}
-	 */
-	function formatDateForInput(date) {
-		return date.toISOString().split('T')[0];
+	 * @returns {string} */
+	function toDateString(date) {
+		return `${date.getFullYear()}-${(date.getMonth() + 1).toString().padStart(2, '0')}-${date.getDate().toString().padStart(2, '0')}`;
 	}
 
-	let isCalendarOpen = $state(false);
+	/**
+	 * Проверяет, является ли день доступным с учетом availableDays и blockedDays.
+	 * @param {Date} date
+	 * @returns {boolean} */
+	function isAvailableDate(date) {
+		// 1. Проверка доступных дней недели (1=Пн, 7=Нд)
+		const dayOfWeek = date.getDay() === 0 ? 7 : date.getDay();
+		if (!availableDays.includes(dayOfWeek)) {
+			return false;
+		}
+
+		// 2. Проверка заблокированных дней (YYYY-MM-DD format)
+		if (blockedDays.includes(toDateString(date))) {
+			return false;
+		}
+
+		return true;
+	}
 
 	/**
-	 * Форматирует дату в читаемый вид (например, "21 Жовтня, Пт").
+	 * Находит минимальную дату, которая находится после отсечки времени
+	 * И которая является доступной (isAvailableDate).
+	 * @returns {Date}
 	 */
-	const formattedDate = $derived(() => {
-		if (!selectedDate) return 'Обрати дату';
-		try {
-			// selectedDate is YYYY-MM-DD
-			const date = new Date(selectedDate + 'T00:00:00'); // Добавляем T00:00:00, чтобы избежать проблем с часовыми поясами
+	function findMinimalDate() {
+		let date = startOfDay(NOW);
+		let daysSearched = 0;
+		const MAX_SEARCH_DAYS = 365; // Ограничиваем поиск одним годом
 
-			// Формат: "21 жовтня, пт" (21 October, Fri)
-			return date.toLocaleDateString('uk-UA', {
-				day: 'numeric',
-				month: 'long',
-				weekday: 'short'
-			});
-		} catch (e) {
-			console.error('Error formatting date:', e);
-			return 'Некоректна дата';
+		// 1. Учет отсечки времени
+		if (NOW.getHours() >= CUTOFF_HOUR) {
+			date.setDate(date.getDate() + 1);
 		}
+
+		// 2. Поиск первого доступного дня
+		while (!isAvailableDate(date)) {
+			date.setDate(date.getDate() + 1);
+			daysSearched++;
+
+			if (daysSearched > MAX_SEARCH_DAYS) {
+				return startOfDay(date);
+			}
+		}
+
+		return date;
+	}
+
+	const minimalDate = $derived(findMinimalDate());
+
+	// При изменении minimalDate, обновляем selectedDate, если она раньше минимальной
+	$effect(() => {
+		if (selectedDate.getTime() < minimalDate.getTime()) {
+			selectedDate = new Date(minimalDate);
+		}
+	});
+
+	let currentMonth = $state(new Date());
+
+	$effect(() => {
+		currentMonth = new Date(minimalDate.getFullYear(), minimalDate.getMonth(), 1);
+	});
+
+	const isPrevMonthDisabled = $derived(() => {
+		return currentMonth.getTime() <= minimalDate.getTime();
+	});
+
+	const formattedDate = $derived(() => {
+		const date = new Date(selectedDate);
+		return date.toLocaleDateString('uk-UA', {
+			day: 'numeric',
+			month: 'long',
+			weekday: 'short',
+			year: 'numeric'
+		});
 	});
 
 	function toggleCalendar() {
 		isCalendarOpen = !isCalendarOpen;
+		if (isCalendarOpen) {
+			setTimeout(() => {
+				document.getElementById('date-picker-popup')?.focus();
+			}, 0);
+		} else {
+			document.getElementById(inputId)?.focus();
+		}
 	}
+
+	const formattedMonthYear = $derived(
+		() => `${MONTH_NAMES[currentMonth.getMonth()]} ${currentMonth.getFullYear()}`
+	);
+
+	function goToPrevMonth() {
+		const dateValue = currentMonth;
+		currentMonth = new Date(dateValue.getFullYear(), dateValue.getMonth() - 1, 1);
+	}
+
+	function goToNextMonth() {
+		currentMonth = new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1, 1);
+	}
+
+	/**
+	 * @param {Date} date
+	 * @returns {boolean} */
+	function isSelectable(date) {
+		if (date.getTime() < minimalDate.getTime()) {
+			return false;
+		}
+
+		return isAvailableDate(date);
+	}
+
+	const calendarDays = $derived(() => {
+		const year = currentMonth.getFullYear();
+		const month = currentMonth.getMonth();
+
+		const days = [];
+
+		const firstDayOfMonth = new Date(year, month, 1);
+		const firstDayOfWeek = firstDayOfMonth.getDay() === 0 ? 7 : firstDayOfMonth.getDay();
+		const daysToPrepend = firstDayOfWeek - 1;
+
+		for (let i = daysToPrepend; i > 0; i--) {
+			const date = new Date(year, month, 1 - i);
+			days.push({
+				date,
+				isCurrentMonth: false,
+				isSelectable: false,
+				isToday: false
+			});
+		}
+
+		const lastDay = new Date(year, month + 1, 0).getDate();
+		for (let day = 1; day <= lastDay; day++) {
+			const date = startOfDay(new Date(year, month, day));
+			days.push({
+				date,
+				isCurrentMonth: true,
+				isSelectable: isSelectable(date),
+				isToday: startOfDay(date).getTime() === today.getTime()
+			});
+		}
+
+		const totalDays = days.length;
+		const daysToAppend = totalDays % 7 === 0 ? 0 : 7 - (totalDays % 7);
+
+		for (let i = 1; i <= daysToAppend; i++) {
+			const date = new Date(year, month + 1, i);
+			days.push({
+				date,
+				isCurrentMonth: false,
+				isSelectable: false,
+				isToday: false
+			});
+		}
+
+		return days;
+	});
+
+	/**
+	 * @param {Date} date */
+	function handleDayClick(date) {
+		if (isSelectable(date)) {
+			selectedDate = date;
+			isCalendarOpen = false;
+		}
+	}
+
+	/**
+	 * @param {Date} date
+	 * @returns {boolean} */
+	function isSelected(date) {
+		return selectedDate.getTime() === date.getTime();
+	}
+
+	/**
+	 * Обработка нажатия клавиши Escape для закрытия календаря и возврата фокуса.
+	 * @param {KeyboardEvent} e
+	 */
+	function handleEscape(e) {
+		if (isCalendarOpen && e.key === 'Escape') {
+			isCalendarOpen = false;
+			e.stopPropagation();
+			e.preventDefault();
+			document.getElementById(inputId)?.focus();
+		}
+	}
+
+	/**
+	 * Обработка клика вне календаря для его закрытия.
+	 * @param {MouseEvent} event
+	 */
+	function handleOutsideClick(event) {
+		const calendarBlock = document.querySelector('.calendar-block');
+		// Проверяем, что календарь открыт и клик произошел вне всего блока календаря
+		const targetNode = event.target;
+		if (
+			isCalendarOpen &&
+			calendarBlock &&
+			targetNode instanceof Node &&
+			!calendarBlock.contains(targetNode)
+		) {
+			isCalendarOpen = false;
+			document.getElementById(inputId)?.focus(); // Возвращаем фокус на кнопку
+		}
+	}
+
+	onMount(() => {
+		// Устанавливаем глобальные слушатели для клика вне и нажатия Escape
+		document.addEventListener('click', handleOutsideClick);
+		document.addEventListener('keydown', handleEscape);
+
+		return () => {
+			// Очищаем слушатели при уничтожении компонента
+			document.removeEventListener('click', handleOutsideClick);
+			document.removeEventListener('keydown', handleEscape);
+		};
+	});
 </script>
 
 <div class="calendar-block">
@@ -122,8 +298,78 @@
 	</button>
 
 	{#if isCalendarOpen}
-		<div id="date-picker-popup" class="calendar-popup">
-			<div class="placeholder">Панель календаря (Шаг 2)</div>
+		<div
+			id="date-picker-popup"
+			class="calendar-popup"
+			role="dialog"
+			aria-modal="true"
+			aria-labelledby="date-picker-title"
+			tabindex="-1"
+		>
+			<div class="calendar-header">
+				<button
+					type="button"
+					class="nav-button"
+					aria-label="Попередній місяць"
+					onclick={goToPrevMonth}
+					disabled={isPrevMonthDisabled()}
+				>
+					<svg
+						xmlns="http://www.w3.org/2000/svg"
+						width="20"
+						height="20"
+						viewBox="0 0 24 24"
+						fill="none"
+						stroke="currentColor"
+						stroke-width="2"
+						stroke-linecap="round"
+						stroke-linejoin="round"><polyline points="15 18 9 12 15 6" /></svg
+					>
+				</button>
+				<span class="month-year">{formattedMonthYear()}</span>
+				<button
+					type="button"
+					class="nav-button"
+					aria-label="Наступний місяць"
+					onclick={goToNextMonth}
+				>
+					<svg
+						xmlns="http://www.w3.org/2000/svg"
+						width="20"
+						height="20"
+						viewBox="0 0 24 24"
+						fill="none"
+						stroke="currentColor"
+						stroke-width="2"
+						stroke-linecap="round"
+						stroke-linejoin="round"><polyline points="9 18 15 12 9 6" /></svg
+					>
+				</button>
+			</div>
+
+			<div class="day-of-week-header">
+				{#each DAYS_OF_WEEK as day}
+					<span class="day-label">{day}</span>
+				{/each}
+			</div>
+
+			<div class="calendar-grid">
+				{#each calendarDays() as day (day.date.toISOString())}
+					<button
+						type="button"
+						class:day-cell={true}
+						class:current-month={day.isCurrentMonth}
+						class:selectable={day.isSelectable}
+						class:selected={isSelected(day.date)}
+						class:today={day.isToday}
+						disabled={!day.isSelectable}
+						tabindex={day.isSelectable ? 0 : -1}
+						onclick={() => handleDayClick(day.date)}
+					>
+						{day.date.getDate()}
+					</button>
+				{/each}
+			</div>
 		</div>
 	{/if}
 </div>
@@ -137,6 +383,7 @@
 	.calendar-block label {
 		font-weight: bold;
 		font-size: 1.1rem;
+		color: var(--text-color, #2c3e50);
 	}
 
 	.description-date {
@@ -150,11 +397,10 @@
 		align-items: center;
 		width: 100%;
 		max-width: 250px; /* Ограничиваем ширину для лучшего вида */
-
-		padding: 4px 8px;
-		border-radius: 8px;
+		padding: 8px 12px; /* Увеличил padding */
+		border-radius: 12px; /* Более округлые углы */
 		border: 1px solid var(--common-border, #ccc);
-		font-size: 1.1rem;
+		font-size: 1rem;
 		background-color: var(--common-bg-light, #f9f9f9);
 		cursor: pointer;
 		transition:
@@ -163,7 +409,7 @@
 	}
 
 	.calendar-icon {
-		color: var(--icons-color);
+		color: var(--icons-color, #e24511); /* Добавил цвет */
 	}
 
 	.custom-date-control:hover {
@@ -181,7 +427,7 @@
 		flex-grow: 1;
 		text-align: left;
 		font-weight: 500;
-		color: #333;
+		color: var(--text-color, #333); /* Добавил цвет */
 	}
 
 	.calendar-icon {
@@ -194,15 +440,120 @@
 		left: 0;
 		z-index: 10;
 		background: white;
-		border: 1px solid #ccc;
-		border-radius: 8px;
-		box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-		padding: 10px;
-		margin-top: 5px; /* Небольшой отступ */
+		border: 1px solid #ddd; /* Более светлая граница */
+		border-radius: 12px; /* Более округлые углы */
+		box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15); /* Более мягкая тень */
+		padding: 15px; /* Увеличил padding */
+		margin-top: 8px; /* Небольшой отступ */
+		width: 300px; /* Фиксированная ширина для календаря */
 	}
 
-	.placeholder {
-		padding: 20px;
+	.calendar-header {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		margin-bottom: 10px;
+	}
+
+	.month-year {
+		font-weight: bold;
+		font-size: 1.1rem;
+		color: var(--main-color, #e24511);
+	}
+
+	.nav-button {
+		background: none;
+		border: none;
+		cursor: pointer;
+		padding: 5px;
+		display: flex;
+		align-items: center;
+		border-radius: 50%;
+		transition: background-color 0.2s;
+	}
+
+	.nav-button:hover:not([disabled]) {
+		background-color: #eee;
+	}
+
+	.nav-button:disabled {
+		opacity: 0.3;
+		cursor: not-allowed;
+	}
+
+	.nav-button svg {
+		stroke: var(--text-color-dark, #333);
+	}
+
+	.day-of-week-header {
+		display: grid;
+		grid-template-columns: repeat(7, 1fr);
+		text-align: center;
+		font-size: 0.8rem;
+		font-weight: 600;
 		color: #999;
+		margin-bottom: 5px;
+	}
+
+	.day-label {
+		padding: 5px 0;
+	}
+
+	.calendar-grid {
+		display: grid;
+		grid-template-columns: repeat(7, 1fr);
+		gap: 2px;
+	}
+
+	.day-cell {
+		/* Сброс стилей кнопки */
+		all: unset;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		width: 38px;
+		height: 38px;
+		font-size: 0.95rem;
+		border-radius: 50%;
+		background-color: transparent;
+		color: #333;
+		cursor: default;
+		transition: background-color 0.2s;
+		box-sizing: border-box;
+	}
+
+	/* Дни не текущего месяца */
+	.day-cell:not(.current-month) {
+		color: #aaa;
+	}
+
+	/* Доступные и выбираемые дни */
+	.day-cell.current-month.selectable {
+		cursor: pointer;
+	}
+
+	.day-cell.current-month.selectable:hover {
+		background-color: #f0f0f0;
+	}
+
+	/* Выбранный день */
+	.day-cell.selected {
+		background-color: var(--main-color, #e24511);
+		color: white;
+		font-weight: bold;
+	}
+	.day-cell.selected:hover {
+		background-color: var(--main-color, #e24511);
+	}
+
+	/* Сегодняшний день (если не выбран) */
+	.day-cell.today:not(.selected) {
+		border: 2px solid var(--secondary-color, #f98457);
+	}
+
+	/* Недоступные дни */
+	.day-cell:not(.selectable) {
+		opacity: 0.5;
+		cursor: not-allowed;
 	}
 </style>
