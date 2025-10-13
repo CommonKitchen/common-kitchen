@@ -22,23 +22,19 @@
 
 <style>
 	.radio-options {
-		/* border: 1px solid #ddd; */
-		padding: 15px 15px 15px 0px;
-		/* border-radius: 8px; */
-		/* background-color: #fafafa; */
+		margin-top: 20px;
+		padding: 0px;
 	}
 
 	.radio-options h3 {
-		margin-top: 0;
+		margin: 0px;
 		font-size: 1.2rem;
-		/* border-bottom: 1px solid #eee; */
-		/* padding-bottom: 10px; */
-		/* margin-bottom: 15px; */
 	}
 
 	.radio-group {
 		display: flex;
-		gap: 30px;
+		flex-wrap: wrap;
+		gap: 15px;
 		margin-bottom: 8px;
 	}
 
@@ -47,13 +43,27 @@
 		cursor: pointer;
 		display: flex;
 		align-items: center;
-		gap: 5px;
+		gap: 8px;
 		position: relative;
+		padding: 4px 15px;
+		/* border: 1px solid var(--common-border, #ddd); */
+		border-radius: 8px;
+		background-color: white;
+		transition:
+			background-color 0.2s,
+			border-color 0.2s,
+			box-shadow 0.2s;
 	}
 
 	.radio-label input {
 		accent-color: var(--main-color);
 		width: 1.5rem;
 		height: 1.5rem;
+	}
+
+	.radio-label:hover {
+		background-color: var(--common-bg-light);
+		border-color: var(--main-color, #e24511);
+		box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
 	}
 </style>

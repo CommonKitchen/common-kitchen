@@ -17,20 +17,18 @@
 
 <style>
 	.select-block {
-		display: grid;
-		grid-template-columns: 112px 1fr;
+		display: flex;
+		flex-direction: column;
+		align-items: flex-start;
 		gap: 8px;
-		align-items: center;
-		padding: 0px 15px 15px 0px;
+		margin-top: 20px;
 	}
-
 	.select-block label {
-		grid-column: 1 / 2;
-		margin-bottom: 0; /* Убираем margin-bottom, так как Grid управляет spacing */
+		font-weight: bold;
+		font-size: 1.1rem;
 	}
 
 	.select-control {
-		grid-column: 2 / 2;
 		padding: 10px;
 		border: 1px solid #ccc;
 		border-radius: 6px;
@@ -40,14 +38,14 @@
 		background-color: var(--common-bg-light);
 		padding: 8px;
 		font-size: 1rem;
-		margin: 0px 12px;
 		min-width: 180px;
 		transition:
-			background-color 0.2s ease,
-			color 0.2s ease;
+			border-color 0.2s,
+			box-shadow 0.2s;
 	}
 
 	.select-control:hover {
-		border: 1px solid #7d7d7d;
+		border-color: var(--main-color, #e24511);
+		box-shadow: 0 0 0 2px rgba(226, 69, 17, 0.1);
 	}
 </style>

@@ -81,15 +81,12 @@
 	});
 
 	$effect(() => {
-		// const entityId = currentEntityId;
-		const entity = currentEntity();
-		if (entity && entity.customerLocations.length > 0) {
-			const locationExists = entity.customerLocations.some(
-				(loc) => loc.id === currentCustomerLocationId
-			);
+		const locations = currentEntity()?.customerLocations;
 
-			if (!locationExists) {
-				currentCustomerLocationId = entity.customerLocations[0].id;
+		if (locations && locations.length > 0) {
+			const isCurrentLocationValid = locations.some((loc) => loc.id === currentCustomerLocationId);
+			if (!isCurrentLocationValid) {
+				currentCustomerLocationId = locations[0].id;
 			}
 		} else {
 			currentCustomerLocationId = null;
@@ -101,12 +98,13 @@
 			return 0;
 		}
 
-		/** @type {DeliveryType[]} */
-		const deliveryList = deliveryTypes;
-		const selectedOption = deliveryList.find((item) => item.id === selectedDeliveryType);
+		const selectedOption = checkoutConfig.deliveryTypes.find(
+			(/** @type {DeliveryType} */ item) => item.id === selectedDeliveryType
+		);
 
 		return selectedOption ? selectedOption.amount : 0;
 	});
+
 	const isMinOrderReached = $derived($cartAmount >= minAmount);
 	const amountToReachMin = $derived(isMinOrderReached ? 0 : minAmount - $cartAmount);
 
@@ -234,14 +232,6 @@
 					bind:value={currentPickupLocationId}
 					items={pickupLocations}
 				/>
-				<!-- <div class="select-block">
-					<label for="pickupLocations">Точки видачі:</label>
-					<select id="pickupLocations" class="select-control" bind:value={currentPickupLocationId}>
-						{#each pickupLocations as location (location.id)}
-							<option value={location.id}>{location.label}, {location.address}</option>
-						{/each}
-					</select>
-				</div> -->
 				<div class="pickup-info">
 					{currentPickupLocation()?.info}
 				</div>
@@ -419,14 +409,12 @@
 	.pickup-info {
 		margin-bottom: 8px;
 		font-style: italic;
+		color: #555;
 	}
 
 	.delivery-description {
 		color: #333; /* Загальний колір тексту */
 		font-weight: 500; /* Трохи більша вага для помітності */
-		transition:
-			visibility 0s,
-			opacity 0.3s linear; /* Додаємо перехід для видимості */
 	}
 
 	.text-amount {
@@ -449,6 +437,7 @@
 	.block-total {
 		display: flex;
 		justify-content: space-between;
+		border-top: 1px solid #eee;
 		font-size: 1.4rem;
 		font-weight: 600;
 	}
@@ -469,6 +458,15 @@
 		justify-content: flex-end;
 		gap: 15px;
 		margin-top: 20px;
+	}
+
+	.clear-btn,
+	.checkout-btn {
+		padding: 10px 20px;
+		border-radius: 4px;
+		cursor: pointer;
+		font-weight: 600;
+		transition: opacity 0.2s;
 	}
 
 	.clear-btn {
@@ -509,15 +507,6 @@
 	.checkout-btn:active {
 		box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 		background-color: var(--main-active-color, #a8330c);
-	}
-
-	.clear-btn,
-	.checkout-btn {
-		padding: 10px 20px;
-		border-radius: 4px;
-		cursor: pointer;
-		font-weight: 600;
-		transition: opacity 0.2s;
 	}
 
 	.clear-btn:hover {
