@@ -39,13 +39,6 @@
 
 		updateCart(id, price, newQuantity);
 	}
-
-	/**
-	 * @param {MouseEvent} event
-	 */
-	function handleRemove(event) {
-		removeItem(id);
-	}
 </script>
 
 <div class="controls-wrapper">

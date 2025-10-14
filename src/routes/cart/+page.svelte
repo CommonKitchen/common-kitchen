@@ -5,10 +5,11 @@
 	const products = $derived(data?.shopData?.products ?? []);
 	const checkoutConfig = $derived(data?.shopData?.checkoutConfig ?? {});
 	const customer = $derived(data?.shopData?.customer ?? {});
+	const apiURL = $derived(data?.shopData?.apiURL ?? '');
 </script>
 
 <div class="cart-container">
-	<Cart {products} {checkoutConfig} {customer} />
+	<Cart {products} {checkoutConfig} {customer} {apiURL} />
 </div>
 
 <style>

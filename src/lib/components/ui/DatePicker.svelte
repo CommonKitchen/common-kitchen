@@ -18,18 +18,21 @@
 	];
 
 	const inputId = `date-input-${Math.random().toString(36).substring(2, 9)}`;
+	/** @type {HTMLDivElement | undefined} */
+	let calendarBlockRef;
 
 	let {
 		title,
 		selectedDate = $bindable(),
 		availableDays = [1, 2, 3, 4, 5],
-		blockedDays = []
+		blockedDays = [],
+		cutOffHour = 0
 	} = $props();
 
 	const NOW = new Date();
 	const today = startOfDay(NOW);
-	const CUTOFF_HOUR = 10;
 	let isCalendarOpen = $state(false);
+	let availableDaysKey = $state(availableDays.join(','));
 
 	/** @param {Date} date
 	 * @returns {Date} */
@@ -76,7 +79,7 @@
 		const MAX_SEARCH_DAYS = 365; // Ограничиваем поиск одним годом
 
 		// 1. Учет отсечки времени
-		if (NOW.getHours() >= CUTOFF_HOUR) {
+		if (NOW.getHours() >= cutOffHour) {
 			date.setDate(date.getDate() + 1);
 		}
 
@@ -98,6 +101,15 @@
 	// При изменении minimalDate, обновляем selectedDate, если она раньше минимальной
 	$effect(() => {
 		if (selectedDate.getTime() < minimalDate.getTime()) {
+			selectedDate = new Date(minimalDate);
+		}
+	});
+
+	$effect(() => {
+		const currentAvailableDaysKey = availableDays.join(',');
+
+		if (currentAvailableDaysKey !== availableDaysKey) {
+			availableDaysKey = currentAvailableDaysKey;
 			selectedDate = new Date(minimalDate);
 		}
 	});
@@ -238,17 +250,15 @@
 	 * @param {MouseEvent} event
 	 */
 	function handleOutsideClick(event) {
-		const calendarBlock = document.querySelector('.calendar-block');
-		// Проверяем, что календарь открыт и клик произошел вне всего блока календаря
 		const targetNode = event.target;
 		if (
 			isCalendarOpen &&
-			calendarBlock &&
+			calendarBlockRef && // Використовуємо локальне посилання
 			targetNode instanceof Node &&
-			!calendarBlock.contains(targetNode)
+			!calendarBlockRef.contains(targetNode) // Перевіряємо, чи клік був поза елементом
 		) {
 			isCalendarOpen = false;
-			document.getElementById(inputId)?.focus(); // Возвращаем фокус на кнопку
+			document.getElementById(inputId)?.focus();
 		}
 	}
 
@@ -265,7 +275,7 @@
 	});
 </script>
 
-<div class="calendar-block">
+<div class="calendar-block" bind:this={calendarBlockRef}>
 	<label for={inputId} class="description-date">{title}</label>
 
 	<button

@@ -2,7 +2,7 @@ import { API_SERVER_URL } from '$env/static/private';
 
 import { error } from '@sveltejs/kit';
 
-const API_URL = `https://${API_SERVER_URL}/cakes/hs/initdata`;
+const API_URL = `https://${API_SERVER_URL}`;
 
 /** @typedef {import('$lib/types.js').Product} Product */
 /* @type {Product[]} */
@@ -15,6 +15,7 @@ const API_URL = `https://${API_SERVER_URL}/cakes/hs/initdata`;
  * @property {Category[]} categories - Массив категорий.
  * @property {object} checkoutConfig - Объект конфигурации заказа.
  * @property {object} customer - Объект конфигурации заказа.
+ * @property {string} apiURL - Объект конфигурации заказа.
  */
 
 /**
@@ -57,7 +58,8 @@ const API_URL = `https://${API_SERVER_URL}/cakes/hs/initdata`;
 		products: data.products,
 		categories: data.categories,
 		checkoutConfig: data.checkoutConfig,
-		customer: data.customer
+		customer: data.customer,
+		apiURL: API_URL
 	};
 }
 
@@ -72,7 +74,7 @@ export async function load({ fetch }) {
 	};
 
 	try {
-		response = await fetch(API_URL, requestOptions);
+		response = await fetch(`${API_URL}/cakes/hs/shop/data`, requestOptions);
 	} catch (e) {
 		console.error('Network or critical fetch error:', e);
 		throw error(503, {

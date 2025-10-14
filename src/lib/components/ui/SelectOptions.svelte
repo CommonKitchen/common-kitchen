@@ -29,7 +29,8 @@
 	}
 
 	.select-control {
-		border: 1px solid #ccc;
+		font-family: 'Roboto', sans-serif;
+		border: 1px solid var(--common-border-dark);
 		border-radius: 6px;
 		font-size: 1rem;
 		cursor: pointer;

@@ -3,11 +3,12 @@
 		class: className = 'default',
 		title = 'Перейти до продукції',
 		stretch = false,
-		onclick
+		onclick,
+		...restProps
 	} = $props();
 </script>
 
-<button class={`${className} ${stretch ? 'stretch' : ''}`} {onclick}>{title}</button>
+<button class={`${className} ${stretch ? 'stretch' : ''}`} {onclick} {...restProps}>{title}</button>
 
 <style>
 	.default {

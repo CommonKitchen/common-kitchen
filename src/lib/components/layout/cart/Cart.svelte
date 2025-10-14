@@ -30,7 +30,9 @@
 		/** @type {CheckoutConfig} */
 		checkoutConfig,
 		/** @type {Customer} */
-		customer
+		customer,
+		/** @type {string} */
+		apiURL
 	} = $props();
 
 	const {
@@ -50,10 +52,15 @@
 	let deliveryDate = $state(new Date());
 
 	/** @type {string} */
+	let comment = $state('');
+	let checkoutError = $state('');
 	let selectedDeliveryType = $state(deliveryTypes[0].id);
 	let selectedPaymentMethod = $state(paymentMethods[0].id);
-
 	let currentPickupLocationId = $state(pickupLocations[0].id);
+
+	/** @type {boolean} */
+	let isLoading = $state(false);
+
 	const currentPickupLocation = $derived(() => {
 		/** @type {PickupLocation[]} */
 		const locationList = pickupLocations;
@@ -146,6 +153,112 @@
 	function remove(id) {
 		removeItem(id);
 	}
+
+	/**
+	 * @returns {boolean} True, если все проверки пройдены; False в противном случае.
+	 */
+	function validateCheckout() {
+		checkoutError = '';
+
+		if (!isMinOrderReached) {
+			checkoutError = 'Не досягнуто мінімальної суми замовлення.';
+			return false;
+		}
+
+		if ($cart.length === 0) {
+			checkoutError = 'Кошик порожній.';
+			return false;
+		}
+
+		if (!currentEntityId || !currentCustomerLocationId) {
+			checkoutError = 'Будь ласка, оберіть замовника та заклад.';
+			return false;
+		}
+
+		if (selectedDeliveryType === 'pickup' && !currentPickupLocationId) {
+			checkoutError = 'Будь ласка, оберіть точку видачі.';
+			return false;
+		}
+
+		return true;
+	}
+
+	/**
+	 * @param {SubmitEvent} event
+	 */
+	async function handleCheckout(event) {
+		event.preventDefault();
+
+		if (!validateCheckout()) {
+			return;
+		}
+
+		isLoading = true;
+
+		const orderData = {
+			customer: {
+				entityId: currentEntityId,
+				locationId: currentCustomerLocationId
+			},
+			products: $cart.map((item) => ({
+				id: item.id,
+				quantity: item.quantity,
+				price: item.price
+			})),
+			delivery: {
+				type: selectedDeliveryType,
+				date: deliveryDate.toLocaleDateString('en-CA', {
+					year: 'numeric',
+					month: '2-digit',
+					day: '2-digit'
+				}),
+				amount: deliveryAmount(),
+				pickupLocationId: selectedDeliveryType === 'pickup' ? currentPickupLocationId : null
+			},
+			paymentMethod: selectedPaymentMethod,
+			subtotal: $cartAmount,
+			totalAmount: finalTotal,
+			comment: comment.trim()
+		};
+
+		// console.log(orderData);
+
+		try {
+			const response = await fetch(`${apiURL}/cakes/hs/shop/orders`, {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json',
+					Accept: 'application/json'
+				},
+				body: JSON.stringify(orderData)
+			});
+
+			if (!response.ok) {
+				let errorMessage = `Помилка сервера: ${response.status}`;
+				console.log(response);
+				try {
+					const errorBody = await response.json();
+					errorMessage = errorBody.message || errorMessage;
+				} catch (e) {
+					errorMessage = errorMessage;
+					// errorMessage = (await response.text()) || errorMessage;
+				}
+
+				console.log(`errorMessage ${errorMessage}`);
+				throw new Error(errorMessage);
+			}
+
+			// const data = await response.json();
+			// Успішне оформлення
+			// clearCart(); // Очищаємо кошик
+			// goto('/order-success'); // Перенаправляємо на сторінку успіху
+		} catch (error) {
+			checkoutError = 'Не вдалося оформити замовлення. Спробуйте пізніше.';
+			console.error(error);
+		} finally {
+			isLoading = false;
+		}
+	}
 </script>
 
 <div class="cart-container">
@@ -158,120 +271,147 @@
 			</div>
 		</div>
 	{:else}
-		<div>
-			<Button title="Назад до продукції" onclick={() => goto('/categories')} />
-			<h2>Ваш кошик</h2>
-		</div>
-		<div class="cart-items">
-			{#each cartItems as item (item.id)}
-				<div class="cart-item">
-					<a href={`/products/${item.id}`} class="item-image-link">
-						<div class="item-image-wrap">
-							<img src={item.imageUrl} alt={item.title} class="item-image" />
+		<form onsubmit={handleCheckout}>
+			<div class="t">
+				<Button title="Назад до продукції" onclick={() => goto('/categories')} type="button" />
+				<h2>Ваш кошик</h2>
+			</div>
+			<div class="cart-items">
+				{#each cartItems as item (item.id)}
+					<div class="cart-item">
+						<a href={`/products/${item.id}`} class="item-image-link">
+							<div class="item-image-wrap">
+								<img src={item.imageUrl} alt={item.title} class="item-image" />
+							</div>
+						</a>
+
+						<div class="item-details">
+							<div class="item-title">{item.title}</div>
+							<div class="item-price">Мінімальне замовлення {item.minOrder}</div>
+							<div class="item-price">{item.price} ₴</div>
 						</div>
-					</a>
 
-					<div class="item-details">
-						<div class="item-title">{item.title}</div>
-						<div class="item-price">Мінімальне замовлення {item.minOrder}</div>
-						<div class="item-price">{item.price} ₴</div>
-					</div>
-
-					<div class="item-controls">
-						<div class="limiter">
-							<QuantitySelector
-								quantity={item.quantity}
-								minOrder={item.minOrder}
-								changeQuantity={(/** @type {number} */ change) => changeQuantity(item.id, change)}
-								block={true}
-							/>
+						<div class="item-controls">
+							<div class="limiter">
+								<QuantitySelector
+									quantity={item.quantity}
+									minOrder={item.minOrder}
+									changeQuantity={(/** @type {number} */ change) => changeQuantity(item.id, change)}
+									block={true}
+								/>
+							</div>
+							<div class="item-total">{item.price * item.quantity} <span>₴</span></div>
+							<ButtonRemove onclick={() => remove(item.id)} />
 						</div>
-						<div class="item-total">{item.price * item.quantity} <span>₴</span></div>
-						<ButtonRemove onclick={() => remove(item.id)} />
 					</div>
-				</div>
-			{/each}
-		</div>
-
-		<div class="cart-summary">
-			{#if !isMinOrderReached}
-				<div class="min-order-warning">
-					⚠️ Мінімальна сума замовлення — {minAmount} ₴. Додайте ще {amountToReachMin} ₴ для оформлення.
-				</div>
-			{/if}
-
-			<div class="customer-block">
-				<div class="customer-info">Ваші дані: {customer.name} {customer.phone}</div>
-				<div class="entity-container">
-					<SelectOptions
-						title="Замовник:"
-						bind:value={currentEntityId}
-						items={customer.legalEntities}
-					/>
-
-					<SelectOptions
-						title="Заклад:"
-						bind:value={currentCustomerLocationId}
-						items={currentCustomerLocations()}
-					/>
-				</div>
+				{/each}
 			</div>
 
-			<DatePicker
-				title="Дата доставки (приготування):"
-				availableDays={currentCustomerLocation()?.availableDays || [1, 2, 3, 4, 5]}
-				bind:selectedDate={deliveryDate}
-			/>
+			<div class="cart-summary">
+				{#if !isMinOrderReached}
+					<div class="min-order-warning">
+						⚠️ Мінімальна сума замовлення — {minAmount} ₴. Додайте ще {amountToReachMin} ₴ для оформлення.
+					</div>
+				{/if}
 
-			<RadioOptions
-				title="Спосіб отримання:"
-				options={deliveryTypes}
-				bind:selectedOption={selectedDeliveryType}
-				groupName="deliveryType"
-			/>
+				<div class="customer-block">
+					<div class="customer-info">Ваші дані: {customer.name} {customer.phone}</div>
+					<div class="entity-container">
+						<SelectOptions
+							title="Замовник:"
+							bind:value={currentEntityId}
+							items={customer.legalEntities}
+						/>
 
-			{#if selectedDeliveryType === 'pickup'}
-				<SelectOptions
-					title="Точки видачі:"
-					bind:value={currentPickupLocationId}
-					items={pickupLocations}
-				/>
-				<div class="pickup-info">
-					{currentPickupLocation()?.info}
+						<SelectOptions
+							title="Заклад:"
+							bind:value={currentCustomerLocationId}
+							items={currentCustomerLocations()}
+						/>
+					</div>
 				</div>
-			{:else}
-				<div class="delivery-block">
-					<span class="delivery-description">Сума замовлення для безкоштовной доставки:</span>
+
+				<DatePicker
+					title="Дата доставки (приготування):"
+					availableDays={currentCustomerLocation()?.availableDays || [1, 2, 3, 4, 5]}
+					bind:selectedDate={deliveryDate}
+				/>
+
+				<RadioOptions
+					title="Спосіб отримання:"
+					options={deliveryTypes}
+					bind:selectedOption={selectedDeliveryType}
+					groupName="deliveryType"
+				/>
+
+				{#if selectedDeliveryType === 'pickup'}
+					<SelectOptions
+						title="Точки видачі:"
+						bind:value={currentPickupLocationId}
+						items={pickupLocations}
+					/>
+					<div class="pickup-info">
+						{currentPickupLocation()?.info}
+					</div>
+				{:else}
+					<div class="delivery-block">
+						<span class="delivery-description">Сума замовлення для безкоштовной доставки:</span>
+						<span class="text-amount">
+							{freeShippingAmount} <span>₴</span>
+						</span>
+					</div>
+				{/if}
+
+				<RadioOptions
+					title="Спосіб оплати:"
+					options={paymentMethods}
+					bind:selectedOption={selectedPaymentMethod}
+					groupName="paymentMetod"
+				/>
+
+				<div class="comment-block">
+					<textarea
+						name="comment"
+						id="comment"
+						class="comment"
+						bind:value={comment}
+						placeholder="Коментар до замовлення"
+						rows="4"
+					></textarea>
+				</div>
+
+				<div class="delivery-block-amount">
+					<span class="delivery-description">Вартість доставки:</span>
 					<span class="text-amount">
-						{freeShippingAmount} <span>₴</span>
+						{deliveryAmount()} <span>₴</span>
 					</span>
 				</div>
-			{/if}
 
-			<RadioOptions
-				title="Спосіб оплати:"
-				options={paymentMethods}
-				selectedOption={selectedPaymentMethod}
-				groupName="paymentMetod"
-			/>
+				<div class="block-total">
+					<span>Разом до оплати:</span>
+					<span class="total-amount">{finalTotal} <span>₴</span></span>
+				</div>
 
-			<div class="delivery-block-amount">
-				<span class="delivery-description">Вартість доставки:</span>
-				<span class="text-amount">
-					{deliveryAmount()} <span>₴</span>
-				</span>
+				{#if checkoutError}
+					<div class="checkout-error-message">
+						⚠️ {checkoutError}
+					</div>
+				{/if}
+
+				<div class="summary-actions">
+					<button onclick={clearCart} class="buttons clear-btn" type="button">Очистити кошик</button
+					>
+					<button class="buttons checkout-btn" disabled={!isMinOrderReached || isLoading}>
+						{#if isLoading}
+							<div class="spinner"></div>
+							Оформлення...
+						{:else}
+							Оформити замовлення
+						{/if}
+					</button>
+				</div>
 			</div>
-
-			<div class="block-total">
-				<span>Разом до оплати:</span>
-				<span class="total-amount">{finalTotal} <span>₴</span></span>
-			</div>
-
-			<div class="summary-actions">
-				<button onclick={clearCart} class="clear-btn">Очистити кошик</button>
-				<button class="checkout-btn" disabled={!isMinOrderReached}> Оформити замовлення </button>
-			</div>
-		</div>
+		</form>
 	{/if}
 </div>
 
@@ -398,6 +538,7 @@
 	.customer-info {
 		padding-bottom: 15px;
 	}
+
 	.entity-container {
 		display: flex;
 		flex-direction: column;
@@ -464,10 +605,43 @@
 		margin-top: 20px;
 	}
 
-	.clear-btn,
-	.checkout-btn {
-		padding: 10px 20px;
+	.checkout-error-message {
+		background-color: #f8d7da; /* Світло-червоний фон */
+		color: #721c24; /* Темно-червоний текст */
+		border: 1px solid #f5c6cb;
+		padding: 15px;
 		border-radius: 4px;
+		margin-bottom: 20px;
+		font-weight: 500;
+		text-align: center;
+		box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+	}
+
+	.spinner {
+		border: 3px solid rgba(255, 255, 255, 0.3);
+		border-top: 3px solid #ffffff; /* Колір спінера */
+		border-radius: 50%;
+		width: 18px;
+		height: 18px;
+		animation: spin 1s linear infinite;
+		display: inline-block;
+		vertical-align: middle;
+		margin-right: 8px; /* Відступ від тексту */
+	}
+
+	@keyframes spin {
+		0% {
+			transform: rotate(0deg);
+		}
+		100% {
+			transform: rotate(360deg);
+		}
+	}
+
+	.buttons {
+		font-size: 1.2rem;
+		padding: 10px 24px 12px 24px;
+		border-radius: 10px;
 		cursor: pointer;
 		font-weight: 600;
 		transition: opacity 0.2s;
@@ -480,6 +654,9 @@
 	}
 
 	.checkout-btn {
+		display: flex;
+		align-items: center;
+		justify-content: center;
 		background: var(--main-color, #e24511);
 		color: white;
 		border: none;
@@ -516,5 +693,30 @@
 	.clear-btn:hover {
 		box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 		background: #ededed;
+	}
+
+	.comment-block {
+		margin: 16px 0px;
+		display: flex;
+		flex-direction: column;
+		align-items: flex-start;
+		padding-right: 16px;
+	}
+
+	.comment {
+		padding: 4px 8px;
+		width: 100%;
+		font-size: 1rem;
+		font-family: 'Roboto', sans-serif;
+		border: 1px solid var(--common-border-dark);
+		border-radius: 8px;
+		transition:
+			border-color 0.2s,
+			box-shadow 0.2s;
+	}
+
+	.comment:hover {
+		border-color: var(--main-color, #e24511);
+		box-shadow: 0 0 0 2px rgba(226, 69, 17, 0.1);
 	}
 </style>
