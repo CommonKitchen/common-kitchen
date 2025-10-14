@@ -14,7 +14,6 @@ const API_URL = `https://${API_SERVER_URL}`;
  * @property {Product[]} products - Массив товаров.
  * @property {Category[]} categories - Массив категорий.
  * @property {object} checkoutConfig - Объект конфигурации заказа.
- * @property {object} customer - Объект конфигурации заказа.
  * @property {string} apiURL - Объект конфигурации заказа.
  */
 
@@ -49,16 +48,11 @@ const API_URL = `https://${API_SERVER_URL}`;
 		throw new Error("Помилка валідациї даних: відсутній або некоректний об'єкт 'checkoutConfig'.");
 	}
 
-	if (!(data.customer && typeof data.customer === 'object' && !Array.isArray(data.customer))) {
-		throw new Error("Помилка валідациї даних: відсутній або некоректний об'єкт 'customer'.");
-	}
-
 	// Если все проверки пройдены, возвращаем данные.
 	return {
 		products: data.products,
 		categories: data.categories,
 		checkoutConfig: data.checkoutConfig,
-		customer: data.customer,
 		apiURL: API_URL
 	};
 }
