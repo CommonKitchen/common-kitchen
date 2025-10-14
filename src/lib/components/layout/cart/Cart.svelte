@@ -203,7 +203,8 @@
 			products: $cart.map((item) => ({
 				id: item.id,
 				quantity: item.quantity,
-				price: item.price
+				price: item.price,
+				amount: item.price * item.quantity
 			})),
 			delivery: {
 				type: selectedDeliveryType,
