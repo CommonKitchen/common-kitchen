@@ -1,10 +1,12 @@
 <script>
 	import Cart from '$lib/components/layout/cart/Cart.svelte';
+	import { getCustomerContext } from '$lib/context/customerContext.js';
+	const getCustomer = getCustomerContext();
+	const customer = $derived(getCustomer());
 
 	const { data } = $props();
 	const products = $derived(data?.shopData?.products ?? []);
 	const checkoutConfig = $derived(data?.shopData?.checkoutConfig ?? {});
-	const customer = $derived(data?.shopData?.customer ?? {});
 	const apiURL = $derived(data?.shopData?.apiURL ?? '');
 </script>
 
