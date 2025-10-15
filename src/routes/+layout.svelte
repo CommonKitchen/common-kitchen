@@ -26,6 +26,8 @@
 				// @ts-ignore
 				webApp.expand();
 
+				console.log(`webApp.initData ${webApp.initData}`);
+
 				// 2. Запуск завантаження даних клієнта
 				// Перевіряємо наявність initData. apiURL вже встановлено з SSR-даних.
 				// @ts-ignore
@@ -83,6 +85,7 @@
 	setCategoryContext(data.shopData?.categories ?? []);
 	setProductContext(data.shopData?.products ?? []);
 
+	// svelte-ignore state_referenced_locally
 	setCustomerContext(customerData);
 
 	// 4. Реактивне оновлення контексту, коли customerData змінюється після onMount
