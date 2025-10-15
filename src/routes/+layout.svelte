@@ -6,41 +6,49 @@
 	import Footer from '$lib/components/layout/Footer.svelte';
 	import { setCategoryContext } from '$lib/context/categoryContext.js';
 	import { setProductContext } from '$lib/context/productContext.js';
-	import { setCustomerContext } from '$lib/context/customerContext.js';
+	import { setCustomerData } from '$lib/stores/customerStore.js';
 	import { getWebApp } from '$lib/utils/telegram.js';
 
 	let { children, data } = $props();
 
-	/** @typedef {import('$lib/types.js').Customer} Customer */
-	let customerData = $state(null);
-
 	const apiURL = data.shopData?.apiURL ?? '';
 
 	onMount(() => {
-		if (browser) {
-			const webApp = getWebApp();
-
-			if (webApp) {
-				// @ts-ignore
-				webApp.ready();
-				// @ts-ignore
-				webApp.expand();
-
-				console.log(`webApp.initData ${webApp.initData}`);
-
-				// 2. Запуск завантаження даних клієнта
-				// Перевіряємо наявність initData. apiURL вже встановлено з SSR-даних.
-				// @ts-ignore
-				if (webApp.initData && apiURL) {
-					// @ts-ignore
-					fetchCustomerData(webApp.initData);
-				} else {
-					console.warn('Telegram WebApp.initData не знайдено. Працюємо як звичайний веб-додаток.');
-				}
-			} else {
-				console.warn('Telegram WebApp API не знайдено. Працюємо як звичайний веб-додаток.');
-			}
+		const webApp = {
+			initData:
+				'query_id=AAFsRjIYAAAAAGxGMhg-dsmh&user=%7B%22id%22%3A405948012%2C%22first_name%22%3A%22Olexander%22%2C%22last_name%22%3A%22%22%2C%22language_code%22%3A%22ru%22%2C%22allows_write_to_pm%22%3Atrue%2C%22photo_url%22%3A%22https%3A%5C%2F%5C%2Ft.me%5C%2Fi%5C%2Fuserpic%5C%2F320%5C%2FYSacqszPFJcQEXl9G11mEpWG1P9Ln3ZNY35WASFaZ8U.svg%22%7D&auth_date=1760520197&signature=4cqSSHlBUnDAdEfDlS-qy78OIwznGjvIURVSyI-5DbFb1BRS6N1c4QMIFdxPAWM9w4L85OzL2_8MGFlkMUgiCg&hash=0e4d6c5ce452bdb6203fae090f8db70efbb057386aa5d85955bcea06e800f381'
+		};
+		if (webApp.initData && apiURL) {
+			// @ts-ignore
+			fetchCustomerData(webApp.initData);
+		} else {
+			console.warn('Telegram WebApp.initData не знайдено. Працюємо як звичайний веб-додаток.');
 		}
+
+		// if (browser) {
+		// 	const webApp = getWebApp();
+
+		// 	if (webApp) {
+		// 		// @ts-ignore
+		// 		webApp.ready();
+		// 		// @ts-ignore
+		// 		webApp.expand();
+
+		// 		// console.log(`webApp.initData ${webApp.initData}`);
+
+		// 		// 2. Запуск завантаження даних клієнта
+		// 		// Перевіряємо наявність initData. apiURL вже встановлено з SSR-даних.
+		// 		// @ts-ignore
+		// 		if (webApp.initData && apiURL) {
+		// 			// @ts-ignore
+		// 			fetchCustomerData(webApp.initData);
+		// 		} else {
+		// 			console.warn('Telegram WebApp.initData не знайдено. Працюємо як звичайний веб-додаток.');
+		// 		}
+		// 	} else {
+		// 		console.warn('Telegram WebApp API не знайдено. Працюємо як звичайний веб-додаток.');
+		// 	}
+		// }
 	});
 
 	/**
@@ -50,6 +58,7 @@
 	async function fetchCustomerData(initData) {
 		if (!initData || !apiURL) {
 			console.warn('Неможливо завантажити дані клієнта: відсутній initData або API URL.');
+			setCustomerData(null);
 			return;
 		}
 
@@ -67,31 +76,23 @@
 
 			if (!response.ok) {
 				console.error(`Помилка API при отриманні даних клієнта. Статус: ${response.status}`);
-				customerData = null; // Не вдалося автентифікувати або отримати дані
+				setCustomerData(null);
 				return;
 			}
 
 			const data = await response.json();
 
 			// Оновлюємо внутрішній стан
-			customerData = data.customer || null;
-			console.log('Дані клієнта успішно завантажено.', customerData);
+			setCustomerData(data.customer || null);
+			console.log('Дані клієнта успішно завантажено.');
 		} catch (error) {
 			console.error('Помилка мережі при завантаженні даних клієнта:', error);
-			customerData = null;
+			setCustomerData(null);
 		}
 	}
 
 	setCategoryContext(data.shopData?.categories ?? []);
 	setProductContext(data.shopData?.products ?? []);
-
-	// svelte-ignore state_referenced_locally
-	setCustomerContext(customerData);
-
-	// 4. Реактивне оновлення контексту, коли customerData змінюється після onMount
-	$effect(() => {
-		setCustomerContext(customerData);
-	});
 </script>
 
 <svelte:head>

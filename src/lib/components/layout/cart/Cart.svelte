@@ -29,7 +29,6 @@
 		products,
 		/** @type {CheckoutConfig} */
 		checkoutConfig,
-		/** @type {Customer} */
 		customer,
 		/** @type {string} */
 		apiURL
@@ -67,6 +66,7 @@
 		return locationList.find((location) => location.id === currentPickupLocationId);
 	});
 
+	console.log(`customer ${customer}`);
 	const firstEntity = customer.legalEntities.length > 0 ? customer.legalEntities[0] : null;
 	const firstLocation =
 		firstEntity && firstEntity.customerLocations.length > 0

@@ -1,8 +1,6 @@
 <script>
 	import Cart from '$lib/components/layout/cart/Cart.svelte';
-	import { getCustomerContext } from '$lib/context/customerContext.js';
-	const getCustomer = getCustomerContext();
-	const customer = $derived(getCustomer());
+	import { customer } from '$lib/stores/customerStore.js';
 
 	const { data } = $props();
 	const products = $derived(data?.shopData?.products ?? []);
@@ -11,7 +9,7 @@
 </script>
 
 <div class="cart-container">
-	<Cart {products} {checkoutConfig} {customer} {apiURL} />
+	<Cart {products} {checkoutConfig} customer={$customer} {apiURL} />
 </div>
 
 <style>
