@@ -29,6 +29,7 @@
 		products,
 		/** @type {CheckoutConfig} */
 		checkoutConfig,
+		/** @type {Customer} */
 		customer,
 		/** @type {string} */
 		apiURL
@@ -66,8 +67,9 @@
 		return locationList.find((location) => location.id === currentPickupLocationId);
 	});
 
-	console.log(`customer ${customer}`);
-	const firstEntity = customer.legalEntities.length > 0 ? customer.legalEntities[0] : null;
+	const hasCustomer = !!customer;
+
+	const firstEntity = customer?.legalEntities?.length > 0 ? customer.legalEntities[0] : null;
 	const firstLocation =
 		firstEntity && firstEntity.customerLocations.length > 0
 			? firstEntity.customerLocations[0]
@@ -78,12 +80,12 @@
 
 	const currentEntity = $derived(() => {
 		/** @type {legalEntity[]} */
-		const entityList = customer.legalEntities;
+		const entityList = customer?.legalEntities ?? [];
 		return entityList.find((entity) => entity.id === currentEntityId);
 	});
 
 	const currentCustomerLocations = $derived(() => {
-		return currentEntity()?.customerLocations || [];
+		return currentEntity()?.customerLocations ?? [];
 	});
 
 	const currentCustomerLocation = $derived(() => {
@@ -310,27 +312,29 @@
 
 			<div class="cart-summary">
 				{#if !isMinOrderReached}
-					<div class="min-order-warning">
+					<div class="warning-block">
 						⚠️ Мінімальна сума замовлення — {minAmount} ₴. Додайте ще {amountToReachMin} ₴ для оформлення.
 					</div>
 				{/if}
 
-				<div class="customer-block">
-					<div class="customer-info">Ваші дані: {customer.name} {customer.phone}</div>
-					<div class="entity-container">
-						<SelectOptions
-							title="Замовник:"
-							bind:value={currentEntityId}
-							items={customer.legalEntities}
-						/>
+				{#if hasCustomer}
+					<div class="customer-block">
+						<div class="customer-info">Ваші дані: {customer.name} {customer.phone}</div>
+						<div class="entity-container">
+							<SelectOptions
+								title="Замовник:"
+								bind:value={currentEntityId}
+								items={customer.legalEntities}
+							/>
 
-						<SelectOptions
-							title="Заклад:"
-							bind:value={currentCustomerLocationId}
-							items={currentCustomerLocations()}
-						/>
+							<SelectOptions
+								title="Заклад:"
+								bind:value={currentCustomerLocationId}
+								items={currentCustomerLocations()}
+							/>
+						</div>
 					</div>
-				</div>
+				{/if}
 
 				<DatePicker
 					title="Дата доставки (приготування):"
@@ -399,10 +403,19 @@
 					</div>
 				{/if}
 
+				{#if !hasCustomer}
+					<div class="warning-block">
+						⚠️ Замовлення можуть оформити тільки зареєстровані клієнти.
+					</div>
+				{/if}
+
 				<div class="summary-actions">
 					<button onclick={clearCart} class="buttons clear-btn" type="button">Очистити кошик</button
 					>
-					<button class="buttons checkout-btn" disabled={!isMinOrderReached || isLoading}>
+					<button
+						class="buttons checkout-btn"
+						disabled={!isMinOrderReached || isLoading || !hasCustomer}
+					>
 						{#if isLoading}
 							<div class="spinner"></div>
 							Оформлення...
@@ -525,7 +538,7 @@
 		border-top: 2px solid var(--main-color, #e24511);
 	}
 
-	.min-order-warning {
+	.warning-block {
 		background-color: #fff3cd;
 		color: #856404;
 		border: 1px solid #ffeeba;
