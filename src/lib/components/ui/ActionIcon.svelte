@@ -21,8 +21,8 @@
 	}
 
 	.icon-link img {
-		width: 24px;
-		height: 24px;
+		width: 32px;
+		height: 32px;
 		filter: grayscale(100%) brightness(0.7) opacity(0.85);
 		transition: filter 0.2s;
 	}
