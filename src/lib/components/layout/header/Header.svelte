@@ -7,6 +7,7 @@
 	import logo from '$lib/assets/logo.png';
 	import heart from '$lib/assets/icon-favorite-24x24.svg';
 	import bag from '$lib/assets/icon-bag-24x24.svg';
+	import loupe from '$lib/assets/icon-search-24x24.svg';
 	import { itemCount } from '$lib/stores/cartStore.js';
 
 	const phone = '+380990011111';
@@ -38,10 +39,19 @@
 		</div>
 
 		<div class="header-actions">
-			<Search />
-			<Phone {phone} />
-			<ActionIcon href="/wishlist" iconSrc={heart} />
-			<ActionIcon href="/cart" iconSrc={bag} count={$itemCount} />
+			<div class="search-block">
+				<Search />
+			</div>
+			<div class="phone-block">
+				<Phone {phone} />
+			</div>
+			<div class="icon-block">
+				<div class="icon-loupe">
+					<ActionIcon href="/search" iconSrc={loupe} />
+				</div>
+				<ActionIcon href="/wishlist" iconSrc={heart} />
+				<ActionIcon href="/cart" iconSrc={bag} count={$itemCount} />
+			</div>
 		</div>
 	</div>
 </header>
@@ -65,14 +75,14 @@
 		max-width: 1366px;
 		margin: 0 auto;
 		position: relative;
-		padding: 0 20px;
+		padding: 0 12px;
 		gap: 20px;
 	}
 
 	.header-logo {
 		position: absolute;
 		top: 2px;
-		left: 20px;
+		left: 0px;
 		height: 62px;
 		width: 164px;
 	}
@@ -87,10 +97,11 @@
 	}
 
 	.logo-placeholder {
-		width: 194px;
+		width: 164px;
 		height: 1px;
 		flex-shrink: 0;
 	}
+
 	.menu-wrapper {
 		position: relative; /* КРИТИЧНО: Родитель для абсолютно позиционированного SideMenu */
 		flex-shrink: 0; /* Гарантируем, что обертка не сжимается */
@@ -100,7 +111,47 @@
 		position: relative;
 		display: flex;
 		align-items: center;
-		gap: 24px;
-		padding-right: 16px;
+		gap: 16px;
+	}
+
+	.icon-block {
+		display: flex;
+		align-items: flex-end;
+		justify-content: space-between;
+		gap: 10px;
+	}
+
+	.search-block,
+	.phone-block {
+		display: none;
+	}
+
+	@media (min-width: 768px) {
+		.search-block {
+			display: block;
+		}
+		.icon-loupe {
+			display: none;
+		}
+	}
+
+	@media (min-width: 576px) {
+		.phone-block {
+			display: block;
+		}
+		.header-content {
+			padding: 0 20px;
+		}
+
+		.header-logo {
+			left: 20px;
+		}
+
+		.logo-placeholder {
+			width: 194px;
+		}
+		.header-actions {
+			padding-right: 16px;
+		}
 	}
 </style>

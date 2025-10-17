@@ -1,7 +1,21 @@
 <script>
-	import { slide } from 'svelte/transition';
-	import { cubicOut } from 'svelte/easing';
+	import { onMount } from 'svelte';
+	import { slide, fly } from 'svelte/transition';
+	import { cubicOut, linear } from 'svelte/easing';
 	import { getCategoryContext } from '$lib/context/categoryContext.js';
+
+	const BREAKPOINT = 576;
+	let isMobile = $state(false);
+
+	function checkWidth() {
+		isMobile = window.innerWidth < BREAKPOINT;
+	}
+
+	onMount(() => {
+		checkWidth();
+		window.addEventListener('resize', checkWidth);
+		return () => window.removeEventListener('resize', checkWidth);
+	});
 
 	const { isOpen, close } = $props();
 
@@ -27,8 +41,24 @@
 	});
 </script>
 
-{#if isOpen}
-	<aside class="menu-panel" transition:slide={{ duration: 300, easing: cubicOut }}>
+{#if isOpen && isMobile}
+	<aside class="menu-panel mobile-fly" transition:fly={{ x: -240, duration: 300, easing: linear }}>
+		<div class="menu-content">
+			<h4 class="title">Продукція</h4>
+			<div class="nav-separator"></div>
+			<nav class="nav-list">
+				{#each categories as category (category.slug)}
+					<a href="/categories/{category.slug}" class="nav-link" onclick={close}>
+						{category.title}
+					</a>
+				{/each}
+				<div class="nav-separator"></div>
+				<a href="/cart" class="nav-link" onclick={close}>Корзина</a>
+			</nav>
+		</div>
+	</aside>
+{:else if isOpen && !isMobile}
+	<aside class="menu-panel desktop-slide" transition:slide={{ duration: 300, easing: cubicOut }}>
 		<div class="menu-content">
 			<h4 class="title">Продукція</h4>
 			<div class="nav-separator"></div>
@@ -47,22 +77,30 @@
 
 <style>
 	.menu-panel {
-		position: absolute;
-		/* top: 100% размещает меню прямо под кнопкой/хедером */
-		top: 100%;
-		/* Привязываем к левому краю контейнера. (Предполагается, что родительский элемент имеет position: relative) */
-		left: 0px; /* Здесь должен быть left: 0 или right: 0 в зависимости от Header.svelte */
-
-		/* Задаем фиксированную ширину для десктопного меню */
+		background-color: var(--common-bg-light);
+		left: 0;
 		width: 240px;
+		z-index: 50;
+	}
+
+	.menu-panel.mobile-fly {
+		position: fixed; /* Должно быть fixed для мобильного меню! */
+		top: 56px;
+		height: calc(100vh - 56px); /* Полная высота экрана */
+		padding: 20px; /* Отступ сверху, чтобы избежать шапки, если она есть */
+		border-radius: 0;
+	}
+
+	.menu-panel.desktop-slide {
+		position: absolute;
+		/* Привязываем к левому краю контейнера. (Предполагается, что родительский элемент имеет position: relative) */
+		/*left: 0px; /* Здесь должен быть left: 0 или right: 0 в зависимости от Header.svelte */
 		height: auto;
 		/* Ограничиваем высоту, чтобы оно не занимало весь экран */
 		max-height: calc(100vh - 66px);
 
-		background-color: var(--common-bg-light);
 		box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 		/* Устанавливаем z-index выше основного контента, но ниже модальных окон */
-		z-index: 50;
 		overflow-y: auto;
 		padding: 12px 20px 20px 20px;
 		border-radius: 0 0 8px 8px;

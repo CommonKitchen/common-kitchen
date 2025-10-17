@@ -146,7 +146,7 @@
 	}
 
 	.search input {
-		width: 300px;
+		width: 140px;
 		max-width: 300px;
 		border: none;
 		background-color: transparent;
@@ -233,5 +233,11 @@
 		font-size: 0.8rem;
 		border-top: 1px solid #eee;
 		margin-top: 5px;
+	}
+
+	@media (min-width: 960px) {
+		.search input {
+			width: 300px;
+		}
 	}
 </style>
