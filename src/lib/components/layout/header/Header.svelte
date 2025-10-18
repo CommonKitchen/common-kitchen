@@ -76,7 +76,7 @@
 		margin: 0 auto;
 		position: relative;
 		padding: 0 12px;
-		gap: 20px;
+		gap: 4px;
 	}
 
 	.header-logo {
@@ -111,7 +111,7 @@
 		position: relative;
 		display: flex;
 		align-items: center;
-		gap: 16px;
+		gap: 8px;
 	}
 
 	.icon-block {
@@ -126,6 +126,17 @@
 		display: none;
 	}
 
+	@media (min-width: 576px) {
+		.phone-block {
+			display: block;
+		}
+
+		.header-actions {
+			padding-right: 16px;
+			gap: 16px;
+		}
+	}
+
 	@media (min-width: 768px) {
 		.search-block {
 			display: block;
@@ -133,25 +144,21 @@
 		.icon-loupe {
 			display: none;
 		}
-	}
-
-	@media (min-width: 576px) {
-		.phone-block {
-			display: block;
-		}
 		.header-content {
 			padding: 0 20px;
 		}
+		.header-content {
+			gap: 20px;
+		}
+	}
 
+	@media (min-width: 960px) {
 		.header-logo {
 			left: 20px;
 		}
 
 		.logo-placeholder {
 			width: 194px;
-		}
-		.header-actions {
-			padding-right: 16px;
 		}
 	}
 </style>
