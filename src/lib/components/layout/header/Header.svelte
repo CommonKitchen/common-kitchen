@@ -60,7 +60,8 @@
 	.main-header {
 		width: 100%;
 		height: 56px;
-		position: sticky;
+		/* position: sticky; */
+		position: fixed;
 		top: 0;
 		z-index: 100;
 		background-image: linear-gradient(to top, var(--header-background, #e3d8c9), #b4a89c);
