@@ -24,7 +24,7 @@
 
 <style>
 	.title {
-		font-size: 1.2rem;
+		font-size: 1.3rem;
 		font-weight: bold;
 		color: var(--main-color);
 		margin: 10px 0px;
@@ -46,7 +46,7 @@
 		padding: 10px 15px;
 		text-decoration: none;
 		color: var(--common-text-dark, #495057);
-		font-size: 1rem;
+		font-size: 1.2rem;
 		border-radius: 4px;
 		transition:
 			background-color 0.2s,
