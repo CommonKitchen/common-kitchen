@@ -13,10 +13,10 @@
 <style>
 	.products-grid {
 		max-width: 1200px;
-		padding: 8px 0px;
 		margin: 0px auto;
 		display: grid;
-		grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+		grid-template-columns: repeat(auto-fit, minmax(168px, 1fr));
+		justify-content: space-evenly;
 		gap: 20px;
 	}
 </style>

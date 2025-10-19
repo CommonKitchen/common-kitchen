@@ -60,7 +60,6 @@
 	.main-header {
 		width: 100%;
 		height: 56px;
-		/* position: sticky; */
 		position: fixed;
 		top: 0;
 		z-index: 100;
@@ -69,14 +68,14 @@
 	}
 
 	.header-content {
+		margin: 0px auto;
+		padding: 0px 12px;
 		display: flex;
 		height: 100%;
 		align-items: center;
-		justify-content: space-between;
+		justify-content: flex-start;
 		max-width: 1366px;
-		margin: 0 auto;
 		position: relative;
-		padding: 0 12px;
 		gap: 4px;
 	}
 
@@ -88,18 +87,17 @@
 		width: 164px;
 	}
 
+	.logo-placeholder {
+		width: 164px;
+		height: 1px;
+		flex-shrink: 0;
+	}
+
 	.logo-and-menu-group {
 		position: relative;
 		display: flex;
 		align-items: center;
-		gap: 15px;
-		margin-right: auto;
-		flex-shrink: 0;
-	}
-
-	.logo-placeholder {
-		width: 164px;
-		height: 1px;
+		gap: 8px;
 		flex-shrink: 0;
 	}
 
@@ -109,6 +107,7 @@
 	}
 
 	.header-actions {
+		min-width: 0;
 		position: relative;
 		display: flex;
 		align-items: center;
@@ -118,7 +117,7 @@
 	.icon-block {
 		display: flex;
 		align-items: flex-end;
-		justify-content: space-between;
+		justify-content: space-evenly;
 		gap: 10px;
 	}
 
@@ -127,14 +126,21 @@
 		display: none;
 	}
 
+	@media (min-width: 480px) {
+		.header-content {
+			/* padding: 32px; */
+		}
+	}
+
+	@media (min-width: 528px) {
+		.header-content {
+			justify-content: space-between;
+		}
+	}
+
 	@media (min-width: 576px) {
 		.phone-block {
 			display: block;
-		}
-
-		.header-actions {
-			padding-right: 16px;
-			gap: 16px;
 		}
 	}
 
@@ -144,22 +150,6 @@
 		}
 		.icon-loupe {
 			display: none;
-		}
-		.header-content {
-			padding: 0 20px;
-		}
-		.header-content {
-			gap: 20px;
-		}
-	}
-
-	@media (min-width: 960px) {
-		.header-logo {
-			left: 20px;
-		}
-
-		.logo-placeholder {
-			width: 194px;
 		}
 	}
 </style>

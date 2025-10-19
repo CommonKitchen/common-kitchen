@@ -26,13 +26,6 @@
 </div>
 
 <style>
-	.product-tile-link {
-		text-decoration: none;
-		color: inherit;
-		display: block;
-		height: 100%;
-	}
-
 	.product-tile {
 		width: 168px;
 		display: flex;
@@ -46,6 +39,13 @@
 		border: 2px solid transparent;
 		overflow: hidden;
 		transition: border-color 0.3s ease;
+	}
+
+	.product-tile-link {
+		text-decoration: none;
+		color: inherit;
+		display: block;
+		height: 100%;
 	}
 
 	.product-tile:hover {

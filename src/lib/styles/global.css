@@ -12,11 +12,16 @@
 	--common-border-dark: #ccc;
 }
 
-body {
+*,
+*::before,
+*::after {
+	box-sizing: border-box;
 	margin: 0;
 	padding: 0;
+}
+
+body {
 	font-family: Roboto, sans-serif;
-	box-sizing: border-box;
 	background: var(--background-color);
 	display: flex;
 	min-height: 100vh;

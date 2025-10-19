@@ -12,11 +12,10 @@
 <style>
 	.container {
 		width: 100%;
-		display: flex;
-		flex-direction: column;
-		align-items: center;
-		justify-content: center;
-		gap: 10px;
 		padding: 36px 0px 18px 0px;
+	}
+
+	.container h2 {
+		text-align: center;
 	}
 </style>
