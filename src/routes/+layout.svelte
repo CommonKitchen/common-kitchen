@@ -8,7 +8,7 @@
 	import { setCustomerData } from '$lib/stores/customerStore.js';
 	import { getWebApp } from '$lib/utils/telegram.js';
 
-	const debug = !true;
+	const debug = true;
 
 	let { children, data } = $props();
 

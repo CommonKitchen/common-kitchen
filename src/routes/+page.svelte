@@ -3,11 +3,11 @@
 	import Bestsellers from '$lib/components/layout/Bestsellers.svelte';
 	import Categories from '$lib/components/layout/categories/Categories.svelte';
 
-	const { data } = $props();
-	const categories = $derived(data?.shopData?.categories ?? []);
-	/** @typedef {import('$lib/types.js').Product} Product */
-	/** @type {Product[]} */
-	const products = $derived(data?.shopData?.products ?? []);
+	import { getCategoryContext } from '$lib/context/categoryContext.js';
+	import { getProductContext } from '$lib/context/productContext.js';
+
+	const categories = getCategoryContext() ?? [];
+	const products = getProductContext() ?? [];
 	const bestsellers = $derived(products.filter((product) => product.bestseller));
 </script>
 

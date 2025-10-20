@@ -1,4 +1,5 @@
 <script>
+	import { goto } from '$app/navigation';
 	import {
 		cart,
 		updateCart,
@@ -7,13 +8,12 @@
 		removeItem
 	} from '$lib/stores/cartStore.js';
 
-	import QuantitySelector from '$lib/components/ui/QuantitySelector.svelte';
 	import Button from '$lib/components/ui/Button.svelte';
 	import ButtonRemove from '$lib/components/ui/ButtonRemove.svelte';
-	import { goto } from '$app/navigation';
 	import DatePicker from '$lib/components/ui/DatePicker.svelte';
 	import RadioOptions from '$lib/components/ui/RadioOptions.svelte';
 	import SelectOptions from '$lib/components/ui/SelectOptions.svelte';
+	import QuantitySelector from '$lib/components/ui/QuantitySelector.svelte';
 
 	/** @typedef {import('$lib/types.js').Product} Product */
 	/** @typedef {import('$lib/types.js').CheckoutConfig} CheckoutConfig */
@@ -275,7 +275,7 @@
 		</div>
 	{:else}
 		<form onsubmit={handleCheckout}>
-			<div class="t">
+			<div class="cart-title">
 				<Button title="Назад до продукції" onclick={() => goto('/categories')} type="button" />
 				<h2>Ваш кошик</h2>
 			</div>
@@ -291,7 +291,7 @@
 						<div class="item-details">
 							<div class="item-title">{item.title}</div>
 							<div class="item-price">Мінімальне замовлення {item.minOrder}</div>
-							<div class="item-price">{item.price} ₴</div>
+							<div class="item-price">{item.price}<span>₴</span></div>
 						</div>
 
 						<div class="item-controls">
@@ -303,7 +303,7 @@
 									block={true}
 								/>
 							</div>
-							<div class="item-total">{item.price * item.quantity} <span>₴</span></div>
+							<div class="item-total">{item.price * item.quantity}<span>₴</span></div>
 							<ButtonRemove onclick={() => remove(item.id)} />
 						</div>
 					</div>
@@ -313,7 +313,9 @@
 			<div class="cart-summary">
 				{#if !isMinOrderReached}
 					<div class="warning-block">
-						⚠️ Мінімальна сума замовлення — {minAmount} ₴. Додайте ще {amountToReachMin} ₴ для оформлення.
+						⚠️ Мінімальна сума замовлення — {minAmount}<span>₴</span>. Додайте ще {amountToReachMin}<span
+							>₴</span
+						> для оформлення.
 					</div>
 				{/if}
 
@@ -362,7 +364,7 @@
 					<div class="delivery-block">
 						<span class="delivery-description">Сума замовлення для безкоштовной доставки:</span>
 						<span class="text-amount">
-							{freeShippingAmount} <span>₴</span>
+							{freeShippingAmount}<span>₴</span>
 						</span>
 					</div>
 				{/if}
@@ -388,13 +390,13 @@
 				<div class="delivery-block-amount">
 					<span class="delivery-description">Вартість доставки:</span>
 					<span class="text-amount">
-						{deliveryAmount()} <span>₴</span>
+						{deliveryAmount()}<span>₴</span>
 					</span>
 				</div>
 
 				<div class="block-total">
 					<span>Разом до оплати:</span>
-					<span class="total-amount">{finalTotal} <span>₴</span></span>
+					<span class="total-amount">{finalTotal}<span>₴</span></span>
 				</div>
 
 				{#if checkoutError}
@@ -433,10 +435,10 @@
 	.cart-container {
 		max-width: 800px;
 		margin: 40px auto;
-		padding: 20px;
 		border: 1px solid #ccc;
 		border-radius: 8px;
 		background-color: #fff;
+		padding: 20px;
 	}
 
 	.empty-cart-message {
@@ -461,6 +463,10 @@
 		color: #777;
 		margin-bottom: 30px;
 		font-size: 1.1rem;
+	}
+
+	.cart-title h2 {
+		padding-top: 12px;
 	}
 
 	.cart-item {
@@ -510,6 +516,10 @@
 		font-size: 0.9rem;
 	}
 
+	.item-price span {
+		font-size: 0.7rem;
+	}
+
 	.item-controls {
 		display: flex;
 		align-items: center;
@@ -546,7 +556,12 @@
 		border-radius: 4px;
 		margin-bottom: 20px;
 		font-weight: 500;
-		text-align: center;
+		text-align: left;
+		line-height: 1.6;
+	}
+
+	.warning-block span {
+		font-size: 0.9rem;
 	}
 
 	.customer-info {
@@ -599,6 +614,7 @@
 		border-top: 1px solid #eee;
 		font-size: 1.4rem;
 		font-weight: 600;
+		align-items: center;
 	}
 
 	.total-amount {
@@ -608,7 +624,7 @@
 	}
 
 	.total-amount span {
-		font-size: 1.1rem;
+		font-size: 1.4rem;
 		font-weight: normal;
 	}
 
@@ -732,5 +748,36 @@
 	.comment:hover {
 		border-color: var(--main-color, #e24511);
 		box-shadow: 0 0 0 2px rgba(226, 69, 17, 0.1);
+	}
+
+	@media (max-width: 480px) {
+		.cart-container {
+			padding: 20px 8px;
+		}
+	}
+
+	@media (max-width: 768px) {
+		.cart-item {
+			flex-wrap: wrap;
+			align-items: flex-start;
+		}
+
+		.item-image-link {
+			order: 1;
+		}
+
+		.item-details {
+			order: 2;
+			flex-grow: 1;
+			min-width: 0; /* Допомагає уникнути перевищення розміру */
+		}
+
+		.item-controls {
+			order: 3; /* Встановлюємо третім, щоб він перенісся вниз */
+			width: 100%; /* Займаємо всю ширину контейнера cart-item */
+			margin-top: 15px; /* Додаємо відступ зверху для візуального розділення */
+			justify-content: center;
+			gap: 10px;
+		}
 	}
 </style>

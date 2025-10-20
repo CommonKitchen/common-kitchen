@@ -19,5 +19,6 @@
 
 	.container h2 {
 		text-align: center;
+		padding-bottom: 30px;
 	}
 </style>

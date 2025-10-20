@@ -1,16 +1,18 @@
 <script>
+	import { getCategoryContext } from '$lib/context/categoryContext.js';
+	import { getProductContext } from '$lib/context/productContext.js';
 	import Products from '$lib/components/layout/products/Products.svelte';
 	import CategoryLink from '$lib/components/layout/categories/CategoryLink.svelte';
 	/** @typedef {import('$lib/types.js').Category} Category */
 	/** @typedef {import('$lib/types.js').Product} Product */
 
-	const { data, params } = $props();
+	const { params } = $props();
 
 	/** @type {Category[]} */
-	const categories = $derived(data?.shopData?.categories ?? []);
+	const categories = getCategoryContext() ?? [];
 
 	/** @type {Product[]} */
-	const products = $derived(data?.shopData?.products ?? []);
+	const products = getProductContext() ?? [];
 
 	const currentCategory = $derived(categories.find((c) => c.slug === params?.slug));
 
@@ -55,7 +57,7 @@
 <style>
 	.category-page-wrapper {
 		max-width: 1200px;
-		margin: 60px auto;
+		margin: 10px auto;
 	}
 
 	.category-header {

@@ -16,7 +16,6 @@
 		grid-template-columns: repeat(auto-fill, minmax(168px, 1fr));
 		column-gap: 4px;
 		row-gap: 20px;
-		/* margin-top: 30px; */
 	}
 
 	@media (min-width: 380px) {

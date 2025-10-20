@@ -1,8 +1,8 @@
 <script>
+	import { getCategoryContext } from '$lib/context/categoryContext.js';
 	import Categories from '$lib/components/layout/categories/Categories.svelte';
 
-	const { data } = $props();
-	const categories = $derived(data?.shopData?.categories ?? []);
+	const categories = getCategoryContext() ?? [];
 </script>
 
 <div class="categories-container">
