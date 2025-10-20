@@ -1,14 +1,14 @@
 <script>
-	import Product from '$lib/components/layout/products/Product.svelte';
+	import Products from '$lib/components/layout/products/Products.svelte';
 	import CategoryLink from '$lib/components/layout/categories/CategoryLink.svelte';
+	/** @typedef {import('$lib/types.js').Category} Category */
+	/** @typedef {import('$lib/types.js').Product} Product */
 
 	const { data, params } = $props();
 
-	/** @typedef {import('$lib/types.js').Category} Category */
 	/** @type {Category[]} */
 	const categories = $derived(data?.shopData?.categories ?? []);
 
-	/** @typedef {import('$lib/types.js').Product} Product */
 	/** @type {Product[]} */
 	const products = $derived(data?.shopData?.products ?? []);
 
@@ -20,6 +20,8 @@
 
 			if (!categoryId) {
 				return [];
+			} else if (params?.slug === 'all') {
+				return products;
 			}
 
 			return products.filter((/** @type {Product} */ p) => p.categoryId === categoryId);
@@ -36,90 +38,80 @@
 		{/if}
 	</div>
 
-	<div class="category-main-content">
+	<div class="category-container">
 		<aside class="category-sidebar">
-			<h2 class="sidebar-title">Інші категорії</h2>
 			<div class="category-list">
 				{#each categories as category (category.id)}
 					<CategoryLink {...category} isActive={category.slug === params.slug} />
 				{/each}
 			</div>
 		</aside>
-		<main class="product-content-area">
-			<div class="product-grid">
-				{#each categoryProducts as product (product.id)}
-					<Product {...product} />
-				{:else}
-					<p>В даній категорії товарів не знайдено.</p>
-				{/each}
-			</div>
-		</main>
+		<div class="products-section">
+			<Products products={categoryProducts} />
+		</div>
 	</div>
 </div>
 
 <style>
 	.category-page-wrapper {
 		max-width: 1200px;
-		margin: 0 auto;
-		padding: 16px;
+		margin: 60px auto;
 	}
 
 	.category-header {
 		color: #333;
+		padding-top: 16px;
 	}
 
-	.category-main-content {
+	.category-container {
 		display: flex;
-		gap: 30px; /* Расстояние между боковой панелью и товарами */
+		gap: 30px;
 		margin-top: 20px;
 	}
 
-	/* 🧭 Боковая панель */
 	.category-sidebar {
-		flex: 0 0 250px; /* Фиксированная ширина */
+		flex: 0 0 250px;
 		padding: 15px;
-		/* background-color: #f8f9fa; */
 		background-color: var(--common-bg-light, #f8f9fa);
 		border-radius: 8px;
 		height: fit-content; /* Чтобы панель не растягивалась на всю высоту */
 	}
 
-	.sidebar-title {
-		font-size: 1.3rem;
-		margin-top: 0;
-		margin-bottom: 15px;
-		color: #343a40;
-		border-bottom: 2px solid #e9ecef;
-		padding-bottom: 10px;
+	.products-section {
+		flex-grow: 1; /* Дозволяє зайняти весь доступний простір, що залишився */
+		padding: 0px 15px;
 	}
 
-	/* 🧱 Область товаров */
-	.product-content-area {
-		flex-grow: 1; /* Занимает оставшееся пространство */
-	}
-
-	/* Стили сетки товаров (как было) */
-	.product-grid {
-		display: grid;
-		grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-		gap: 30px 10px; /* Расстояние между строками 30px, столбцами 20px */
-		padding: 20px 0;
-		justify-items: center;
-	}
-
-	/* 📱 Адаптация для мобильных устройств */
 	@media (max-width: 960px) {
-		.category-main-content {
-			flex-direction: column; /* Боковая панель уходит наверх */
+		.category-container {
+			/* Меняем направление flex-элементов на вертикальное */
+			flex-direction: column;
+			/* Убираем горизонтальный отступ, если нужно */
+			gap: 0;
 		}
+
 		.category-sidebar {
-			flex: 0 0 auto;
-			width: 100%;
+			/* Переопределяем flex-свойства для мобильных */
+			flex: 0 0 auto; /* Убираем фиксированную ширину */
+			width: 100%; /* Занимает всю ширину */
+			padding: 15px; /* Сохраняем внутренние отступы */
+			margin-bottom: 20px; /* Добавляем отступ после меню */
 		}
-	}
-	@media (max-width: 480px) {
-		.product-grid {
-			grid-template-columns: 1fr; /* Один товар на строку */
+
+		.products-section {
+			padding: 0px;
+		}
+
+		.category-list {
+			display: flex; /* Делаем элементы в строку */
+			overflow-x: auto; /* Разрешаем горизонтальную прокрутку */
+			gap: 10px; /* Небольшой отступ между элементами */
+			padding-bottom: 10px; /* Дополнительный отступ для удобства прокрутки */
+		}
+
+		.category-list :global(a) {
+			flex-shrink: 0; /* Запрещаем сжиматься */
+			min-width: fit-content; /* Занимает минимально необходимую ширину */
 		}
 	}
 </style>

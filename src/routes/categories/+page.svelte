@@ -24,6 +24,6 @@
 
 	h1 {
 		text-align: center;
-		margin-bottom: 20px;
+		margin: 20px 0px;
 	}
 </style>
