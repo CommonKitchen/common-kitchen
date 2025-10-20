@@ -18,7 +18,7 @@
 				{#each phones as phone}
 					<li><Phone {phone} /></li>
 				{/each}
-				<li><a href="/">Карта проїзду</a></li>
+				<!-- <li><a href="/">Карта проїзду</a></li> -->
 			</ul>
 		</div>
 		<div class="footer-column">
@@ -29,14 +29,14 @@
 				<li>Нд-вихідний</li>
 			</ul>
 		</div>
-		<div class="footer-column">
+		<!-- <div class="footer-column">
 			<h4>Інформація:</h4>
 			<ul>
 				{#each links as link}
 					<li><a href={link.href}>{link.title}</a></li>
 				{/each}
 			</ul>
-		</div>
+		</div> -->
 	</div>
 </div>
 
@@ -44,7 +44,7 @@
 	.footer {
 		width: 100%;
 		background-color: var(--footer-background, #d8c9b9);
-		padding: 20px 20px;
+		padding: 12px 12px;
 		color: #373737;
 	}
 
@@ -52,7 +52,7 @@
 		display: flex;
 		justify-content: center;
 		margin: 0 auto;
-		gap: 72px;
+		gap: 20px;
 	}
 
 	.footer-column {
@@ -89,5 +89,15 @@
 	.footer-column a:hover {
 		text-decoration: underline;
 		color: #000000;
+	}
+
+	@media (min-width: 480px) {
+		.container {
+			gap: 72px;
+		}
+
+		.footer {
+			padding: 20px 20px;
+		}
 	}
 </style>

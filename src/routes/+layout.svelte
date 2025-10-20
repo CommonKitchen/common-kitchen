@@ -101,4 +101,4 @@
 <div class="content-wrap">
 	{@render children?.()}
 </div>
-<!-- <Footer /> -->
+<Footer />
