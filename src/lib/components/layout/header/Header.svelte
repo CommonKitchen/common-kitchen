@@ -73,7 +73,7 @@
 		display: flex;
 		height: 100%;
 		align-items: center;
-		justify-content: flex-start;
+		justify-content: space-between;
 		max-width: 1366px;
 		position: relative;
 		gap: 4px;
@@ -124,12 +124,6 @@
 	.search-block,
 	.phone-block {
 		display: none;
-	}
-
-	@media (min-width: 480px) {
-		.header-content {
-			/* padding: 32px; */
-		}
 	}
 
 	@media (min-width: 528px) {

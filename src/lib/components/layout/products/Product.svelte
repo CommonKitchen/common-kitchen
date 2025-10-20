@@ -16,7 +16,7 @@
 		<div class="product-info">
 			<div class="product-weight">
 				<span class="icon-scale">⚖</span>
-				{weight}
+				{weight} г
 			</div>
 			<span class="product-min-order">Від {minOrder} шт.</span>
 		</div>
@@ -107,5 +107,11 @@
 
 	.product-price span {
 		font-size: 1.5rem;
+	}
+
+	@media (min-width: 410px) {
+		.product-tile {
+			width: 188px;
+		}
 	}
 </style>
