@@ -60,7 +60,6 @@
 	.main-header {
 		width: 100%;
 		height: 56px;
-		/* position: fixed; */
 		position: sticky;
 		top: 0;
 		z-index: 100;

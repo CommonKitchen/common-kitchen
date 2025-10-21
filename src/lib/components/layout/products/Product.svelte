@@ -1,7 +1,18 @@
 <script>
 	import CartButtons from '$lib/components/ui/CartButtons.svelte';
+	import heart from '$lib/assets/icon-favorite-24x24.svg';
+	import fillHeart from '$lib/assets/icon-favorite2-24x24.svg';
 
-	const { id, title, price, weight, minOrder, imageUrl } = $props();
+	const {
+		id,
+		title,
+		price,
+		weight,
+		minOrder,
+		imageUrl,
+		toggleFavorite,
+		isFavorite = false
+	} = $props();
 	const productUrl = `/products/${id}`;
 </script>
 
@@ -9,6 +20,23 @@
 	<a href={productUrl} class="product-tile-link">
 		<div class="image-container">
 			<img src={imageUrl} alt={title} class="product-image" />
+		</div>
+		<div class="icon-heart">
+			<button
+				type="button"
+				class="favorite-button"
+				onclick={(event) => {
+					event.stopPropagation();
+					event.preventDefault();
+					toggleFavorite(id);
+				}}
+			>
+				{#if !isFavorite}
+					<img src={heart} alt="Додати до улюбленого" />
+				{:else}
+					<img src={fillHeart} alt="Прибрати з улюбленого" />
+				{/if}
+			</button>
 		</div>
 	</a>
 	<div class="product-content">
@@ -42,6 +70,7 @@
 	}
 
 	.product-tile-link {
+		position: relative;
 		text-decoration: none;
 		color: inherit;
 		display: block;
@@ -57,6 +86,34 @@
 		width: 100%;
 		height: 168px;
 		overflow: hidden;
+	}
+
+	.icon-heart {
+		position: absolute;
+		top: 5px;
+		right: 5px;
+		z-index: 10;
+	}
+
+	.icon-heart img:hover {
+		filter: invert(33%) sepia(85%) saturate(7390%) hue-rotate(352deg) brightness(85%) contrast(98%);
+	}
+
+	.icon-heart img {
+		height: 28px;
+		width: 28px;
+	}
+
+	.favorite-button {
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		cursor: pointer;
+		border: none;
+		background-color: transparent;
+		border-radius: 50%;
+		padding: 4px;
+		background-color: rgba(204, 204, 204, 0.3);
 	}
 
 	.product-image {

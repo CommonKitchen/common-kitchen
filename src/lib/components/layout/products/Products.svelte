@@ -1,12 +1,13 @@
 <script>
 	import Product from '$lib/components/layout/products/Product.svelte';
+	import { favoriteProducts, toggleFavorite } from '$lib/stores/favoriteStore';
 
 	const { products } = $props();
 </script>
 
 <div class="products-grid">
 	{#each products as product (product.id)}
-		<Product {...product} />
+		<Product {...product} isFavorite={$favoriteProducts.has(product.id)} {toggleFavorite} />
 	{/each}
 </div>
 

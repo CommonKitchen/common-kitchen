@@ -6,6 +6,7 @@
 	import { setCategoryContext } from '$lib/context/categoryContext.js';
 	import { setProductContext } from '$lib/context/productContext.js';
 	import { setCustomerData } from '$lib/stores/customerStore.js';
+	import { setFavoriteProducts } from '$lib/stores/favoriteStore.js';
 	import { getWebApp } from '$lib/utils/telegram.js';
 
 	const debug = true;
@@ -76,6 +77,7 @@
 
 			// Оновлюємо внутрішній стан
 			setCustomerData(data.customer || null);
+			setFavoriteProducts([36]);
 			console.log('Дані клієнта успішно завантажено.');
 		} catch (error) {
 			console.error('Помилка мережі при завантаженні даних клієнта:', error);
