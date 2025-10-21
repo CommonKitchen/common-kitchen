@@ -5,7 +5,7 @@
 </script>
 
 <div class="products-grid">
-	{#each products as product}
+	{#each products as product (product.id)}
 		<Product {...product} />
 	{/each}
 </div>
