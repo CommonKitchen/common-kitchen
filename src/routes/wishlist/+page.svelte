@@ -6,8 +6,7 @@
 	/** @typedef {import('$lib/types.js').Product} Product */
 	/** @type {Product[]} */
 	const allProducts = getProductContext() ?? [];
-	let products;
-	$: products = allProducts.filter((item) => $favoriteProducts.has(item.id));
+	const products = $derived(allProducts.filter((item) => $favoriteProducts.has(item.id)));
 </script>
 
 <div class="favorite-block">
