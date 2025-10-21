@@ -54,13 +54,19 @@
 	/** @type {string} */
 	let comment = $state('');
 	let checkoutError = $state('');
-	let selectedPaymentMethod = $state(paymentMethods[0].id);
+
+	let selectedPaymentMethodId = $state(paymentMethods[0].id);
+	/** @type {PaymentMethod} */
+	const selectedPaymentMethod = $derived(
+		paymentMethods.find((/** @type {PaymentMethod} */ item) => item.id === selectedPaymentMethodId)
+	);
+
 	let currentPickupLocationId = $state(pickupLocations[0].id);
 	let selectedDeliveryTypeId = $state(deliveryTypes[0].id);
 
 	/** @type {DeliveryType} */
 	const selectedDeliveryType = $derived(
-		deliveryTypes.find((/** @type {DeliveryType} */ t) => t.id === selectedDeliveryTypeId)
+		deliveryTypes.find((/** @type {DeliveryType} */ item) => item.id === selectedDeliveryTypeId)
 	);
 	/** @type {boolean} */
 	let isLoading = $state(false);
@@ -224,7 +230,7 @@
 				pickupLocationId:
 					selectedDeliveryType.shippingMethod === 'pickup' ? currentPickupLocationId : null
 			},
-			paymentMethod: selectedPaymentMethod,
+			paymentMethod: selectedPaymentMethodId,
 			subtotal: $cartAmount,
 			totalAmount: finalTotal,
 			comment: comment.trim()
@@ -281,7 +287,10 @@
 		<form onsubmit={handleCheckout}>
 			<div class="cart-title">
 				<Button title="Назад до продукції" onclick={() => goto('/categories')} type="button" />
-				<h2>Ваш кошик</h2>
+				<div class="block-total">
+					<span>Ваш кошик:</span>
+					<span class="total-amount">{finalTotal}<span>₴</span></span>
+				</div>
 			</div>
 			<div class="cart-items">
 				{#each cartItems as item (item.id)}
@@ -353,6 +362,9 @@
 					options={deliveryTypes}
 					bind:selectedOption={selectedDeliveryTypeId}
 					groupName="deliveryType"
+					info={selectedDeliveryType.shippingMethod === 'pickup'
+						? currentPickupLocation?.info
+						: selectedDeliveryType?.info}
 				/>
 
 				{#if selectedDeliveryType.shippingMethod === 'pickup'}
@@ -361,23 +373,16 @@
 						bind:value={currentPickupLocationId}
 						items={pickupLocations}
 					/>
-					<div class="pickup-info">
-						{currentPickupLocation?.info}
-					</div>
 				{:else}
-					<div class="delivery-block">
-						<span class="delivery-description">Сума замовлення для безкоштовной доставки:</span>
-						<span class="text-amount">
-							{freeShippingAmount}<span>₴</span>
-						</span>
-					</div>
+					<div class="delivery-block"></div>
 				{/if}
 
 				<RadioOptions
 					title="Спосіб оплати:"
 					options={paymentMethods}
-					bind:selectedOption={selectedPaymentMethod}
+					bind:selectedOption={selectedPaymentMethodId}
 					groupName="paymentMetod"
+					info={selectedPaymentMethod.info}
 				/>
 
 				<div class="comment-block">
@@ -467,10 +472,6 @@
 		color: #777;
 		margin-bottom: 30px;
 		font-size: 1.1rem;
-	}
-
-	.cart-title h2 {
-		padding-top: 12px;
 	}
 
 	.cart-item {
@@ -578,16 +579,8 @@
 	}
 
 	.delivery-block {
-		display: flex;
-		justify-content: space-between;
-		padding: 44px 0px 46px 0px;
+		padding: 42px 0px 44px 0px;
 		font-size: 1.1rem;
-	}
-
-	.pickup-info {
-		margin: 8px;
-		font-style: italic;
-		color: #555;
 	}
 
 	.delivery-description {
@@ -615,7 +608,6 @@
 	.block-total {
 		display: flex;
 		justify-content: space-between;
-		border-top: 1px solid #eee;
 		font-size: 1.4rem;
 		font-weight: 600;
 		align-items: center;

@@ -1,9 +1,15 @@
 <script>
-	let { title, options, selectedOption = $bindable(), groupName } = $props();
+	let { title, options, selectedOption = $bindable(), groupName, info = '' } = $props();
 </script>
 
 <div class="radio-options">
 	<h3>{title}</h3>
+	<div class="option-info" class:empty={!info}>
+		{#if info}
+			⚠️ {info}
+		{/if}
+	</div>
+
 	<div class="radio-group">
 		{#each options as option (option.id)}
 			<label class="radio-label" for={option.id}>
@@ -29,6 +35,20 @@
 	.radio-options h3 {
 		margin: 0px;
 		font-size: 1.2rem;
+	}
+
+	.option-info {
+		padding: 10px;
+		font-style: italic;
+		color: #555;
+		font-size: 1rem;
+		background-color: #fff3cd;
+	}
+
+	.option-info.empty {
+		padding: 20px 0px 21px 0px;
+		font-size: 1.1rem;
+		background-color: initial;
 	}
 
 	.radio-group {

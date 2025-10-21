@@ -81,6 +81,7 @@
  * @property {string} title
  * @property {string} shippingMethod
  * @property {number} amount
+ * @property {string} info
  */
 
 /**
