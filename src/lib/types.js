@@ -63,21 +63,23 @@
 /**
  * @typedef {object} PickupLocation
  * @property {string} id
- * @property {string} label
+ * @property {string} title
  * @property {string} address
  * @property {string} info
  */
 
 /**
  * @typedef {object} PaymentMethod
- * @property {string} id Уникальный идентификатор способа оплаты (e.g., 'card', 'cash').
- * @property {string} label Читабельное название способа оплаты (e.g., 'Банковская карта').
+ * @property {string} id
+ * @property {string} title
+ * @property {string} info
  */
 
 /**
  * @typedef {object} DeliveryType
  * @property {string} id
- * @property {string} label
+ * @property {string} title
+ * @property {string} shippingMethod
  * @property {number} amount
  */
 

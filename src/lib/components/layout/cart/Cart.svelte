@@ -54,18 +54,23 @@
 	/** @type {string} */
 	let comment = $state('');
 	let checkoutError = $state('');
-	let selectedDeliveryType = $state(deliveryTypes[0].id);
 	let selectedPaymentMethod = $state(paymentMethods[0].id);
 	let currentPickupLocationId = $state(pickupLocations[0].id);
+	let selectedDeliveryTypeId = $state(deliveryTypes[0].id);
 
+	/** @type {DeliveryType} */
+	const selectedDeliveryType = $derived(
+		deliveryTypes.find((/** @type {DeliveryType} */ t) => t.id === selectedDeliveryTypeId)
+	);
 	/** @type {boolean} */
 	let isLoading = $state(false);
 
-	const currentPickupLocation = $derived(() => {
-		/** @type {PickupLocation[]} */
-		const locationList = pickupLocations;
-		return locationList.find((location) => location.id === currentPickupLocationId);
-	});
+	/** @type {PickupLocation} */
+	const currentPickupLocation = $derived(
+		pickupLocations.find(
+			(/** @type {PickupLocation} */ location) => location.id === currentPickupLocationId
+		)
+	);
 
 	const hasCustomer = !!customer;
 
@@ -88,9 +93,9 @@
 		return currentEntity()?.customerLocations ?? [];
 	});
 
-	const currentCustomerLocation = $derived(() => {
-		return currentCustomerLocations().find((loc) => loc.id === currentCustomerLocationId);
-	});
+	const currentCustomerLocation = $derived(
+		currentCustomerLocations().find((loc) => loc.id === currentCustomerLocationId)
+	);
 
 	$effect(() => {
 		const locations = currentEntity()?.customerLocations;
@@ -111,7 +116,7 @@
 		}
 
 		const selectedOption = checkoutConfig.deliveryTypes.find(
-			(/** @type {DeliveryType} */ item) => item.id === selectedDeliveryType
+			(/** @type {DeliveryType} */ item) => item.id === selectedDeliveryTypeId
 		);
 
 		return selectedOption ? selectedOption.amount : 0;
@@ -177,7 +182,7 @@
 			return false;
 		}
 
-		if (selectedDeliveryType === 'pickup' && !currentPickupLocationId) {
+		if (selectedDeliveryType.shippingMethod === 'pickup' && !currentPickupLocationId) {
 			checkoutError = 'Будь ласка, оберіть точку видачі.';
 			return false;
 		}
@@ -216,15 +221,14 @@
 					day: '2-digit'
 				}),
 				amount: deliveryAmount(),
-				pickupLocationId: selectedDeliveryType === 'pickup' ? currentPickupLocationId : null
+				pickupLocationId:
+					selectedDeliveryType.shippingMethod === 'pickup' ? currentPickupLocationId : null
 			},
 			paymentMethod: selectedPaymentMethod,
 			subtotal: $cartAmount,
 			totalAmount: finalTotal,
 			comment: comment.trim()
 		};
-
-		// console.log(orderData);
 
 		try {
 			const response = await fetch(`${apiURL}/cakes/hs/shop/orders`, {
@@ -340,25 +344,25 @@
 
 				<DatePicker
 					title="Дата доставки (приготування):"
-					availableDays={currentCustomerLocation()?.availableDays || [1, 2, 3, 4, 5]}
+					availableDays={currentCustomerLocation?.availableDays || [1, 2, 3, 4, 5]}
 					bind:selectedDate={deliveryDate}
 				/>
 
 				<RadioOptions
 					title="Спосіб отримання:"
 					options={deliveryTypes}
-					bind:selectedOption={selectedDeliveryType}
+					bind:selectedOption={selectedDeliveryTypeId}
 					groupName="deliveryType"
 				/>
 
-				{#if selectedDeliveryType === 'pickup'}
+				{#if selectedDeliveryType.shippingMethod === 'pickup'}
 					<SelectOptions
 						title="Точки видачі:"
 						bind:value={currentPickupLocationId}
 						items={pickupLocations}
 					/>
 					<div class="pickup-info">
-						{currentPickupLocation()?.info}
+						{currentPickupLocation?.info}
 					</div>
 				{:else}
 					<div class="delivery-block">
