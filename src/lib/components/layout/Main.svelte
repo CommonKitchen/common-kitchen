@@ -52,7 +52,7 @@
 			justify-content: center;
 			gap: 36px;
 			background-image:
-				linear-gradient(90deg, #faeee2 0%, rgba(250, 238, 226, 0) 45%), url($lib/assets/main.png);
+				linear-gradient(90deg, #faeee2 0%, rgba(250, 238, 226, 0) 45%), url($lib/assets/main.webp);
 		}
 
 		h1 {

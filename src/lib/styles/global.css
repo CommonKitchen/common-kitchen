@@ -40,7 +40,7 @@ body::before {
 	height: 100%;
 	z-index: -1;
 
-	background-image: url($lib/assets/coffee_beans.png);
+	background-image: url($lib/assets/coffee_beans.webp);
 	background-repeat: repeat;
 	background-size: 192px 192px;
 	opacity: 0.1;
