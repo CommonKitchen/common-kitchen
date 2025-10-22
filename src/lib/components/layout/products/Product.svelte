@@ -14,12 +14,13 @@
 		isFavorite = false
 	} = $props();
 	const productUrl = `/products/${id}`;
+	const imageUrl_168x168 = imageUrl.replace('w_400,h_400', 'w_168,h_168');
 </script>
 
 <div class="product-tile">
 	<a href={productUrl} class="product-tile-link">
 		<div class="image-container">
-			<img src={imageUrl} alt={title} class="product-image" />
+			<img src={imageUrl_168x168} alt={title} class="product-image" />
 		</div>
 		<div class="icon-heart">
 			<button

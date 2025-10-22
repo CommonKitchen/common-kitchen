@@ -26,7 +26,7 @@
 		background-size: cover;
 		background-position: top;
 		background-image:
-			linear-gradient(180deg, #faeee2 0%, rgba(250, 238, 226, 0) 80%), url($lib/assets/main.png);
+			linear-gradient(180deg, #faeee2 0%, rgba(250, 238, 226, 0) 80%), url($lib/assets/main.webp);
 	}
 
 	h1 {
