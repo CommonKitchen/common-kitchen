@@ -1,6 +1,6 @@
 <script>
 	import { onMount } from 'svelte';
-	import { slide, fly } from 'svelte/transition';
+	import { slide, fly, fade } from 'svelte/transition';
 	import { cubicOut, linear } from 'svelte/easing';
 	import MenuContent from './MenuContent.svelte';
 
@@ -38,24 +38,49 @@
 </script>
 
 {#if isOpen && isMobile}
+	<div
+		class="backdrop mobile"
+		onclick={close}
+		transition:fade={{ duration: 150 }}
+		role="presentation"
+	></div>
 	<aside class="menu-panel mobile-fly" transition:fly={{ x: -240, duration: 300, easing: linear }}>
 		<MenuContent {close} />
 	</aside>
 {:else if isOpen && !isMobile}
+	<div
+		class="backdrop"
+		onclick={close}
+		transition:fade={{ duration: 150 }}
+		role="presentation"
+	></div>
 	<aside class="menu-panel desktop-slide" transition:slide={{ duration: 300, easing: cubicOut }}>
 		<MenuContent {close} />
 	</aside>
 {/if}
 
 <style>
+	.backdrop {
+		position: fixed;
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 100%;
+		z-index: 49;
+	}
+
+	.backdrop.mobile {
+		background-color: rgba(0, 0, 0, 0.5);
+	}
+
 	.menu-panel {
 		background-color: var(--common-bg-light);
 		left: 0;
-		width: 240px;
 		z-index: 50;
 	}
 
 	.menu-panel.mobile-fly {
+		width: 280px;
 		position: fixed; /* Должно быть fixed для мобильного меню! */
 		top: 56px;
 		height: calc(100vh - 56px); /* Полная высота экрана */
@@ -64,6 +89,7 @@
 	}
 
 	.menu-panel.desktop-slide {
+		width: 240px;
 		position: absolute;
 		/* Привязываем к левому краю контейнера. (Предполагается, что родительский элемент имеет position: relative) */
 		/*left: 0px; /* Здесь должен быть left: 0 или right: 0 в зависимости от Header.svelte */

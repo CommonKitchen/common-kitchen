@@ -7,6 +7,8 @@
 	/** @type {Product[]} */
 	const products = $derived(getProductContext() ?? []);
 
+	const { isOverlay, toggleSearchOverlay } = $props();
+
 	let searchString = $state('');
 	let activeIndex = $state(-1);
 
@@ -64,6 +66,9 @@
 			case 'Escape':
 				searchString = '';
 				event.preventDefault();
+				if (isOverlay) {
+					toggleSearchOverlay();
+				}
 				break;
 		}
 	}
@@ -80,10 +85,13 @@
 	function handleResultClick() {
 		searchString = '';
 		setTimeout(() => searchInput.focus(), 0);
+		if (isOverlay) {
+			toggleSearchOverlay();
+		}
 	}
 </script>
 
-<form class="search" onsubmit={handleFormSubmit}>
+<form class="search" class:overlay={isOverlay} onsubmit={handleFormSubmit}>
 	<input
 		type="text"
 		placeholder="Пошук продукції"
@@ -91,40 +99,41 @@
 		bind:value={searchString}
 		bind:this={searchInput}
 		onkeydown={handleKeyDown}
+		onclick={(e) => e.stopPropagation()}
 	/>
 	<img src={ico} alt="search" />
-</form>
 
-{#if queryLength >= minimalCharacters && searchResults().length > 0}
-	<div class="search-results">
-		<!-- Отображаем до 5 первых результатов -->
-		{#each searchResults().slice(0, 5) as product, index (product.id)}
-			<a
-				href="/products/{product.id}"
-				class="result-item"
-				class:active={index === activeIndex}
-				onclick={handleResultClick}
-				onmouseenter={() => (activeIndex = index)}
-				onmouseleave={() => (activeIndex = -1)}
-			>
-				<img src={product.imageUrl} alt={product.title} class="result-image" />
-				<div class="result-text">
-					<div class="result-title">{product.title}</div>
-					<div class="result-price">{product.price}₴</div>
-				</div>
-			</a>
-		{/each}
-		{#if searchResults().length > 5}
-			<span class="result-hint"
-				>Показано 5 з {searchResults().length}. Натисніть Enter для всіх результатів.</span
-			>
-		{/if}
-	</div>
-{:else if queryLength > minimalCharacters}
-	<div class="search-results no-results">
-		Не знайдено продукції по запиту "{searchString}"
-	</div>
-{/if}
+	{#if queryLength >= minimalCharacters && searchResults().length > 0}
+		<div class="search-results">
+			<!-- Отображаем до 7 первых результатов -->
+			{#each searchResults().slice(0, 7) as product, index (product.id)}
+				<a
+					href="/products/{product.id}"
+					class="result-item"
+					class:active={index === activeIndex}
+					onclick={handleResultClick}
+					onmouseenter={() => (activeIndex = index)}
+					onmouseleave={() => (activeIndex = -1)}
+				>
+					<img src={product.imageUrl} alt={product.title} class="result-image" />
+					<div class="result-text">
+						<div class="result-title">{product.title}</div>
+						<div class="result-price">{product.price}₴</div>
+					</div>
+				</a>
+			{/each}
+			{#if searchResults().length > 5}
+				<span class="result-hint"
+					>Показано 5 з {searchResults().length}. Натисніть Enter для всіх результатів.</span
+				>
+			{/if}
+		</div>
+	{:else if queryLength > minimalCharacters}
+		<div class="search-results no-results">
+			Не знайдено продукції по запиту "{searchString}"
+		</div>
+	{/if}
+</form>
 
 <style>
 	.search {
@@ -138,6 +147,13 @@
 		z-index: 20;
 	}
 
+	.search.overlay {
+		margin-top: 10px;
+		height: fit-content;
+		width: 80%; /* Или другая желаемая ширина */
+		max-width: 400px; /* Сохраняем ограничение */
+	}
+
 	.search img {
 		width: 24px;
 		height: 24px;
@@ -146,8 +162,8 @@
 	}
 
 	.search input {
-		width: 140px;
-		max-width: 300px;
+		/* width: 140px; */
+		/* max-width: 300px; */
 		border: none;
 		background-color: transparent;
 		padding: 0;
@@ -167,9 +183,9 @@
 		position: absolute;
 		top: 100%; /* Размещаем сразу под полем ввода */
 		left: 0;
+		margin-top: 2px;
 		/* Ширина результатов должна соответствовать ширине поля поиска, если нужно */
 		width: 100%;
-		max-width: 330px; /* Соответствует ширине input + padding */
 		background-color: #ffffff;
 		border: 1px solid #e0d0c0;
 		border-top: none;
@@ -234,6 +250,12 @@
 		border-top: 1px solid #eee;
 		margin-top: 5px;
 	}
+
+	/* @media (min-width: 768px) {
+		.search input {
+			width: 250px;
+		}
+	} */
 
 	@media (min-width: 960px) {
 		.search input {

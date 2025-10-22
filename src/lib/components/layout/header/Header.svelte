@@ -12,6 +12,12 @@
 
 	const phone = '+380990011111';
 
+	let isSearchOverlay = $state(false);
+
+	function toggleSearchOverlay() {
+		isSearchOverlay = !isSearchOverlay;
+	}
+
 	let isMenuOpen = $state(false);
 
 	function toggleMenu() {
@@ -21,6 +27,27 @@
 	function closeMenu() {
 		isMenuOpen = false;
 	}
+
+	$effect(() => {
+		if (isSearchOverlay) {
+			document.body.style.overflow = 'hidden';
+
+			/** @param {KeyboardEvent} event */
+			function handleKeydown(event) {
+				if (event.key === 'Escape') {
+					toggleSearchOverlay();
+				}
+			}
+
+			document.addEventListener('keydown', handleKeydown);
+
+			return () => {
+				document.removeEventListener('keydown', handleKeydown);
+			};
+		} else {
+			document.body.style.overflow = '';
+		}
+	});
 </script>
 
 <header class="main-header">
@@ -40,14 +67,14 @@
 
 		<div class="header-actions">
 			<div class="search-block">
-				<Search />
+				<Search isOverlay={isSearchOverlay} {toggleSearchOverlay} />
 			</div>
 			<div class="phone-block">
 				<Phone {phone} />
 			</div>
 			<div class="icon-block">
 				<div class="icon-loupe">
-					<ActionIcon href="/search" iconSrc={loupe} />
+					<ActionIcon onclick={toggleSearchOverlay} iconSrc={loupe} />
 				</div>
 				<ActionIcon href="/wishlist" iconSrc={heart} />
 				<ActionIcon href="/cart" iconSrc={bag} count={$itemCount} />
@@ -55,6 +82,11 @@
 		</div>
 	</div>
 </header>
+{#if isSearchOverlay}
+	<div class="search-overlay" onclick={toggleSearchOverlay} role="presentation">
+		<Search isOverlay={isSearchOverlay} {toggleSearchOverlay} />
+	</div>
+{/if}
 
 <style>
 	.main-header {
@@ -124,6 +156,29 @@
 	.search-block,
 	.phone-block {
 		display: none;
+	}
+
+	.search-overlay {
+		position: fixed;
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 100%;
+		background-color: rgba(0, 0, 0, 0.5);
+		z-index: 90;
+		display: flex;
+		justify-content: center;
+		padding-top: 66px;
+		backdrop-filter: blur(2px); /* Опционально: эффект размытия */
+	}
+
+	.search-overlay :global(.search) {
+		width: 90%;
+		max-width: 400px;
+	}
+
+	.search-overlay :global(.search input) {
+		width: 100%;
 	}
 
 	@media (min-width: 528px) {
