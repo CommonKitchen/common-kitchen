@@ -23,9 +23,6 @@
 
 /**
  * @typedef {object} CheckoutConfig
- * @property {number} minAmount Сумма минимального заказа.
- * @property {number} shippingAmount Сумма за доставку.
- * @property {number} freeShippingAmount Сумма, начиная с которой доставка бесплатна.
  * @property {PickupLocation[]} pickupLocations Точки самовывоза.
  * @property {PaymentMethod[]} paymentMethods Способы оплаты.
  * @property {DeliveryType[]} deliveryTypes Способы доставки.
@@ -81,6 +78,8 @@
  * @property {string} title
  * @property {string} shippingMethod
  * @property {number} amount
+ * @property {number} minAmount
+ * @property {number} freeShippingThreshold
  * @property {string} info
  */
 

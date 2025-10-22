@@ -36,10 +36,6 @@
 	} = $props();
 
 	const {
-		/** @type {number} */
-		minAmount,
-		/** @type {number} */
-		freeShippingAmount,
 		/** @type {DeliveryType[]} */
 		deliveryTypes,
 		/** @type {PickupLocation[]} */
@@ -68,6 +64,10 @@
 	const selectedDeliveryType = $derived(
 		deliveryTypes.find((/** @type {DeliveryType} */ item) => item.id === selectedDeliveryTypeId)
 	);
+
+	let minAmount = $derived(selectedDeliveryType?.minAmount);
+	let freeShippingThreshold = $derived(selectedDeliveryType?.freeShippingThreshold);
+
 	/** @type {boolean} */
 	let isLoading = $state(false);
 
@@ -117,7 +117,7 @@
 	});
 
 	const deliveryAmount = $derived(() => {
-		if ($cartAmount >= freeShippingAmount) {
+		if ($cartAmount >= freeShippingThreshold) {
 			return 0;
 		}
 
@@ -289,7 +289,7 @@
 				<Button title="Назад до продукції" onclick={() => goto('/categories')} type="button" />
 				<div class="block-total">
 					<span>Ваш кошик:</span>
-					<span class="total-amount">{finalTotal}<span>₴</span></span>
+					<span class="total-amount">{$cartAmount}<span>₴</span></span>
 				</div>
 			</div>
 			<div class="cart-items">

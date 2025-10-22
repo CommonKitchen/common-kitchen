@@ -9,8 +9,6 @@
 	import { setFavoriteProducts } from '$lib/stores/favoriteStore.js';
 	import { getWebApp } from '$lib/utils/telegram.js';
 
-	const debug = true;
-
 	let { children, data } = $props();
 
 	const apiURL = data.shopData?.apiURL ?? '';
@@ -18,22 +16,15 @@
 	onMount(() => {
 		let webApp;
 
-		if (debug) {
-			webApp = {
-				initData:
-					'query_id=AAFsRjIYAAAAAGxGMhg-dsmh&user=%7B%22id%22%3A405948012%2C%22first_name%22%3A%22Olexander%22%2C%22last_name%22%3A%22%22%2C%22language_code%22%3A%22ru%22%2C%22allows_write_to_pm%22%3Atrue%2C%22photo_url%22%3A%22https%3A%5C%2F%5C%2Ft.me%5C%2Fi%5C%2Fuserpic%5C%2F320%5C%2FYSacqszPFJcQEXl9G11mEpWG1P9Ln3ZNY35WASFaZ8U.svg%22%7D&auth_date=1760520197&signature=4cqSSHlBUnDAdEfDlS-qy78OIwznGjvIURVSyI-5DbFb1BRS6N1c4QMIFdxPAWM9w4L85OzL2_8MGFlkMUgiCg&hash=0e4d6c5ce452bdb6203fae090f8db70efbb057386aa5d85955bcea06e800f381'
-			};
-		} else {
-			webApp = getWebApp();
+		webApp = getWebApp();
 
-			if (webApp) {
-				// @ts-ignore
-				webApp.ready();
-				// @ts-ignore
-				webApp.expand();
-			} else {
-				console.warn('Telegram WebApp API не знайдено. Працюємо як звичайний веб-додаток.');
-			}
+		if (webApp) {
+			// @ts-ignore
+			webApp.ready();
+			// @ts-ignore
+			webApp.expand();
+		} else {
+			console.warn('Telegram WebApp API не знайдено. Працюємо як звичайний веб-додаток.');
 		}
 
 		// @ts-ignore
