@@ -1,9 +1,10 @@
 <script>
 	const { title, slug, imageUrl } = $props();
+	const imageUrl_220x220 = imageUrl.replace('w_400,h_400', 'w_220,h_220');
 </script>
 
 <a href={`/categories/${slug}`} class="category-tile">
-	<img src={imageUrl || '/placeholder.png'} alt={title} class="category-image" />
+	<img src={imageUrl_220x220 || '/placeholder.png'} alt={title} class="category-image" />
 	<h2 class="category-title">{title}</h2>
 </a>
 
@@ -22,33 +23,22 @@
 		transition: border-color 0.3s ease;
 		padding: 8px;
 	}
-	/* .product-tile {
-        border: 2px solid transparent;
-        transition: border-color 0.3s ease;
-    } */
 
 	.category-tile:hover {
-		/* box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2); */
 		border-color: #ff6347;
 		box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
 	}
 
-	/* .product-tile:hover {
-		border-color: #ff6347;
-		box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-	} */
-
 	.category-image {
 		width: 100%;
-		/* height: 200px; */
 		height: 168px;
 		object-fit: cover;
 		transition: transform 0.3s ease;
 	}
 
-	/* .category-image:hover {
+	.category-image {
 		transform: scale(1.05);
-	} */
+	}
 	.category-title {
 		font-size: 1.4rem;
 		padding: 8px 4px;
