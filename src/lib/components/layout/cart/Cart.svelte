@@ -221,10 +221,11 @@
 		isLoading = true;
 
 		const orderData = {
-			customer: {
-				entityId: currentEntityId,
-				locationId: currentCustomerLocationId
-			},
+			customer: currentEntityId,
+			paymentMethod: selectedPaymentMethodId,
+			subtotal: $cartAmount,
+			totalAmount: finalTotal,
+			comment: comment.trim(),
 			products: $cart.map((item) => ({
 				id: item.id,
 				quantity: item.quantity,
@@ -239,13 +240,11 @@
 					day: '2-digit'
 				}),
 				amount: deliveryAmount(),
-				pickupLocationId:
-					selectedDeliveryType.shippingMethod === 'pickup' ? currentPickupLocationId : null
-			},
-			paymentMethod: selectedPaymentMethodId,
-			subtotal: $cartAmount,
-			totalAmount: finalTotal,
-			comment: comment.trim()
+				location:
+					selectedDeliveryType.shippingMethod === 'pickup'
+						? currentPickupLocationId
+						: currentCustomerLocationId
+			}
 		};
 
 		try {
