@@ -253,7 +253,8 @@
 				method: 'POST',
 				headers: {
 					'Content-Type': 'application/json',
-					Accept: 'application/json'
+					Accept: 'application/json',
+					'X-Telegram-Init-Data': initData
 				},
 				body: JSON.stringify(orderData)
 			});
