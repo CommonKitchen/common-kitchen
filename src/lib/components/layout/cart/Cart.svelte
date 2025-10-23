@@ -14,6 +14,7 @@
 	import RadioOptions from '$lib/components/ui/RadioOptions.svelte';
 	import SelectOptions from '$lib/components/ui/SelectOptions.svelte';
 	import QuantitySelector from '$lib/components/ui/QuantitySelector.svelte';
+	import { getWebApp } from '$lib/utils/telegram';
 
 	/** @typedef {import('$lib/types.js').Product} Product */
 	/** @typedef {import('$lib/types.js').CheckoutConfig} CheckoutConfig */
@@ -206,6 +207,17 @@
 			return;
 		}
 
+		let webApp;
+
+		webApp = getWebApp();
+
+		// @ts-ignore
+		const initData = webApp?.initData;
+		if (!initData) {
+			console.warn('Telegram WebApp.initData не знайдено. Замовоення неможливе.');
+			return;
+		}
+
 		isLoading = true;
 
 		const orderData = {
@@ -220,7 +232,7 @@
 				amount: item.price * item.quantity
 			})),
 			delivery: {
-				type: selectedDeliveryType,
+				type: selectedDeliveryTypeId,
 				date: deliveryDate.toLocaleDateString('en-CA', {
 					year: 'numeric',
 					month: '2-digit',
@@ -416,7 +428,11 @@
 
 				{#if !hasCustomer}
 					<div class="warning-block">
-						⚠️ Замовлення можуть оформити тільки зареєстровані клієнти.
+						⚠️ Замовлення можуть оформити тільки зареєстровані клієнти. <br />
+						Для реєстрації перейдіть за посиланням у наш телеграм-бот
+						<a href="https://t.me/seeyoubakerybot" target="_blank" rel="noopener noreferrer"
+							>t.me/seeyoubakerybot</a
+						>
 					</div>
 				{/if}
 

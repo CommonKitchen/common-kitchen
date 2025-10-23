@@ -68,7 +68,7 @@
 
 			// Оновлюємо внутрішній стан
 			setCustomerData(data.customer || null);
-			setFavoriteProducts([36]);
+			// setFavoriteProducts([]);
 			console.log('Дані клієнта успішно завантажено.');
 		} catch (error) {
 			console.error('Помилка мережі при завантаженні даних клієнта:', error);
