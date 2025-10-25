@@ -4,11 +4,6 @@
 
 <div class="radio-options">
 	<h3>{title}</h3>
-	<div class="option-info" class:empty={!info}>
-		{#if info}
-			⚠️ {info}
-		{/if}
-	</div>
 
 	<div class="radio-group">
 		{#each options as option (option.id)}
@@ -24,6 +19,11 @@
 			</label>
 		{/each}
 	</div>
+	<div class="option-info" class:empty={!info}>
+		{#if info}
+			⚠️ {info}
+		{/if}
+	</div>
 </div>
 
 <style>
@@ -33,7 +33,7 @@
 	}
 
 	.radio-options h3 {
-		margin: 0px;
+		margin: 0px 0px 10px 0px;
 		font-size: 1.2rem;
 	}
 
@@ -43,6 +43,7 @@
 		color: #555;
 		font-size: 1rem;
 		background-color: #fff3cd;
+		margin: 10px 0px;
 	}
 
 	.option-info.empty {

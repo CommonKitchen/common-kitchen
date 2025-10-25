@@ -45,6 +45,8 @@
 		paymentMethods
 	} = checkoutConfig;
 
+	let isOrderSuccess = $state(false);
+
 	/** @type {Date} */
 	let deliveryDate = $state(new Date());
 
@@ -53,6 +55,7 @@
 	let checkoutError = $state('');
 
 	let selectedPaymentMethodId = $state(paymentMethods[0].id);
+
 	/** @type {PaymentMethod} */
 	const selectedPaymentMethod = $derived(
 		paymentMethods.find((/** @type {PaymentMethod} */ item) => item.id === selectedPaymentMethodId)
@@ -273,10 +276,9 @@
 				throw new Error(errorMessage);
 			}
 
-			// const data = await response.json();
-			// Успішне оформлення
-			// clearCart(); // Очищаємо кошик
-			// goto('/order-success'); // Перенаправляємо на сторінку успіху
+			const data = await response.json();
+			clearCart();
+			isOrderSuccess = true;
 		} catch (error) {
 			checkoutError = 'Не вдалося оформити замовлення. Спробуйте пізніше.';
 			console.error(error);
@@ -287,7 +289,18 @@
 </script>
 
 <div class="cart-container">
-	{#if $cart.length === 0}
+	{#if isOrderSuccess}
+		<div class="empty-cart-message">
+			<h2>Вашe замовлення успішно оформлено!</h2>
+			<p class="empty-message" style="margin-bottom: 10px;">
+				Дякуємо за ваш вибір. Деталі замовлення ви завжди можете переглянути в розділі
+			</p>
+			<a href={`/myorders`}>«Мої замовлення ✅»</a>
+			<div style="margin-top: 20px;">
+				<Button title="Повернутись до продукції" onclick={() => goto('/categories')} />
+			</div>
+		</div>
+	{:else if $cart.length === 0}
 		<div class="empty-cart-message">
 			<h2>Ваш кошик порожній 😔</h2>
 			<p class="empty-message">Додайте що-небудь смачне!</p>
@@ -583,10 +596,6 @@
 
 	.warning-block span {
 		font-size: 0.9rem;
-	}
-
-	.customer-info {
-		padding-bottom: 15px;
 	}
 
 	.entity-container {
