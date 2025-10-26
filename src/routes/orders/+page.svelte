@@ -3,7 +3,7 @@
 	import { getWebApp } from '$lib/utils/telegram';
 
 	const { data } = $props();
-	const apiURL = $derived(data?.shopData?.apiURL ?? '');
+	const apiURL = data?.shopData?.apiURL ?? '';
 
 	const webApp = getWebApp();
 	// @ts-ignore
@@ -31,7 +31,9 @@
 		}
 
 		try {
-			const response = await fetch(`${apiURL}/cakes/hs/shop/orders`, {
+			const url = `${apiURL}/cakes/hs/shop/orders`;
+			console.log('url', url);
+			const response = await fetch(url, {
 				method: 'GET',
 				headers: {
 					'Content-Type': 'application/json',
