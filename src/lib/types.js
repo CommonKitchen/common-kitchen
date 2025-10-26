@@ -115,6 +115,7 @@
  * @property {string} paymentMethod
  * @property {number} total
  * @property {number} deliveryAmount
+ * @property {string} note
  * @property {OrderProduct[]} products
  */
 
