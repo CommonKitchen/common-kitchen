@@ -443,8 +443,8 @@
 					<div class="warning-block">
 						⚠️ Замовлення можуть оформити тільки зареєстровані клієнти. <br />
 						Для реєстрації перейдіть за посиланням у наш телеграм-бот
-						<a href="https://t.me/seeyoubakerybot" target="_blank" rel="noopener noreferrer"
-							>t.me/seeyoubakerybot</a
+						<a href="https://t.me/commonkitchenbot" target="_blank" rel="noopener noreferrer"
+							>t.me/CommonKitchenbot</a
 						>
 					</div>
 				{/if}
