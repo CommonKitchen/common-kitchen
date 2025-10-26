@@ -97,7 +97,7 @@
 
 						<!-- Сумма -->
 						<p class="order-total">
-							Сумма: {order.total.toFixed(2)} UAH
+							Сумма: {order.total} UAH
 						</p>
 
 						<!-- Состав заказа -->
