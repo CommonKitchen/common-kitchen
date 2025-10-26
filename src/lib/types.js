@@ -95,4 +95,27 @@
  * @property {ShopData} shopData
  */
 
+/**
+ * @typedef {object} OrderProduct
+ * @property {string} title
+ * @property {number} quantity
+ * @property {number} price
+ * @property {number} amount
+ * @property {number} discount
+ * @property {number} discountedAmount
+ */
+
+/**
+ * @typedef {object} Order
+ * @property {number} id
+ * @property {string} date
+ * @property {string} customer
+ * @property {string} location
+ * @property {string} deliveryType
+ * @property {string} paymentMethod
+ * @property {number} total
+ * @property {number} deliveryAmount
+ * @property {OrderProduct[]} products
+ */
+
 export default {};

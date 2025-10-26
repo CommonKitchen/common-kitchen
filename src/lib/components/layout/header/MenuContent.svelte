@@ -1,10 +1,11 @@
 <script>
 	import { getCategoryContext } from '$lib/context/categoryContext.js';
+	import { customer } from '$lib/stores/customerStore.js';
 
 	/** @typedef {import('$lib/types.js').Category} Category */
 	/** @type {Category[]} */
 	const categories = $derived(getCategoryContext() ?? []);
-
+	const hasCustomer = !!customer;
 	const { close } = $props();
 </script>
 
@@ -19,6 +20,10 @@
 		{/each}
 		<div class="nav-separator"></div>
 		<a href="/cart" class="nav-link" onclick={close}>Корзина</a>
+		{#if hasCustomer}
+			<div class="nav-separator"></div>
+			<a href="/orders" class="nav-link" onclick={close}>Мої замовлення</a>
+		{/if}
 	</nav>
 </div>
 
