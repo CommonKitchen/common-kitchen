@@ -32,7 +32,6 @@
 
 		try {
 			const url = `${apiURL}/cakes/hs/shop/orders`;
-			console.log('url', url);
 			const response = await fetch(url, {
 				method: 'GET',
 				headers: {
@@ -42,12 +41,14 @@
 			});
 
 			if (!response.ok) {
-				const errorText = await response.text();
+				error = 'not ok';
+				const errorText = await response.json();
 				throw new Error(`Ошибка сервера ${response.status}: ${errorText || response.statusText}`);
 			}
 
 			const data = await response.json();
 			orders = data.orders || [];
+			console.log('orders', orders);
 		} catch (e) {
 			console.error('Ошибка при загрузке заказов:', e);
 			error = `Ошибка при загрузке: {e.message}`;
