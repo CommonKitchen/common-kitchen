@@ -33,6 +33,7 @@
  * @property {string} name
  * @property {string} phone
  * @property {legalEntity[]} legalEntities Контрагенты
+ * @property {Order[]} orders
  */
 
 /**

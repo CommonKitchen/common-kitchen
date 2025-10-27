@@ -1,65 +1,10 @@
 <script>
-	import { onMount } from 'svelte';
-	import { getWebApp } from '$lib/utils/telegram';
+	import { customer } from '$lib/stores/customerStore.js';
 
-	const { data } = $props();
-	const apiURL = data?.shopData?.apiURL ?? '';
-
-	const webApp = getWebApp();
-	// @ts-ignore
-	const initData = webApp?.initData;
-
-	/** @typedef {import('$lib/types.js').Order} Order */
-	/** @type {Order[]} */
-	let orders = $state([]);
-	let loading = $state(true);
-	let error = $state('');
-
-	// Состояние для управления видимостью дополнительных полей и содержимого
 	/** @type {Record<string, boolean>} */
 	let expandedDetails = $state({}); // Для "Реквизиты"
 	/** @type {Record<string, boolean>} */
 	let expandedProducts = $state({}); // Для "Содержимое заказа"
-
-	onMount(() => {
-		fetchOrders();
-	});
-
-	async function fetchOrders() {
-		loading = true;
-		error = '';
-		orders = [];
-
-		if (!initData) {
-			error = 'Помилка ініціалізації: не вдалося отримати дані Telegram.';
-			loading = false;
-			return;
-		}
-
-		try {
-			const url = `${apiURL}/cakes/hs/shop/orders`;
-			const response = await fetch(url, {
-				method: 'GET',
-				headers: {
-					'Content-Type': 'application/json',
-					'X-Telegram-Init-Data': initData
-				}
-			});
-
-			if (!response.ok) {
-				error = 'Помилка отримання даних.';
-				throw new Error(`Помилка сервера ${response.status}`);
-			}
-
-			const data = await response.json();
-			orders = data.orders || [];
-		} catch (/**@typeof */ e) {
-			console.error('Помилка завантаження замовлень:', e);
-			error = 'Помилка при завантаженні';
-		} finally {
-			loading = false;
-		}
-	}
 
 	/** @param {string | number} id */
 	function toggleDetails(id) {
@@ -79,24 +24,13 @@
 	<div class="orders-container">
 		<h3 class="orders-title">Мої замовлення</h3>
 
-		{#if loading}
-			<div class="loading-indicator info-block">
-				<div class="css-spinner"></div>
-				<p>Завантаження замовлень...</p>
-			</div>
-		{:else if error}
-			<div class="error-block">
-				<p class="font-bold">Виникла помилка при завантаженні даних</p>
-				<p class="text-sm mt-1">{error}</p>
-				<button onclick={fetchOrders} class="retry-button"> Повторити завантаження </button>
-			</div>
-		{:else if orders.length === 0}
+		{#if $customer?.orders.length === 0}
 			<div class="no-orders-block info-block">
 				<p class="text-xl">У вас поки що немає оформлених замовлень.</p>
 			</div>
 		{:else}
 			<div class="orders-list">
-				{#each orders as order (order.id)}
+				{#each $customer?.orders as order (order.id)}
 					<div class="order-card">
 						<div class="order-main-info">
 							<div class="info-group">
@@ -198,12 +132,10 @@
 </div>
 
 <style>
-	/* --- Общие стили --- */
 	.orders-block {
 		padding: 1rem;
 		max-width: 600px;
 		margin: 0 auto;
-		font-family: 'Inter', sans-serif;
 	}
 
 	.orders-title {
@@ -211,10 +143,8 @@
 		font-weight: 700;
 		margin-bottom: 1.5rem;
 		text-align: center;
-		color: var(--tg-theme-text-color, #000); /* Цвет текста из темы TG */
 	}
 
-	/* --- Информационные/Ошибочные блоки --- */
 	.info-block {
 		padding: 1.5rem;
 		border-radius: 12px;
@@ -224,45 +154,6 @@
 		margin-top: 1rem;
 	}
 
-	.error-block {
-		padding: 1.5rem;
-		border-radius: 12px;
-		background-color: #ffe0e0;
-		border: 1px solid #f00;
-		color: #900;
-		text-align: center;
-		margin-top: 1rem;
-	}
-
-	.retry-button {
-		margin-top: 1rem;
-		padding: 0.5rem 1rem;
-		background-color: var(--tg-theme-button-color, #007bff);
-		color: var(--tg-theme-button-text-color, white);
-		border: none;
-		border-radius: 8px;
-		cursor: pointer;
-		transition: background-color 0.2s;
-	}
-
-	/* --- CSS Спиннер --- */
-	.css-spinner {
-		width: 2rem;
-		height: 2rem;
-		border: 4px solid var(--tg-theme-hint-color, #ccc);
-		border-top-color: var(--tg-theme-button-color, #007bff);
-		border-radius: 50%;
-		margin: 0 auto 0.5rem;
-		animation: spin 1s linear infinite;
-	}
-
-	@keyframes spin {
-		to {
-			transform: rotate(360deg);
-		}
-	}
-
-	/* --- Стили списка и карточки --- */
 	.orders-list {
 		display: grid;
 		gap: 1.5rem;
@@ -270,9 +161,10 @@
 
 	.order-card {
 		padding: 1rem;
-		border: 1px solid var(--tg-theme-secondary-bg-color, #ddd);
+		/* border: 1px solid var(--tg-theme-secondary-bg-color, #ddd); */
 		border-radius: 16px;
-		background-color: var(--tg-theme-bg-color, #ffffff);
+		background-color: white;
+		/* background-color: var(--tg-theme-bg-color, #ffffff); */
 		box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
 		transition: all 0.3s ease;
 	}
