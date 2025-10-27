@@ -1,6 +1,31 @@
 <script>
 	import { customer } from '$lib/stores/customerStore.js';
-	import Order from '$lib/components/layout/order/Order.svelte';
+	import Order from '$lib/components/layout/orders/Order.svelte';
+	import { clearCart, updateCart } from '$lib/stores/cartStore';
+	import { goto } from '$app/navigation';
+
+	import { getProductContext } from '$lib/context/productContext';
+	const products = getProductContext() ?? [];
+
+	/** @typedef {import('$lib/types.js').Order} OrderType
+	 * @typedef {import('$lib/types').Product} Product
+	 * @param {OrderType} order
+	 */
+	function handleRepeat(order) {
+		clearCart();
+
+		order.products.forEach((product) => {
+			const currentProduct = products.find((/** @type {Product} */ item) => item.id === product.id);
+
+			if (!currentProduct) {
+				return;
+			}
+
+			updateCart(currentProduct.id, currentProduct.price, product.quantity);
+		});
+
+		goto('/cart');
+	}
 </script>
 
 <div class="orders-block">
@@ -14,7 +39,7 @@
 		{:else}
 			<div class="orders-list">
 				{#each $customer?.orders as order (order.id)}
-					<Order {order} />
+					<Order {order} {handleRepeat} />
 				{/each}
 			</div>
 		{/if}

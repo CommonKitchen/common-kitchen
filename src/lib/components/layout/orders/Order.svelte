@@ -1,19 +1,16 @@
 <script>
+	import { slide } from 'svelte/transition';
 	import Button from '$lib/components/ui/Button.svelte';
 	import OrderTitle from '$lib/components/ui/OrderTitle.svelte';
+	import { cubicOut } from 'svelte/easing';
 
-	const { order } = $props();
+	const { order, handleRepeat } = $props();
 
-	/** @type {Record<string, boolean>} */
-	let expandedProducts = $state({});
+	let isExpanded = $state(false);
 
-	/** @param {string | number} id */
-	function toggleProducts(id) {
-		expandedProducts = { ...expandedProducts, [id]: !expandedProducts[id] };
+	function toggleProducts() {
+		isExpanded = !isExpanded;
 	}
-
-	/** @param {number} id */
-	function repeatOrder(id) {}
 </script>
 
 <div class="order-card">
@@ -40,17 +37,16 @@
 		{/if}
 	</div>
 	<div class="action-row">
-		<Button title={'Повторити'} onclick={() => repeatOrder(order.id)} />
+		<Button title={'Повторити'} onclick={() => handleRepeat(order)} />
 		<button
+			onclick={toggleProducts}
 			class="toggle-details-button"
-			aria-expanded={expandedProducts[order.id]}
+			aria-expanded={isExpanded}
 			aria-controls={`products-${order.id}`}
-			onclick={() => toggleProducts(order.id)}
-			title={expandedProducts[order.id] ? 'Сховати позиції' : 'Показати позиції'}
+			title={isExpanded ? 'Сховати позиції' : 'Показати позиції'}
 		>
 			<svg
-				class="arrow-icon"
-				class:expanded={expandedProducts[order.id]}
+				class="arrow-icon {isExpanded ? 'expanded' : ''}"
 				viewBox="0 0 24 24"
 				fill="currentColor"
 				xmlns="http://www.w3.org/2000/svg"
@@ -60,10 +56,10 @@
 			</svg>
 		</button>
 	</div>
-	{#if expandedProducts[order.id]}
-		<div class="products-block">
+	{#if isExpanded}
+		<div class="products-block" transition:slide={{ duration: 400, easing: cubicOut }}>
 			<ul class="order-items-list">
-				{#each order.products as item (item.id)}
+				{#each order.products as item, index (index)}
 					<li class="order-item">
 						<span class="item-title">{item.title}</span>
 						<div class="item-details-row">
@@ -142,6 +138,7 @@
 	}
 
 	.products-block {
+		overflow: hidden;
 		margin-top: 0.5rem;
 		background-color: #f9f9f9;
 		border-radius: 8px;
@@ -155,6 +152,9 @@
 	}
 
 	.order-item {
+		display: flex;
+		justify-content: space-between;
+		align-items: flex-start;
 		padding: 0.25rem 0.75rem;
 		border-radius: 6px;
 		font-size: 0.9rem;
@@ -169,6 +169,7 @@
 		font-weight: 500;
 		margin-bottom: 0.2rem;
 		line-height: 1.3;
+		flex-grow: 1;
 	}
 
 	.item-details-row {
