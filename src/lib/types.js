@@ -98,6 +98,7 @@
 
 /**
  * @typedef {object} OrderProduct
+ * @property {number} id
  * @property {string} title
  * @property {number} quantity
  * @property {number} price

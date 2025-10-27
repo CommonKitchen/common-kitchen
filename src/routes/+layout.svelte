@@ -20,7 +20,7 @@
 		if (debug) {
 			webApp = {
 				initData:
-					'query_id=AAFsRjIYAAAAAGxGMhg-dsmh&user={"id":405948012,"first_name":"Olexander","last_name":"","language_code":"ru","allows_write_to_pm":true,"photo_url":"https://t.me/i/userpic/320/YSacqszPFJcQEXl9G11mEpWG1P9Ln3ZNY35WASFaZ8U.svg"}&auth_date=1760520197&signature=4cqSSHlBUnDAdEfDlS-qy78OIwznGjvIURVSyI-5DbFb1BRS6N1c4QMIFdxPAWM9w4L85OzL2_8MGFlkMUgiCg&hash=0e4d6c5ce452bdb6203fae090f8db70efbb057386aa5d85955bcea06e800f381'
+					'query_id=AAFsRjIYAAAAAGxGMhiXftHC&user=%7B%22id%22%3A405948012%2C%22first_name%22%3A%22Olexander%22%2C%22last_name%22%3A%22%22%2C%22language_code%22%3A%22ru%22%2C%22allows_write_to_pm%22%3Atrue%2C%22photo_url%22%3A%22https%3A%5C%2F%5C%2Ft.me%5C%2Fi%5C%2Fuserpic%5C%2F320%5C%2FYSacqszPFJcQEXl9G11mEpWG1P9Ln3ZNY35WASFaZ8U.svg%22%7D&auth_date=1761562755&signature=Xh-V123nFu0o1mGgZNnFL4LYJg8KH_BrXRm3PxChGmhtUm_Lxi7xAo9QL6Uaigyi1nqpUDfcbRUWOI8NBPejAQ&hash=3e36f75e88a81dba351658f714721f07230a43ccc31b606166b829b9b3855a01'
 			};
 			// 'query_id=AAFsRjIYAAAAAGxGMhg-dsmh&user=%7B%22id%22%3A405948012%2C%22first_name%22%3A%22Olexander%22%2C%22last_name%22%3A%22%22%2C%22language_code%22%3A%22ru%22%2C%22allows_write_to_pm%22%3Atrue%2C%22photo_url%22%3A%22https%3A%5C%2F%5C%2Ft.me%5C%2Fi%5C%2Fuserpic%5C%2F320%5C%2FYSacqszPFJcQEXl9G11mEpWG1P9Ln3ZNY35WASFaZ8U.svg%22%7D&auth_date=1760520197&signature=4cqSSHlBUnDAdEfDlS-qy78OIwznGjvIURVSyI-5DbFb1BRS6N1c4QMIFdxPAWM9w4L85OzL2_8MGFlkMUgiCg&hash=0e4d6c5ce452bdb6203fae090f8db70efbb057386aa5d85955bcea06e800f381'
 		} else {
@@ -38,7 +38,6 @@
 
 		// @ts-ignore
 		const initData = webApp?.initData;
-		console.log(initData);
 		if (initData && apiURL) {
 			fetchCustomerData(initData);
 		} else {
