@@ -335,7 +335,7 @@
 				throw new Error(errorMessage);
 			}
 
-			const data = await response.json();
+			data = await response.json();
 		} catch (error) {
 			checkoutError = 'Не вдалося оформити замовлення. Спробуйте пізніше.';
 			console.error('API Checkout Error:', error);
