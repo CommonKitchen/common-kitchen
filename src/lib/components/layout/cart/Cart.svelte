@@ -343,6 +343,7 @@
 			return;
 		}
 
+		console.log('data', data);
 		if (
 			selectedPaymentMethodId === 'wayfopay' &&
 			data?.paymentData &&
