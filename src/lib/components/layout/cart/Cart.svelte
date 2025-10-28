@@ -306,6 +306,9 @@
 			}
 		};
 
+		/** @type {any} */
+		let data = null;
+
 		try {
 			const response = await fetch(`${apiURL}/cakes/hs/shop/orders`, {
 				method: 'POST',
@@ -333,27 +336,35 @@
 			}
 
 			const data = await response.json();
-
-			if (
-				selectedPaymentMethodId === 'wayfopay' &&
-				data.paymentData &&
-				typeof data.paymentData === 'object'
-			) {
-				wayforpayRedirect(data.paymentData);
-
-				// Оскільки функція handleWayforpayRedirect викликає form.submit(),
-				// браузер перенаправляється, і подальший код тут не виконується.
-				return;
-			}
-
-			clearCart();
-			isOrderSuccess = true;
 		} catch (error) {
 			checkoutError = 'Не вдалося оформити замовлення. Спробуйте пізніше.';
-			console.error(error);
-		} finally {
+			console.error('API Checkout Error:', error);
 			isLoading = false;
+			return;
 		}
+
+		if (
+			selectedPaymentMethodId === 'wayfopay' &&
+			data?.paymentData &&
+			typeof data.paymentData === 'object'
+		) {
+			try {
+				wayforpayRedirect(data.paymentData);
+				return;
+			} catch (redirectError) {
+				checkoutError =
+					'Помилка перенаправлення до платіжного шлюзу. Спробуйте інший спосіб оплати.';
+				console.error('Redirect Error:', redirectError);
+			}
+		}
+
+		// 4. Логика успеха для НЕ-Wayforpay (или если Wayforpay Redirection не удалось)
+		if (!checkoutError) {
+			clearCart();
+			isOrderSuccess = true;
+		}
+
+		isLoading = false;
 	}
 </script>
 
