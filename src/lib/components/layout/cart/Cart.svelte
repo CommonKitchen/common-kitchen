@@ -295,7 +295,7 @@
 			<p class="empty-message" style="margin-bottom: 10px;">
 				Дякуємо за ваш вибір. Деталі замовлення ви завжди можете переглянути в розділі
 			</p>
-			<a href={`/myorders`}>«Мої замовлення ✅»</a>
+			<a href={`/orders`}>«Мої замовлення ✅»</a>
 			<div style="margin-top: 20px;">
 				<Button title="Повернутись до продукції" onclick={() => goto('/categories')} />
 			</div>
