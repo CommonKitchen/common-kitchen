@@ -345,7 +345,7 @@
 
 		console.log('data', data);
 		if (
-			selectedPaymentMethodId === 'wayfopay' &&
+			selectedPaymentMethodId === 'wayforpay' &&
 			data?.paymentData &&
 			typeof data.paymentData === 'object'
 		) {
