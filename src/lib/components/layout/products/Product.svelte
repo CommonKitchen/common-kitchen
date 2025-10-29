@@ -68,6 +68,8 @@
 		border: 2px solid transparent;
 		overflow: hidden;
 		transition: border-color 0.3s ease;
+		box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+		/* border: 1px solid var(--common-border-dark); */
 	}
 
 	.product-tile-link {

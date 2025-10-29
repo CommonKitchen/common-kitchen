@@ -1,5 +1,6 @@
 :root {
-	--background-color: #faeee2;
+	/* --background-color: #faeee2; */
+	--background-color: #f4f4f4;
 	--main-color: #e24511;
 	--main-active-color: #a8330c;
 	--footer-background: #d2c6ba;
@@ -40,11 +41,11 @@ body::before {
 	height: 100%;
 	z-index: -1;
 
-	background-image: url($lib/assets/coffee_beans.webp);
-	background-repeat: repeat;
-	background-size: 192px 192px;
-	opacity: 0.1;
-	filter: brightness(1.2);
+	/* background-image: url($lib/assets/coffee_beans.webp); */
+	/* background-repeat: repeat; */
+	/* background-size: 192px 192px; */
+	/* opacity: 0.1; */
+	/* filter: brightness(1.2); */
 }
 
 .content-wrap {
