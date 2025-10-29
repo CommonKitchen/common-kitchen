@@ -1,7 +1,7 @@
 import { redirect } from '@sveltejs/kit';
 
 /** @type {import('./$types').RequestHandler} */
-export async function POST({ request, url }) {
+export async function POST({ request }) {
 	console.log('POST');
 	try {
 		// 1. Извлекаем данные, отправленные WayForPay
@@ -37,6 +37,7 @@ export async function POST({ request, url }) {
 
 		// Если статус неизвестен, перенаправляем на страницу ожидания
 		// throw redirect(303, `${url.pathname}?status=pending&orderId=${orderId}`);
+		throw redirect(303, `/payment`);
 	} catch (error) {
 		console.error('Ошибка обработки WayForPay POST:', error);
 		// В случае любой ошибки перенаправляем на страницу с общей ошибкой
@@ -70,7 +71,7 @@ export async function POST({ request, url }) {
 
 	// Вернем 200 OK, чтобы удовлетворить WayForPay, если они считают,
 	// что это их Callback URL (что часто совпадает с Return URL).
-	return new Response('OK', { status: 200 });
+	// return new Response('OK', { status: 200 });
 }
 
 // WayForPay также может делать GET-запрос для проверки, его можно оставить пустым
