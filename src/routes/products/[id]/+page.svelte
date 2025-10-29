@@ -64,7 +64,7 @@
 
 		<div class="price-block">
 			<div class="action-panel">
-				<CartButtons id={product?.id} price={product?.id} minOrder={product?.minOrder} />
+				<CartButtons id={product?.id} price={product?.price} minOrder={product?.minOrder} />
 			</div>
 			<div class="product-price">
 				{product?.price} <span>₴</span>

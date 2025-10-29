@@ -234,7 +234,7 @@
 						value.forEach((item) => {
 							const input = document.createElement('input');
 							input.type = 'hidden';
-							input.name = key;
+							input.name = `${key}[]`;
 							input.value = String(item);
 							form.appendChild(input);
 						});
@@ -266,9 +266,17 @@
 			return;
 		}
 
-		let webApp;
+		const debug = !true;
 
-		webApp = getWebApp();
+		let webApp;
+		if (debug) {
+			webApp = {
+				initData:
+					'query_id=AAFsRjIYAAAAAGxGMhiXftHC&user=%7B%22id%22%3A405948012%2C%22first_name%22%3A%22Olexander%22%2C%22last_name%22%3A%22%22%2C%22language_code%22%3A%22ru%22%2C%22allows_write_to_pm%22%3Atrue%2C%22photo_url%22%3A%22https%3A%5C%2F%5C%2Ft.me%5C%2Fi%5C%2Fuserpic%5C%2F320%5C%2FYSacqszPFJcQEXl9G11mEpWG1P9Ln3ZNY35WASFaZ8U.svg%22%7D&auth_date=1761562755&signature=Xh-V123nFu0o1mGgZNnFL4LYJg8KH_BrXRm3PxChGmhtUm_Lxi7xAo9QL6Uaigyi1nqpUDfcbRUWOI8NBPejAQ&hash=3e36f75e88a81dba351658f714721f07230a43ccc31b606166b829b9b3855a01'
+			};
+		} else {
+			webApp = getWebApp();
+		}
 
 		// @ts-ignore
 		const initData = webApp?.initData;
@@ -344,6 +352,7 @@
 		}
 
 		console.log('data', data);
+
 		if (
 			selectedPaymentMethodId === 'wayforpay' &&
 			data?.paymentData &&
@@ -374,11 +383,20 @@
 		<div class="empty-cart-message">
 			<h2>Вашe замовлення успішно оформлено!</h2>
 			<p class="empty-message" style="margin-bottom: 10px;">
-				Дякуємо за ваш вибір. Деталі замовлення ви завжди можете переглянути в розділі
+				Дякуємо за ваш вибір. Деталі замовлення ви завжди можете переглянути в розділі «Мої
+				замовлення»
 			</p>
-			<a href={`/orders`}>«Мої замовлення ✅»</a>
-			<div style="margin-top: 20px;">
-				<Button title="Повернутись до продукції" onclick={() => goto('/categories')} />
+			<div style="weight: 300px">
+				<div style="margin-top: 20px;">
+					<Button
+						title="Перейти до моїх замовлень"
+						stretch={true}
+						onclick={() => goto('/orders')}
+					/>
+				</div>
+				<div style="margin-top: 20px;">
+					<Button title="Перейти до продукції" stretch={true} onclick={() => goto('/categories')} />
+				</div>
 			</div>
 		</div>
 	{:else if $cart.length === 0}

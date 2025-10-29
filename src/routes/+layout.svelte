@@ -11,21 +11,29 @@
 
 	let { children, data } = $props();
 
+	const debug = !true;
+
 	const apiURL = data.shopData?.apiURL ?? '';
 
 	onMount(() => {
 		let webApp;
-		webApp = getWebApp();
-
-		if (webApp) {
-			// @ts-ignore
-			webApp.ready();
-			// @ts-ignore
-			webApp.expand();
+		if (debug) {
+			webApp = {
+				initData:
+					'query_id=AAFsRjIYAAAAAGxGMhiXftHC&user=%7B%22id%22%3A405948012%2C%22first_name%22%3A%22Olexander%22%2C%22last_name%22%3A%22%22%2C%22language_code%22%3A%22ru%22%2C%22allows_write_to_pm%22%3Atrue%2C%22photo_url%22%3A%22https%3A%5C%2F%5C%2Ft.me%5C%2Fi%5C%2Fuserpic%5C%2F320%5C%2FYSacqszPFJcQEXl9G11mEpWG1P9Ln3ZNY35WASFaZ8U.svg%22%7D&auth_date=1761562755&signature=Xh-V123nFu0o1mGgZNnFL4LYJg8KH_BrXRm3PxChGmhtUm_Lxi7xAo9QL6Uaigyi1nqpUDfcbRUWOI8NBPejAQ&hash=3e36f75e88a81dba351658f714721f07230a43ccc31b606166b829b9b3855a01'
+			};
 		} else {
-			console.warn('Telegram WebApp API не знайдено. Працюємо як звичайний веб-додаток.');
-		}
+			webApp = getWebApp();
 
+			if (webApp) {
+				// @ts-ignore
+				webApp.ready();
+				// @ts-ignore
+				webApp.expand();
+			} else {
+				console.warn('Telegram WebApp API не знайдено. Працюємо як звичайний веб-додаток.');
+			}
+		}
 		// @ts-ignore
 		const initData = webApp?.initData;
 		if (initData && apiURL) {
