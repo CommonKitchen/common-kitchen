@@ -2,7 +2,7 @@
 import { redirect } from '@sveltejs/kit';
 
 export async function POST({ request }) {
-	console.log('POST');
+	console.log('POST', request);
 	try {
 		//const paymentData = await request.json();
 
