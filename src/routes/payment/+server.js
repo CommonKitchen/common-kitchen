@@ -1,3 +1,4 @@
+// src/routes/payment/+server.js
 import { redirect } from '@sveltejs/kit';
 
 export async function POST({ request }) {
