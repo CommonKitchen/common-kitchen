@@ -2,6 +2,7 @@ import { redirect } from '@sveltejs/kit';
 
 /** @type {import('./$types').RequestHandler} */
 export async function POST({ request, url }) {
+	console.log('POST');
 	try {
 		// 1. Извлекаем данные, отправленные WayForPay
 		const paymentData = await request.json();
