@@ -266,7 +266,7 @@
 			return;
 		}
 
-		const debug = true;
+		const debug = !true;
 
 		let webApp;
 		if (debug) {
