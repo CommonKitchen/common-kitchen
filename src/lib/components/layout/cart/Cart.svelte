@@ -250,7 +250,7 @@
 
 			// 3. Додаємо форму до DOM та відправляємо її.
 			document.body.appendChild(form);
-			clearCart();
+			// clearCart();
 			form.submit();
 			// Ми більше не повертаємося звідси, оскільки браузер перенаправляється
 		}
@@ -350,8 +350,6 @@
 			isLoading = false;
 			return;
 		}
-
-		// console.log('data', data);
 
 		if (
 			selectedPaymentMethodId === 'wayforpay' &&

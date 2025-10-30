@@ -24,8 +24,6 @@ export async function POST({ request }) {
 			});
 		}
 
-		// console.log('paymentData (From WayForPay)', paymentData);
-
 		const { orderReference, reasonCode, reason } = paymentData;
 
 		// WayForPay использует 1100 для успешной операции
