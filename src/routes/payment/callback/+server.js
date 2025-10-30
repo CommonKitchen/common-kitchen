@@ -1,8 +1,9 @@
-// src/routes/payment/+server.js
+// src/routes/payment/callback/+server.js
 import { redirect } from '@sveltejs/kit';
 
 export async function POST({ request }) {
 	const contentType = request.headers.get('content-type') || '';
+	let statusToRedirect = 'error';
 	let paymentData;
 
 	try {
@@ -23,12 +24,28 @@ export async function POST({ request }) {
 			});
 		}
 
-		console.log('paymentData (From WayForPay)', paymentData);
+		// console.log('paymentData (From WayForPay)', paymentData);
 
-		throw redirect(303, `/payment?status=success`);
+		const { orderReference, reasonCode, reason } = paymentData;
+
+		// WayForPay использует 1100 для успешной операции
+		if (reasonCode === '1100') {
+			console.log(`Оплата ${orderReference} успешно завершена. Код: ${reasonCode}`);
+			statusToRedirect = 'success';
+		} else if (reasonCode) {
+			console.warn(
+				`Транзакция ${orderReference} отклонена/ошибочна. Код: ${reasonCode}, Причина: ${reason}`
+			);
+			statusToRedirect = 'declined';
+		} else {
+			console.log(`Транзакция ${orderReference} - Неопределенный статус. Code: ${reasonCode}`);
+			// statusToRedirect = 'pending';
+		}
+
+		return redirect(303, `/payment?status=${statusToRedirect}`);
 	} catch (error) {
 		console.error('Ошибка обработки WayForPay POST:', error);
-		throw redirect(303, `/payment?status=error`);
+		return redirect(303, `/payment?status=error`);
 	}
 }
 
