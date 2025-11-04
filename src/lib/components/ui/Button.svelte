@@ -39,6 +39,15 @@
 		box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 		background-color: var(--main-active-color, #a8330c);
 	}
+
+	.default:disabled {
+		background: #b6b6b6;
+		color: #e0e0e0;
+		cursor: not-allowed;
+		box-shadow: none;
+		opacity: 0.6;
+	}
+
 	.stretch {
 		width: 100%;
 	}
