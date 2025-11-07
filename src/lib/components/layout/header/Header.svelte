@@ -10,7 +10,7 @@
 	import loupe from '$lib/assets/icon-search-24x24.svg';
 	import { itemCount } from '$lib/stores/cartStore.js';
 
-	const phone = '+380990011111';
+	const phone = '+380738387677';
 
 	let isSearchOverlay = $state(false);
 
