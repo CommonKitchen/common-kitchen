@@ -24,9 +24,7 @@
 		<div class="footer-column">
 			<h4>Режим роботи:</h4>
 			<ul>
-				<li>Пн-Пт з 09:00 до 18:00,</li>
-				<li>Сб з 10:00 до 15:30,</li>
-				<li>Нд-вихідний</li>
+				<li>Пн-Нд з 9:00 до 18:00</li>
 			</ul>
 		</div>
 		<!-- <div class="footer-column">
