@@ -28,9 +28,9 @@
 
 			if (webApp) {
 				// @ts-ignore
-				// webApp.ready();
+				webApp.ready();
 				// @ts-ignore
-				// webApp.expand();
+				webApp.expand();
 			} else {
 				console.warn('Telegram WebApp API не знайдено. Працюємо як звичайний веб-додаток.');
 			}
