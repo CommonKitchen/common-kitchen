@@ -26,5 +26,6 @@
 		margin: 0 auto;
 		padding: 18px 0px 48px 0px;
 		text-align: center;
+		color: var(--main-color);
 	}
 </style>

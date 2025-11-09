@@ -25,5 +25,6 @@
 	h1 {
 		text-align: center;
 		margin: 20px 0px;
+		color: var(--main-color);
 	}
 </style>
