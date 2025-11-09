@@ -8,6 +8,7 @@
 	import { setCustomerData } from '$lib/stores/customerStore.js';
 	import { setFavoriteProducts } from '$lib/stores/favoriteStore.js';
 	import { getWebApp } from '$lib/utils/telegram.js';
+	import Loader from '$lib/components/ui/Loader.svelte';
 
 	let { children, data } = $props();
 
@@ -85,6 +86,10 @@
 
 	setCategoryContext(data.shopData?.categories ?? []);
 	setProductContext(data.shopData?.products ?? []);
+
+	let isLoading = $state(true);
+
+	onMount(() => (isLoading = false));
 </script>
 
 <svelte:head>
@@ -97,8 +102,12 @@
 	<title>Common.Kitchen</title>
 </svelte:head>
 
-<Header />
-<div class="content-wrap">
-	{@render children?.()}
-</div>
-<Footer />
+{#if isLoading}
+	<Loader />
+{:else}
+	<Header />
+	<div class="content-wrap">
+		{@render children?.()}
+	</div>
+	<Footer />
+{/if}
