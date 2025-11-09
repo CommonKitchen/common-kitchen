@@ -1,5 +1,6 @@
 <script>
 	import ButtonRemove from '$lib/components/ui/ButtonRemove.svelte';
+	import Image from '$lib/components/ui/Image.svelte';
 	import QuantitySelector from '$lib/components/ui/QuantitySelector.svelte';
 	import { removeItem } from '$lib/stores/cartStore';
 
@@ -9,7 +10,7 @@
 <div class="cart-item">
 	<a href={`/products/${item.id}`} class="item-image-link">
 		<div class="item-image-wrap">
-			<img src={item.imageUrl} alt={item.title} class="item-image" />
+			<Image src={item.imageUrl} alt={item.title} className="item-image" />
 		</div>
 	</a>
 
@@ -59,12 +60,12 @@
 		margin-right: 15px;
 	}
 
-	.item-image {
+	/* .item-image {
 		width: 100%;
 		height: 100%;
 		object-fit: cover;
 		border-radius: 4px;
-	}
+	} */
 
 	.item-details {
 		flex-grow: 1;

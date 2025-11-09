@@ -5,6 +5,7 @@
 	import Button from '$lib/components/ui/Button.svelte';
 	import { cart } from '$lib/stores/cartStore.js';
 	import { error } from '@sveltejs/kit';
+	import Image from '$lib/components/ui/Image.svelte';
 
 	/** @typedef {import('$lib/types.js').Product} Product */
 	/** @type {Product[]} */
@@ -52,7 +53,7 @@
 
 <div class="product-card">
 	<div class="image-container">
-		<img src={product?.imageUrl} alt={product?.title} class="product-main-image" />
+		<Image src={product?.imageUrl} alt={product?.title} className="product-main-image" />
 		<Button onclick={() => goto('/categories')} />
 	</div>
 	<div class="product-details">
@@ -144,15 +145,6 @@
 	.image-container {
 		width: 100%;
 		text-align: center;
-	}
-
-	.product-main-image {
-		width: 100%;
-		max-width: 500px;
-		height: auto;
-		object-fit: contain;
-		border-radius: 8px;
-		margin-bottom: 40px;
 	}
 
 	.product-title {

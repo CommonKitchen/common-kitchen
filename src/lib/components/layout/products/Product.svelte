@@ -2,6 +2,7 @@
 	import CartButtons from '$lib/components/ui/CartButtons.svelte';
 	import heart from '$lib/assets/icon-favorite-24x24.svg';
 	import fillHeart from '$lib/assets/icon-favorite2-24x24.svg';
+	import Image from '$lib/components/ui/Image.svelte';
 
 	const {
 		id,
@@ -19,9 +20,7 @@
 
 <div class="product-tile">
 	<a href={productUrl} class="product-tile-link">
-		<div class="image-container">
-			<img src={imageUrl_168x168} alt={title} class="product-image" />
-		</div>
+		<Image src={imageUrl_168x168} alt={title} className="image-container" />
 		<div class="icon-heart">
 			<button
 				type="button"
@@ -85,12 +84,6 @@
 		box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
 	}
 
-	.image-container {
-		width: 100%;
-		height: 168px;
-		overflow: hidden;
-	}
-
 	.icon-heart {
 		position: absolute;
 		top: 5px;
@@ -117,17 +110,6 @@
 		border-radius: 50%;
 		padding: 4px;
 		background-color: rgba(204, 204, 204, 0.3);
-	}
-
-	.product-image {
-		width: 100%;
-		height: 100%;
-		object-fit: cover;
-		transition: transform 0.3s ease;
-	}
-
-	.product-tile:hover .product-image {
-		transform: scale(1.05);
 	}
 
 	.product-content {
