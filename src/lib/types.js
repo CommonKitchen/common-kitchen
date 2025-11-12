@@ -40,6 +40,7 @@
  * @typedef {object} legalEntity
  * @property {string} id
  * @property {string} title
+ * @property {string} phone
  * @property {CustomerLocation[]} customerLocations
  */
 
@@ -48,6 +49,8 @@
  * @property {string} id
  * @property {string} title
  * @property {string} address
+ * @property {string} phone
+ * @property {string} instagram
  * @property {number[]} availableDays
  */
 

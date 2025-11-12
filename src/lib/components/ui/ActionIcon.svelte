@@ -1,5 +1,17 @@
 <script>
-	let { href = '', iconSrc, count = 0, onclick = null } = $props();
+	let {
+		href = '',
+		iconSrc = '',
+		icon: Icon = null,
+		count = 0,
+		onclick = null,
+		tooltip = '',
+		color = 'var(--icons-color)',
+		size = '32px',
+		disabled = false
+	} = $props();
+
+	console.log('disabled', disabled);
 </script>
 
 {#if href}
@@ -11,8 +23,16 @@
 		{/if}
 	</a>
 {:else}
-	<button class="icon-btn" {onclick}>
-		<img class="icon-image" src={iconSrc} alt="" />
+	<button
+		class="icon-btn"
+		{onclick}
+		title={tooltip}
+		style:color
+		style:width={size}
+		style:height={size}
+		class:disabled
+	>
+		<Icon class="icon-svg" {size} />
 	</button>
 {/if}
 
@@ -34,17 +54,30 @@
 		border: none;
 		background: initial;
 		cursor: pointer;
+		transition: transform 0.1s;
 	}
 
+	.icon-btn.disabled {
+		cursor: not-allowed;
+		opacity: 0.5;
+		pointer-events: none;
+	}
+	.icon-btn.disabled:hover {
+		transform: none;
+	}
+
+	.icon-btn:hover:not(.disabled) {
+		transform: scale(1.05);
+	}
 	.icon-image {
 		width: 32px;
 		height: 32px;
-		filter: grayscale(100%) brightness(0.7) opacity(0.85);
+		/* filter: grayscale(100%) brightness(0.7) opacity(0.85); */
 		transition: filter 0.2s;
 	}
 
 	.icon-image:hover {
-		color: var(--main-color, #e24511);
+		/* color: var(--main-color, #e24511); */
 		filter: invert(33%) sepia(85%) saturate(7390%) hue-rotate(352deg) brightness(85%) contrast(98%);
 	}
 

@@ -255,7 +255,7 @@
 
 				{#if hasCustomer}
 					<div class="customer-block">
-						<div class="customer-info">Ваші дані: {customer.name} {customer.phone}</div>
+						<div class="customer-info">Користувач: {customer.name} {customer.phone}</div>
 						<div class="entity-container">
 							<SelectOptions
 								title="Замовник:"
@@ -362,7 +362,8 @@
 		border: 1px solid #ccc;
 		border-radius: 8px;
 		background-color: #fff;
-		padding: 20px 10px;
+		padding: 20px;
+		box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
 	}
 
 	.cart-summary {

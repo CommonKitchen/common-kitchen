@@ -14,7 +14,6 @@
 </script>
 
 <div class="quantity-selector">
-	<!-- disabled={quantity <= minOrder} -->
 	<button
 		onclick={(e) => handleClick(e, -1)}
 		class="quantity-btn"

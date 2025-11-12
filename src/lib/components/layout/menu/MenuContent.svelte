@@ -23,6 +23,7 @@
 		{#if hasCustomer}
 			<div class="nav-separator"></div>
 			<a href="/orders" class="nav-link" onclick={close}>Мої замовлення</a>
+			<a href="/customer" class="nav-link" onclick={close}>Мої дані</a>
 		{/if}
 	</nav>
 </div>

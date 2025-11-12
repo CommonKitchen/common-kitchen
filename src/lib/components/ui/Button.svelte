@@ -1,17 +1,23 @@
 <script>
 	const {
-		class: className = 'default',
+		class: className = 'primary',
 		title = 'Перейти до продукції',
 		stretch = false,
 		onclick,
+		description = '',
 		...restProps
 	} = $props();
 </script>
 
-<button class={`${className} ${stretch ? 'stretch' : ''}`} {onclick} {...restProps}>{title}</button>
+<button
+	class={`btn-base ${className} ${stretch ? 'stretch' : ''}`}
+	{onclick}
+	title={description ? description : title}
+	{...restProps}>{title}</button
+>
 
 <style>
-	.default {
+	.btn-base {
 		font-size: 1.2rem;
 		display: inline-flex;
 		align-self: flex-start;
@@ -19,8 +25,6 @@
 		justify-content: center;
 		align-items: center;
 		padding: 10px 24px 12px 24px;
-		background-color: var(--main-color, #e24511);
-		color: white;
 		border-radius: 10px;
 		border: none;
 		cursor: pointer;
@@ -30,22 +34,32 @@
 			box-shadow 0.3s ease;
 	}
 
-	.default:hover {
-		background-color: #c43c0f;
-		box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-	}
-
-	.default:active {
-		box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-		background-color: var(--main-active-color, #a8330c);
-	}
-
-	.default:disabled {
+	.btn-base:disabled {
 		background: #b6b6b6;
 		color: #e0e0e0;
 		cursor: not-allowed;
 		box-shadow: none;
 		opacity: 0.6;
+	}
+
+	.primary {
+		color: white;
+		background-color: var(--main-color, #e24511);
+	}
+
+	.primary:hover {
+		background-color: #c43c0f;
+		box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+	}
+
+	.primary:active {
+		box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+		background-color: var(--main-active-color, #a8330c);
+	}
+
+	.secondary {
+		color: black;
+		background-color: var(--secondary-main-color);
 	}
 
 	.stretch {

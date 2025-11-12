@@ -12,7 +12,7 @@
 
 	let { children, data } = $props();
 
-	const debug = !true;
+	const debug = true;
 
 	const apiURL = data.shopData?.apiURL ?? '';
 

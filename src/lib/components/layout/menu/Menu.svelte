@@ -20,7 +20,11 @@
 	const { isOpen, close } = $props();
 
 	$effect(() => {
-		if (!isOpen) return;
+		if (isOpen) {
+			document.body.style.overflow = 'hidden';
+		} else {
+			document.body.style.overflow = '';
+		}
 
 		/** @param {KeyboardEvent} event */
 		function handleKeydown(event) {
@@ -33,6 +37,7 @@
 
 		return () => {
 			document.removeEventListener('keydown', handleKeydown);
+			document.body.style.overflow = '';
 		};
 	});
 </script>
@@ -89,7 +94,7 @@
 	}
 
 	.menu-panel.desktop-slide {
-		width: 240px;
+		width: 350px;
 		position: absolute;
 		/* Привязываем к левому краю контейнера. (Предполагается, что родительский элемент имеет position: relative) */
 		/*left: 0px; /* Здесь должен быть left: 0 или right: 0 в зависимости от Header.svelte */

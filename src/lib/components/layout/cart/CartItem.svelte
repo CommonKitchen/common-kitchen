@@ -1,5 +1,6 @@
 <script>
-	import ButtonRemove from '$lib/components/ui/ButtonRemove.svelte';
+	import ActionIcon from '$lib/components/ui/ActionIcon.svelte';
+	import Remove from '../icons/Remove.svelte';
 	import Image from '$lib/components/ui/Image.svelte';
 	import QuantitySelector from '$lib/components/ui/QuantitySelector.svelte';
 	import { removeItem } from '$lib/stores/cartStore';
@@ -30,7 +31,13 @@
 			/>
 		</div>
 		<div class="item-total">{item.price * item.quantity}<span>₴</span></div>
-		<ButtonRemove onclick={() => removeItem(item.id)} />
+		<ActionIcon
+			onclick={() => removeItem(item.id)}
+			tooltip="Видалити товар"
+			icon={Remove}
+			size="24"
+			color="var(--main-color)"
+		/>
 	</div>
 </div>
 
@@ -129,7 +136,7 @@
 			order: 3; /* Встановлюємо третім, щоб він перенісся вниз */
 			width: 100%; /* Займаємо всю ширину контейнера cart-item */
 			margin-top: 15px; /* Додаємо відступ зверху для візуального розділення */
-			justify-content: center;
+			justify-content: end;
 			gap: 10px;
 		}
 	}

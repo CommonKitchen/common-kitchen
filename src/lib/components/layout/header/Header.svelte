@@ -1,10 +1,11 @@
 <script>
 	import BurgerMenuButton from '$lib/components/layout/header/BurgerMenuButton.svelte';
-	import Menu from '$lib/components/layout/header/Menu.svelte';
+	import Menu from '$lib/components/layout/menu/Menu.svelte';
 	import ActionIcon from '$lib/components/ui/ActionIcon.svelte';
 	import Phone from '$lib/components/ui/Phone.svelte';
 	import Search from '$lib/components/layout/header/Search.svelte';
-	import logo from '$lib/assets/logo.png';
+	import Loupe from '$lib/components/layout/icons/Loupe.svelte';
+	import logo from '$lib/assets/logo.svg';
 	import heart from '$lib/assets/icon-favorite-24x24.svg';
 	import bag from '$lib/assets/icon-bag-24x24.svg';
 	import loupe from '$lib/assets/icon-search-24x24.svg';
@@ -74,7 +75,7 @@
 			</div>
 			<div class="icon-block">
 				<div class="icon-loupe">
-					<ActionIcon onclick={toggleSearchOverlay} iconSrc={loupe} />
+					<ActionIcon onclick={toggleSearchOverlay} icon={Loupe} />
 				</div>
 				<ActionIcon href="/wishlist" iconSrc={heart} />
 				<ActionIcon href="/cart" iconSrc={bag} count={$itemCount} />
