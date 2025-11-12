@@ -91,6 +91,7 @@
 		height: calc(100vh - 56px); /* Полная высота экрана */
 		padding: 20px; /* Отступ сверху, чтобы избежать шапки, если она есть */
 		border-radius: 0;
+		overflow-y: auto;
 	}
 
 	.menu-panel.desktop-slide {
