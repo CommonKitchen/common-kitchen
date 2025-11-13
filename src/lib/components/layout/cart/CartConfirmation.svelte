@@ -13,8 +13,6 @@
 	let checkoutError = $state('');
 	const { customer, delivery, payment, summary, note, products, apiURL } = orderData();
 
-	console.log('customer', customer);
-
 	function toggleProducts() {
 		isExpanded = !isExpanded;
 	}

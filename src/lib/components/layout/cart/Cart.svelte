@@ -83,6 +83,8 @@
 		return entityList.find((entity) => entity.id === currentEntityId);
 	});
 
+	const hasEntity = $derived(() => !!currentEntity());
+
 	const currentCustomerLocations = $derived(() => {
 		return currentEntity()?.customerLocations ?? [];
 	});
@@ -238,6 +240,19 @@
 					<span class="total-amount">{$cartAmount}<span>₴</span></span>
 				</div>
 			</div>
+			{#if !hasEntity()}
+				<div class="warning-block">
+					⚠️ Попередження: Неможливо створити замовлення.<br /> Ваш обліковий запис ще не повністю
+					налаштований для оформлення замовлень.<br /> Щоб отримати можливість замовляти продукцію,
+					необхідно додати <b>Замовника</b> (платника) та <b>Заклад</b>, для якого робиться
+					замовлення. Або дочекатися затвердження внесеної інформації, якщо ви вже додали
+					<b>Замовника</b>
+					і <b>Заклад</b>.<br /> Для внесення необхідної інформації перейдіть, будь ласка, за
+					посиланням:<br />
+					<a href="/customer" class="call-to-action">Додати <b>Замовника</b> та <b>Заклад</b></a>
+				</div>
+			{/if}
+
 			<div class="cart-items">
 				{#each cartItems as item (item.id)}
 					<CartItem {item} {changeQuantity} />
@@ -387,6 +402,27 @@
 		font-size: 0.9rem;
 	}
 
+	.warning-block a.call-to-action {
+		/* Робимо посилання кнопкою */
+		display: inline-block;
+		padding: 8px 15px;
+		margin-top: 10px; /* Відділити від попереднього тексту */
+		text-decoration: none;
+		font-weight: bold;
+
+		/* Кольори, гармонійні з попередженням */
+		background-color: #f7e096; /* Трохи темніший жовтий фон, ніж блок */
+		color: #856404; /* Темний текст (як основний текст блоку) */
+		border: 1px solid #e1c87a; /* Тонка рамка */
+		border-radius: 4px;
+		transition: background-color 0.2s; /* Плавний ефект при наведенні */
+	}
+
+	.warning-block a.call-to-action:hover {
+		background-color: #e1c87a; /* Затемнення фону при наведенні */
+		color: #584100; /* Ще темніший текст */
+		cursor: pointer;
+	}
 	.entity-container {
 		display: flex;
 		flex-direction: column;

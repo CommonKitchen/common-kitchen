@@ -10,8 +10,6 @@
 		size = '32px',
 		disabled = false
 	} = $props();
-
-	console.log('disabled', disabled);
 </script>
 
 {#if href}

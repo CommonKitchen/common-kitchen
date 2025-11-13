@@ -62,6 +62,11 @@
 		background-color: var(--secondary-main-color);
 	}
 
+	.secondary:hover {
+		filter: brightness(0.9); /* робить темніше на ~10% */
+		box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+	}
+
 	.stretch {
 		width: 100%;
 	}

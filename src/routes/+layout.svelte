@@ -1,3 +1,4 @@
+<!-- /routes/+layout.svelte -->
 <script>
 	import { onMount } from 'svelte';
 	import '$lib/styles/global.css';
@@ -9,6 +10,7 @@
 	import { setFavoriteProducts } from '$lib/stores/favoriteStore.js';
 	import { getWebApp } from '$lib/utils/telegram.js';
 	import Loader from '$lib/components/ui/Loader.svelte';
+	import { goto } from '$app/navigation';
 
 	let { children, data } = $props();
 
@@ -73,11 +75,21 @@
 			}
 
 			const data = await response.json();
+			const customerData = data.customer || null;
 
 			// Оновлюємо внутрішній стан
-			setCustomerData(data.customer || null);
+			setCustomerData(customerData);
 			// setFavoriteProducts([]);
 			console.log('Дані клієнта успішно завантажено.');
+
+			if (
+				customerData &&
+				(!customerData.legalEntities || customerData.legalEntities.length === 0)
+			) {
+				await goto('/customer', { replaceState: true });
+
+				return;
+			}
 		} catch (error) {
 			console.error('Помилка мережі при завантаженні даних клієнта:', error);
 			setCustomerData(null);

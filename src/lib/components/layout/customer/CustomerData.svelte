@@ -316,6 +316,18 @@
 
 <div class="customer-block">
 	<h2>Мої дані</h2>
+	{#if !hasEntity()}
+		<div class="warning-block">
+			Для подальшої роботи необхідно додати <b>Замовників</b> (платників), на яких будуть
+			виставлятися рахунки у випадку безготівкової оплати (на р/р). <br />Також слід прив'язати до
+			кожного
+			<b>Замовника</b> <b>Заклад</b>, для якого створюється замовлення. Після внесення та збереження
+			цієї інформації менеджер повинен її затвердити та призначити дні, дозволені для замовлень
+			продукції в цей заклад. Тільки після цього ви отримаєте можливість оформити замовлення.<br /> Повідомлення
+			про затвердження надійде від телеграм-бота.
+		</div>
+	{/if}
+
 	{#if !editingMode}
 		<div class="customer-info"><b>Користувач:</b> {$customer?.name} {$customer?.phone}</div>
 
@@ -420,8 +432,8 @@
 			{/if}
 
 			<div class="form-footer">
-				<Button title="Скасувати" onclick={cancelEdit} class={'secondary'} />
-				<Button title="Записати" onclick={saveData} />
+				<Button title="Назад" onclick={cancelEdit} class={'secondary'} />
+				<Button title="Готово" onclick={saveData} />
 			</div>
 		</div>
 	{/if}
