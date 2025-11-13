@@ -240,7 +240,7 @@
 					<span class="total-amount">{$cartAmount}<span>₴</span></span>
 				</div>
 			</div>
-			{#if !hasEntity()}
+			{#if hasCustomer && !hasEntity()}
 				<div class="warning-block">
 					⚠️ Попередження: Неможливо створити замовлення.<br /> Ваш обліковий запис ще не повністю
 					налаштований для оформлення замовлень.<br /> Щоб отримати можливість замовляти продукцію,
