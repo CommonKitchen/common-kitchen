@@ -431,7 +431,7 @@
 	.customer-block {
 		max-width: 800px;
 		margin: 20px auto;
-		padding: 20px;
+		padding: 20px 8px;
 		background-color: #fff;
 		border-radius: 8px;
 		box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
@@ -450,7 +450,7 @@
 
 	.main-form {
 		margin-top: 5px;
-		padding: 20px;
+		padding: 20px 8px;
 		border: 1px solid var(--common-border-dark);
 		border-radius: 8px;
 		background-color: white;
@@ -458,7 +458,7 @@
 
 	.form-section {
 		margin-bottom: 25px;
-		padding: 15px;
+		padding: 20px 8px;
 		border: 1px solid var(--common-border-dark);
 		border-radius: 6px;
 		background-color: var(--common-bg-light);
@@ -516,5 +516,13 @@
 		font-weight: 500;
 		text-align: left;
 		line-height: 1.6;
+	}
+
+	@media (min-width: 480px) {
+		.customer-block,
+		.main-form,
+		.form-section {
+			padding: 20px;
+		}
 	}
 </style>
