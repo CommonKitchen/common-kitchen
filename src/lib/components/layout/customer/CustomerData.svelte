@@ -6,6 +6,9 @@
 	import Button from '$lib/components/ui/Button.svelte';
 
 	import { customer } from '$lib/stores/customerStore.js';
+	import { getWebApp } from '$lib/utils/telegram';
+
+	const { apiURL } = $props();
 
 	/** @typedef {import('$lib/types.js').Customer} Customer */
 	/** @typedef {import('$lib/types.js').legalEntity} legalEntity */
@@ -14,6 +17,8 @@
 	let isNewItem = $state(false);
 	let editingMode = $state('');
 	let errorMessage = $state('');
+	let isLoading = $state(false);
+	let errorSendingMessage = $state('');
 
 	const EMPTY_STATE = {
 		title: '',
@@ -311,7 +316,50 @@
 		tmpState.phone = val;
 	}
 
-	function saveDataToServer() {}
+	async function saveDataToServer() {
+		isLoading = true;
+		errorSendingMessage = '';
+
+		const webApp = getWebApp();
+
+		// @ts-ignore
+		const initData = webApp?.initData;
+		if (!initData) {
+			console.warn('Telegram WebApp.initData не знайдено. Замовлення неможливе.');
+			return;
+		}
+
+		try {
+			const response = await fetch(`${apiURL}/cakes/hs/shop/customers`, {
+				method: 'PUT',
+				headers: {
+					'Content-Type': 'application/json',
+					'X-Telegram-Init-Data': initData
+				},
+				body: JSON.stringify(customer)
+			});
+
+			if (!response.ok) {
+				let errorMessage = `Помилка сервера: ${response.status}`;
+				console.log(response);
+				try {
+					const errorBody = await response.json();
+					errorMessage = errorBody.message || errorMessage;
+				} catch (e) {
+					errorMessage = errorMessage;
+				}
+
+				console.log(`errorMessage ${errorMessage}`);
+				throw new Error(errorMessage);
+			}
+		} catch (error) {
+			errorSendingMessage = 'Не вдалося оформити замовлення. Спробуйте пізніше.';
+			console.error('API Checkout Error:', error);
+			return;
+		} finally {
+			isLoading = false;
+		}
+	}
 </script>
 
 <div class="customer-block">
