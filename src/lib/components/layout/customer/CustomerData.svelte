@@ -330,8 +330,8 @@
 		}
 
 		try {
-			const response = await fetch(`${apiURL}/cakes/hs/shop/customers`, {
-				method: 'PUT',
+			const response = await fetch(`${apiURL}/cakes/hs/shop/customer`, {
+				method: 'POST',
 				headers: {
 					'Content-Type': 'application/json',
 					'X-Telegram-Init-Data': initData

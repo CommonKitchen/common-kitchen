@@ -15,7 +15,7 @@
  * @returns {TelegramWebApp | null} Об'єкт WebApp або null, якщо не завантажено.
  */
 export function getWebApp() {
-	const debug = true;
+	const debug = !true;
 
 	if (debug) {
 		return {
