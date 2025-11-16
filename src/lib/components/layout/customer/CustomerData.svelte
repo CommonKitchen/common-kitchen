@@ -24,6 +24,7 @@
 		title: '',
 		address: '',
 		phone: '',
+		taxId: '',
 		instagram: ''
 	};
 
@@ -33,9 +34,9 @@
 	/** @type {string | null} */
 	let currentLocationId = $state(null);
 
-	const currentEntity = $derived(() =>
-		$customer?.legalEntities?.find((e) => e.id === currentEntityId)
-	);
+	const entities = $derived(() => $customer?.legalEntities ?? []);
+
+	const currentEntity = $derived(() => entities().find((e) => e.id === currentEntityId));
 
 	const currentLocations = $derived(() => {
 		return currentEntity()?.customerLocations ?? [];
@@ -46,15 +47,13 @@
 	});
 
 	const hasEntity = $derived(() => !!currentEntity());
-	const hasMultipleEntities = $derived(() => ($customer?.legalEntities?.length ?? 0) > 1);
+	const hasMultipleEntities = $derived(() => (entities().length ?? 0) > 1);
 	const hasMultipleLocations = $derived(() => currentLocations().length > 1);
 
 	$effect(() => {
-		const entities = $customer?.legalEntities ?? [];
-
-		const isCurrentEntityValid = entities.some((e) => e.id === currentEntityId);
+		const isCurrentEntityValid = entities().some((e) => e.id === currentEntityId);
 		if (!isCurrentEntityValid) {
-			currentEntityId = entities[0]?.id ?? null;
+			currentEntityId = entities()[0]?.id ?? null;
 		}
 
 		const locations = currentEntity()?.customerLocations ?? [];
@@ -149,6 +148,7 @@
 			if (entity && !isNew) {
 				tmpState.title = entity.title ?? '';
 				tmpState.phone = entity.phone ?? '';
+				tmpState.taxId = entity.taxId ?? '';
 			}
 		} else if (mode === 'location') {
 			const location = currentLocation();
@@ -180,6 +180,7 @@
 				id: crypto.randomUUID(),
 				title: tmpState.title,
 				phone: tmpState.phone,
+				taxId: tmpState.taxId,
 				customerLocations: []
 			};
 			currentEntityId = newEntity.id;
@@ -245,16 +246,14 @@
 		customer.update((curr) => {
 			if (!curr) return curr;
 
-			const entities = curr.legalEntities ?? [];
-
 			// Защита — хотя бы один замовник должен остаться
-			if (entities.length <= 1) {
+			if (entities().length <= 1) {
 				errorMessage = 'Повинен бути принаймні один замовник.';
 				return curr;
 			}
 
 			// Удаляем выбранного
-			const newEntities = entities.filter((e) => e.id !== currentEntityId);
+			const newEntities = entities().filter((e) => e.id !== currentEntityId);
 
 			// Обновляем currentEntityId (ставим первого оставшегося)
 			currentEntityId = newEntities[0]?.id ?? null;
@@ -272,8 +271,7 @@
 		customer.update((curr) => {
 			if (!curr) return curr;
 
-			const entities = curr.legalEntities ?? [];
-			const entity = entities.find((e) => e.id === currentEntityId);
+			const entity = entities().find((e) => e.id === currentEntityId);
 			if (!entity) return curr;
 
 			const locations = entity.customerLocations ?? [];
@@ -291,7 +289,7 @@
 			currentLocationId = newLocations[0]?.id ?? null;
 
 			// Обновляем entity в списке
-			const updatedEntities = entities.map((e) =>
+			const updatedEntities = entities().map((e) =>
 				e.id === currentEntityId ? { ...e, customerLocations: newLocations } : e
 			);
 
@@ -330,13 +328,13 @@
 		}
 
 		try {
-			const response = await fetch(`${apiURL}/cakes/hs/shop/customer`, {
-				method: 'POST',
+			const response = await fetch(`${apiURL}/cakes/hs/shop/customers`, {
+				method: 'PUT',
 				headers: {
 					'Content-Type': 'application/json',
 					'X-Telegram-Init-Data': initData
 				},
-				body: JSON.stringify(customer)
+				body: JSON.stringify(entities())
 			});
 
 			if (!response.ok) {
@@ -382,7 +380,7 @@
 		<SelectOptions
 			title="Замовник:"
 			bind:value={currentEntityId}
-			items={$customer?.legalEntities ?? []}
+			items={entities()}
 			controls={entityControls}
 		/>
 
@@ -426,6 +424,10 @@
 							oninput={handlePhoneInput}
 							maxlength="13"
 						/>
+					</div>
+					<div class="form-group">
+						<label for="customer-taxId">Код ДРФО:</label>
+						<input id="customer-taxId" type="text" bind:value={tmpState.taxId} />
 					</div>
 				</div>
 			{/if}

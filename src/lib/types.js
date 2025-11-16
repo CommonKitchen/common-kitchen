@@ -41,6 +41,7 @@
  * @property {string} id
  * @property {string} title
  * @property {string} phone
+ * @property {string} taxId
  * @property {CustomerLocation[]} customerLocations
  */
 
