@@ -25,7 +25,10 @@
 		address: '',
 		phone: '',
 		taxId: '',
-		instagram: ''
+		instagram: '',
+		bankAccount: '',
+		bankName: '',
+		bankCode: ''
 	};
 
 	let tmpState = $state({ ...EMPTY_STATE });
@@ -149,6 +152,9 @@
 				tmpState.title = entity.title ?? '';
 				tmpState.phone = entity.phone ?? '';
 				tmpState.taxId = entity.taxId ?? '';
+				tmpState.bankAccount = entity.bankAccount ?? '';
+				tmpState.bankName = entity.bankName ?? '';
+				tmpState.bankCode = entity.bankCode ?? '';
 			}
 		} else if (mode === 'location') {
 			const location = currentLocation();
@@ -177,10 +183,8 @@
 
 		if (isNewItem) {
 			const newEntity = {
+				...tmpState,
 				id: crypto.randomUUID(),
-				title: tmpState.title,
-				phone: tmpState.phone,
-				taxId: tmpState.taxId,
 				customerLocations: []
 			};
 			currentEntityId = newEntity.id;
@@ -202,8 +206,8 @@
 
 			if (isNewItem) {
 				const newLoc = {
-					id: crypto.randomUUID(),
 					...tmpState,
+					id: crypto.randomUUID(),
 					availableDays: []
 				};
 				currentLocationId = newLoc.id;
@@ -426,8 +430,23 @@
 						/>
 					</div>
 					<div class="form-group">
-						<label for="customer-taxId">Код ДРФО:</label>
+						<label for="customer-taxId">Код ЄДРПОУ:</label>
 						<input id="customer-taxId" type="text" bind:value={tmpState.taxId} />
+					</div>
+					<div class="bank-block">
+						<p>Якщо ви плануєте оплачювати замовлення на р/р, вкажіть свої банківські реквізити</p>
+						<div class="form-group">
+							<label for="customer-taxId">р/р</label>
+							<input id="customer-taxId" type="text" bind:value={tmpState.bankAccount} />
+						</div>
+						<div class="form-group">
+							<label for="customer-taxId">Банк:</label>
+							<input id="customer-taxId" type="text" bind:value={tmpState.bankName} />
+						</div>
+						<div class="form-group">
+							<label for="customer-taxId">МФО:</label>
+							<input id="customer-taxId" type="text" bind:value={tmpState.bankCode} />
+						</div>
 					</div>
 				</div>
 			{/if}

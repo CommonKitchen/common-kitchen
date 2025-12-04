@@ -42,6 +42,9 @@
  * @property {string} title
  * @property {string} phone
  * @property {string} taxId
+ * @property {string} bankAccount
+ * @property {string} bankName
+ * @property {string} bankCode
  * @property {CustomerLocation[]} customerLocations
  */
 
