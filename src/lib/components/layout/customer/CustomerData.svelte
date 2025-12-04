@@ -433,20 +433,21 @@
 						<label for="customer-taxId">Код ЄДРПОУ:</label>
 						<input id="customer-taxId" type="text" bind:value={tmpState.taxId} />
 					</div>
-					<div class="bank-block">
-						<p>Якщо ви плануєте оплачювати замовлення на р/р, вкажіть свої банківські реквізити</p>
-						<div class="form-group">
-							<label for="customer-taxId">р/р</label>
-							<input id="customer-taxId" type="text" bind:value={tmpState.bankAccount} />
-						</div>
-						<div class="form-group">
-							<label for="customer-taxId">Банк:</label>
-							<input id="customer-taxId" type="text" bind:value={tmpState.bankName} />
-						</div>
-						<div class="form-group">
-							<label for="customer-taxId">МФО:</label>
-							<input id="customer-taxId" type="text" bind:value={tmpState.bankCode} />
-						</div>
+					<div class="warning-block">
+						Якщо ви плануєте працювати з нами по безготівковій оплаті, надайте, будь ласка, свої
+						банківські реквізити.
+					</div>
+					<div class="form-group">
+						<label for="customer-taxId">Номер рахунку:</label>
+						<input id="customer-taxId" type="text" bind:value={tmpState.bankAccount} />
+					</div>
+					<div class="form-group">
+						<label for="customer-taxId">Банк:</label>
+						<input id="customer-taxId" type="text" bind:value={tmpState.bankName} />
+					</div>
+					<div class="form-group">
+						<label for="customer-taxId">МФО:</label>
+						<input id="customer-taxId" type="text" bind:value={tmpState.bankCode} />
 					</div>
 				</div>
 			{/if}
@@ -474,7 +475,7 @@
 						/>
 					</div>
 					<div class="form-group">
-						<label for="est-phone">Контактний телефон закладу:</label>
+						<label for="est-phone">Контактний телефон менеджера:</label>
 						<input
 							id="est-phone"
 							type="tel"
