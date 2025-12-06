@@ -15,26 +15,18 @@ export const GET: RequestHandler = ({ url }) => {
 					controller.enqueue(
 						new TextEncoder().encode(`event: authorized\ndata: ${JSON.stringify(session)}\n\n`)
 					);
-					// Устанавливаем куки для авторизованной сессии
-					const cookieHeader = `sessionId=${sessionId}; HttpOnly; Path=/; Max-Age=3600; Secure`;
-					const responseHeaders = {
-						'Content-Type': 'text/event-stream',
-						'Cache-Control': 'no-cache',
-						'Set-Cookie': cookieHeader
-					};
+
 					controller.close();
 					clearInterval(check);
-
-					return new Response(null, {
-						status: 200,
-						headers: responseHeaders
-					});
 				}
 			}, 500);
 		}
 	});
 
-	return new Response(stream, {
-		headers: { 'Content-Type': 'text/event-stream', 'Cache-Control': 'no-cache' }
-	});
+	const headers = {
+		'Content-Type': 'text/event-stream',
+		'Cache-Control': 'no-cache'
+	};
+
+	return new Response(stream, { status: 200, headers });
 };

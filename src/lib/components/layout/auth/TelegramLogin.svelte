@@ -21,6 +21,14 @@
 		return `https://t.me/commonkitchenbot?start=id_${sessionId}`;
 	}
 
+	const successLogin = async (id: string) => {
+		await fetch('/api/successlogin', {
+			method: 'POST',
+			headers: { 'Content-Type': 'application/json' },
+			body: JSON.stringify({ sessionId: id })
+		});
+	};
+
 	onMount(() => {
 		sessionId = crypto.randomUUID();
 
@@ -61,9 +69,11 @@
 		evtSource = new EventSource(getSseLink());
 
 		// Обработчик успешной авторизации
-		evtSource.addEventListener('authorized', (event) => {
+		evtSource.addEventListener('authorized', async (event) => {
 			const data = JSON.parse(event.data);
 			console.log('User authorized:', data);
+
+			await successLogin(sessionId);
 
 			authorized = true;
 			waiting = false;
