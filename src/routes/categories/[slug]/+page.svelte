@@ -3,8 +3,8 @@
 	import { getProductContext } from '$lib/context/productContext.js';
 	import Products from '$lib/components/layout/products/Products.svelte';
 	import CategoryLink from '$lib/components/layout/categories/CategoryLink.svelte';
-	/** @typedef {import('$lib/types.js').Category} Category */
-	/** @typedef {import('$lib/types.js').Product} Product */
+	/** @typedef {import('$lib/types/types.js').Category} Category */
+	/** @typedef {import('$lib/types/types.js').Product} Product */
 
 	const { params } = $props();
 

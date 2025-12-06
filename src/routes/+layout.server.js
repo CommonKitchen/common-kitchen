@@ -4,9 +4,9 @@ import { error } from '@sveltejs/kit';
 
 const API_URL = `https://${API_SERVER_URL}`;
 
-/** @typedef {import('$lib/types.js').Product} Product */
+/** @typedef {import('$lib/types/types.js').Product} Product */
 /* @type {Product[]} */
-/** @typedef {import('$lib/types.js').Category} Category */
+/** @typedef {import('$lib/types/types.js').Category} Category */
 /* @type {Category[]} */
 
 /**

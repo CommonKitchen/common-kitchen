@@ -7,7 +7,7 @@
 	import { error } from '@sveltejs/kit';
 	import Image from '$lib/components/ui/Image.svelte';
 
-	/** @typedef {import('$lib/types.js').Product} Product */
+	/** @typedef {import('$lib/types/types.js').Product} Product */
 	/** @type {Product[]} */
 	const products = getProductContext() ?? [];
 

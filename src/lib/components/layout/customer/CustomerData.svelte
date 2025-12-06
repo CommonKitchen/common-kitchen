@@ -10,14 +10,15 @@
 
 	const { apiURL } = $props();
 
-	/** @typedef {import('$lib/types.js').Customer} Customer */
-	/** @typedef {import('$lib/types.js').legalEntity} legalEntity */
-	/** @typedef {import('$lib/types.js').CustomerLocation} CustomerLocation */
+	/** @typedef {import('$lib/types/types.js').Customer} Customer */
+	/** @typedef {import('$lib/types/types.js').legalEntity} legalEntity */
+	/** @typedef {import('$lib/types/types.js').CustomerLocation} CustomerLocation */
 
 	let isNewItem = $state(false);
 	let editingMode = $state('');
 	let errorMessage = $state('');
 	let isLoading = $state(false);
+	let dataSaved = $state(false);
 	let errorSendingMessage = $state('');
 
 	const EMPTY_STATE = {
@@ -140,6 +141,7 @@
 	function initializeEditMode(mode, isNew = false) {
 		editingMode = mode;
 		isNewItem = isNew;
+		dataSaved = false;
 
 		errorMessage = '';
 
@@ -247,6 +249,7 @@
 	}
 
 	function removeEntity() {
+		dataSaved = false;
 		customer.update((curr) => {
 			if (!curr) return curr;
 
@@ -272,6 +275,7 @@
 	}
 
 	function removeLocation() {
+		dataSaved = false;
 		customer.update((curr) => {
 			if (!curr) return curr;
 
@@ -318,6 +322,7 @@
 		tmpState.phone = val;
 	}
 
+	//#region saveDataToServer
 	async function saveDataToServer() {
 		isLoading = true;
 		errorSendingMessage = '';
@@ -353,6 +358,8 @@
 
 				console.log(`errorMessage ${errorMessage}`);
 				throw new Error(errorMessage);
+			} else {
+				dataSaved = true;
 			}
 		} catch (error) {
 			errorSendingMessage = 'Не вдалося оформити замовлення. Спробуйте пізніше.';
@@ -398,6 +405,9 @@
 		<div class="btn-save">
 			<Button title="Зберегти все" onclick={saveDataToServer} />
 		</div>
+		{#if dataSaved}
+			<div class="success-block">Дані збережено на сервері</div>
+		{/if}
 	{:else}
 		<div class="main-form">
 			{#if isNewItem}
@@ -588,7 +598,8 @@
 		gap: 10px;
 	}
 
-	.warning-block {
+	.warning-block,
+	.success-block {
 		background-color: #fff3cd;
 		color: #856404;
 		border: 1px solid #ffeeba;
@@ -598,6 +609,10 @@
 		font-weight: 500;
 		text-align: left;
 		line-height: 1.6;
+	}
+
+	.success-block {
+		margin-top: 10px;
 	}
 
 	@media (min-width: 480px) {

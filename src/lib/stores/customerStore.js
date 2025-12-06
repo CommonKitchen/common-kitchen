@@ -1,7 +1,7 @@
 import { writable } from 'svelte/store';
 
 /**
- * @typedef {import('$lib/types.js').Customer} Customer
+ * @typedef {import('$lib/types/types.js').Customer} Customer
  * @type {import('svelte/store').Writable<Customer | null>}
  */
 export const customer = writable(null);

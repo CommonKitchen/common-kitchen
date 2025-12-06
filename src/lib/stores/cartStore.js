@@ -1,6 +1,6 @@
 import { derived, writable } from 'svelte/store';
 
-/** @typedef {import('$lib/types.js').CartItem} CartItem */
+/** @typedef {import('$lib/types/types.js').CartItem} CartItem */
 /** @type {import('svelte/store').Writable<CartItem[]>} */
 export const cart = writable([]);
 

@@ -10,14 +10,14 @@
 	import CartItem from './CartItem.svelte';
 	import CartConfirmation from './CartConfirmation.svelte';
 
-	/** @typedef {import('$lib/types.js').Product} Product */
-	/** @typedef {import('$lib/types.js').CheckoutConfig} CheckoutConfig */
-	/** @typedef {import('$lib/types.js').DeliveryType} DeliveryType */
-	/** @typedef {import('$lib/types.js').PickupLocation} PickupLocation */
-	/** @typedef {import('$lib/types.js').PaymentMethod} PaymentMethod */
-	/** @typedef {import('$lib/types.js').CartItem} CartItem */
-	/** @typedef {import('$lib/types.js').Customer} Customer */
-	/** @typedef {import('$lib/types.js').legalEntity} legalEntity */
+	/** @typedef {import('$lib/types/types.js').Product} Product */
+	/** @typedef {import('$lib/types/types.js').CheckoutConfig} CheckoutConfig */
+	/** @typedef {import('$lib/types/types.js').DeliveryType} DeliveryType */
+	/** @typedef {import('$lib/types/types.js').PickupLocation} PickupLocation */
+	/** @typedef {import('$lib/types/types.js').PaymentMethod} PaymentMethod */
+	/** @typedef {import('$lib/types/types.js').CartItem} CartItem */
+	/** @typedef {import('$lib/types/types.js').Customer} Customer */
+	/** @typedef {import('$lib/types/types.js').legalEntity} legalEntity */
 
 	const {
 		/** @type {Product[]} */

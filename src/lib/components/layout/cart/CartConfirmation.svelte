@@ -1,5 +1,5 @@
 <script>
-	/** @typedef {import('$lib/types.js').CartItem} CartItem */
+	/** @typedef {import('$lib/types/types.js').CartItem} CartItem */
 
 	import OrderTitle from '$lib/components/ui/OrderTitle.svelte';
 	import { clearCart } from '$lib/stores/cartStore';

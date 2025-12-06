@@ -3,7 +3,7 @@
 	import { getProductContext } from '$lib/context/productContext.js';
 	import { favoriteProducts } from '$lib/stores/favoriteStore';
 
-	/** @typedef {import('$lib/types.js').Product} Product */
+	/** @typedef {import('$lib/types/types.js').Product} Product */
 	/** @type {Product[]} */
 	const allProducts = getProductContext() ?? [];
 	const products = $derived(allProducts.filter((item) => $favoriteProducts.has(item.id)));

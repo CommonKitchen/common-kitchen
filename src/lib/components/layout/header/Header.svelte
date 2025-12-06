@@ -6,9 +6,9 @@
 	import Search from '$lib/components/layout/header/Search.svelte';
 	import Loupe from '$lib/components/layout/icons/Loupe.svelte';
 	import logo from '$lib/assets/logo.svg';
-	import heart from '$lib/assets/icon-favorite-24x24.svg';
-	import bag from '$lib/assets/icon-bag-24x24.svg';
-	import loupe from '$lib/assets/icon-search-24x24.svg';
+	import Heart from '$lib/components/layout/icons/Heart.svelte';
+	import Login from '$lib/components/layout/icons/Login.svelte';
+	import Bag from '$lib/components/layout/icons/Bag.svelte';
 	import { itemCount } from '$lib/stores/cartStore.js';
 
 	const phone = '+380738387677';
@@ -77,8 +77,9 @@
 				<div class="icon-loupe">
 					<ActionIcon onclick={toggleSearchOverlay} icon={Loupe} />
 				</div>
-				<ActionIcon href="/wishlist" iconSrc={heart} />
-				<ActionIcon href="/cart" iconSrc={bag} count={$itemCount} />
+				<ActionIcon href="/login" icon={Login} />
+				<ActionIcon href="/wishlist" icon={Heart} stretch={true} />
+				<ActionIcon href="/cart" icon={Bag} count={$itemCount} />
 			</div>
 		</div>
 	</div>
@@ -117,11 +118,11 @@
 		top: 2px;
 		left: 0px;
 		height: 62px;
-		width: 164px;
+		width: 130px;
 	}
 
 	.logo-placeholder {
-		width: 164px;
+		width: 130px;
 		height: 1px;
 		flex-shrink: 0;
 	}
@@ -180,6 +181,13 @@
 
 	.search-overlay :global(.search input) {
 		width: 100%;
+	}
+
+	@media (min-width: 400px) {
+		.header-logo,
+		.logo-placeholder {
+			width: 164px;
+		}
 	}
 
 	@media (min-width: 528px) {

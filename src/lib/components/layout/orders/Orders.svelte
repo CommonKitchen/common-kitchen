@@ -7,8 +7,8 @@
 	import { getProductContext } from '$lib/context/productContext';
 	const products = getProductContext() ?? [];
 
-	/** @typedef {import('$lib/types.js').Order} OrderType
-	 * @typedef {import('$lib/types').Product} Product
+	/** @typedef {import('$lib/types/types.js').Order} OrderType
+	 * @typedef {import('$lib/types/types').Product} Product
 	 * @param {OrderType} order
 	 */
 	function handleRepeat(order) {

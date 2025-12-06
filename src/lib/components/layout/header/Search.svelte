@@ -3,7 +3,7 @@
 	import ico from '$lib/assets/icon-search-24x24.svg';
 	import { getProductContext } from '$lib/context/productContext.js';
 
-	/** @typedef {import('$lib/types.js').Product} Product */
+	/** @typedef {import('$lib/types/types.js').Product} Product */
 	/** @type {Product[]} */
 	const products = $derived(getProductContext() ?? []);
 

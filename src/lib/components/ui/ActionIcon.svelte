@@ -1,58 +1,67 @@
-<script>
+<script lang="ts">
 	let {
-		href = '',
-		iconSrc = '',
 		icon: Icon = null,
-		count = 0,
 		onclick = null,
 		tooltip = '',
 		color = 'var(--icons-color)',
-		size = '32px',
-		disabled = false
+		width = '32',
+		height = '32',
+		disabled = false,
+		stretch = false,
+		count = 0,
+		href = ''
 	} = $props();
+
+	const commonClasses = `icon-btn ${stretch ? 'stretch' : 'fixed'}`;
 </script>
 
 {#if href}
-	<a {href} class="icon-link">
-		<img class="icon-image" src={iconSrc} alt={href} />
-
-		{#if count > 0}
-			<span class="icon-count">{count}</span>
-		{/if}
+	<a
+		class={commonClasses}
+		{href}
+		title={tooltip}
+		style:color
+		class:disabled
+		style:--btn-width={`${width}px`}
+		style:--btn-height={`${height}px`}
+	>
+		<Icon class="icon-svg" />
 	</a>
 {:else}
 	<button
-		class="icon-btn"
+		class={commonClasses}
 		{onclick}
 		title={tooltip}
 		style:color
-		style:width={size}
-		style:height={size}
 		class:disabled
+		style:--btn-width={`${width}px`}
+		style:--btn-height={`${height}px`}
 	>
-		<Icon class="icon-svg" {size} />
+		<Icon class="icon-svg" />
 	</button>
 {/if}
 
 <style>
-	.icon-link,
 	.icon-btn {
+		padding: 0px;
 		position: relative;
 		display: flex;
 		align-items: center;
-		transition: color 0.2s;
-	}
-
-	.icon-link {
-		color: var(--icons-color, #7d7d7d);
-		text-decoration: none;
-	}
-
-	.icon-btn {
 		border: none;
 		background: initial;
 		cursor: pointer;
 		transition: transform 0.1s;
+		transition: color 0.2s ease;
+	}
+
+	.stretch {
+		width: 100%;
+		height: 100%;
+	}
+
+	.fixed {
+		width: var(--btn-width);
+		height: var(--btn-height);
 	}
 
 	.icon-btn.disabled {
@@ -66,35 +75,6 @@
 
 	.icon-btn:hover:not(.disabled) {
 		transform: scale(1.05);
-	}
-	.icon-image {
-		width: 32px;
-		height: 32px;
-		/* filter: grayscale(100%) brightness(0.7) opacity(0.85); */
-		transition: filter 0.2s;
-	}
-
-	.icon-image:hover {
-		/* color: var(--main-color, #e24511); */
-		filter: invert(33%) sepia(85%) saturate(7390%) hue-rotate(352deg) brightness(85%) contrast(98%);
-	}
-
-	.icon-count {
-		position: absolute;
-		top: -5px;
-		right: -8px;
-		min-width: 16px;
-		height: 16px;
-		line-height: 16px;
-		background-color: var(--main-color, #e24511);
-		color: white;
-		border-radius: 50%;
-		font-size: 10px;
-		padding: 1px 1px;
-		font-weight: bold;
-		z-index: 10;
-		display: flex;
-		align-items: center;
-		justify-content: center;
+		filter: brightness(90%);
 	}
 </style>

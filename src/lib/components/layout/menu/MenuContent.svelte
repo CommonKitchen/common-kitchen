@@ -2,7 +2,7 @@
 	import { getCategoryContext } from '$lib/context/categoryContext.js';
 	import { customer } from '$lib/stores/customerStore.js';
 
-	/** @typedef {import('$lib/types.js').Category} Category */
+	/** @typedef {import('$lib/types/types.js').Category} Category */
 	/** @type {Category[]} */
 	const categories = $derived(getCategoryContext() ?? []);
 	const hasCustomer = $derived(!!$customer);
