@@ -57,14 +57,21 @@ const API_URL = `https://${API_SERVER_URL}`;
 	};
 }
 
-export async function load({ fetch }) {
+export async function load({ fetch, cookies }) {
+	const sessionId = cookies.get('auth_session_id');
+
 	let response;
+
+	const headers = new Headers({
+		Accept: 'application/json'
+	});
+	if (sessionId) {
+		headers.set('Authorization', `Bearer ${sessionId}`);
+	}
 
 	const requestOptions = {
 		method: 'POST',
-		headers: {
-			Accept: 'application/json'
-		}
+		headers: headers
 	};
 
 	try {

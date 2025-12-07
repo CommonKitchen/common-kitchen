@@ -353,10 +353,7 @@
 				{#if !hasCustomer}
 					<div class="warning-block">
 						⚠️ Замовлення можуть оформити тільки зареєстровані клієнти. <br />
-						Для реєстрації перейдіть за посиланням у наш телеграм-бот
-						<a href="https://t.me/commonkitchenbot" target="_blank" rel="noopener noreferrer"
-							>t.me/CommonKitchenbot</a
-						>
+						<a href="/login">Перейти до реєстрації</a>
 					</div>
 				{/if}
 
