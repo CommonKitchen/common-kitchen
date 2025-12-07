@@ -2,8 +2,10 @@
 	import { onMount } from 'svelte';
 	import QrCode from 'svelte-qrcode';
 	import Button from '$lib/components/ui/Button.svelte';
+	import { setCustomerData } from '$lib/stores/customerStore';
+	import { sessions } from '$lib/types/sessions';
 
-	const { isMobile } = $props();
+	const { isMobile, customer } = $props();
 
 	let authorized = $state(false);
 	let sessionId = $state('');
@@ -22,14 +24,44 @@
 	}
 
 	const successLogin = async (id: string) => {
-		await fetch('/api/successlogin', {
-			method: 'POST',
-			headers: { 'Content-Type': 'application/json' },
-			body: JSON.stringify({ sessionId: id })
-		});
+		// await fetch('/api/successlogin', {
+		// 	method: 'POST',
+		// 	headers: { 'Content-Type': 'application/json' },
+		// 	body: JSON.stringify({ sessionId: id })
+		// });
+		try {
+			const res = await fetch('/api/successlogin', {
+				method: 'POST',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify({ sessionId: id })
+			});
+
+			if (!res.ok) {
+				console.error('Failed to complete login:', res.status);
+				return false;
+			}
+
+			const data = await res.json();
+
+			if (data.customer) {
+				setCustomerData(data.customer);
+			} else {
+				console.warn('No customer data returned from server');
+			}
+
+			return true;
+		} catch (err) {
+			console.error('Error during successLogin:', err);
+			return false;
+		}
 	};
 
 	onMount(() => {
+		if (customer) {
+			authorized = true;
+			return;
+		}
+
 		sessionId = crypto.randomUUID();
 
 		visibilityHandler = () => {
@@ -72,6 +104,12 @@
 		evtSource.addEventListener('authorized', async (event) => {
 			const data = JSON.parse(event.data);
 			console.log('User authorized:', data);
+
+			const session = sessions[sessionId];
+			if (session && session?.customer) {
+				setCustomerData(session.customer);
+				session.customer = undefined;
+			}
 
 			await successLogin(sessionId);
 

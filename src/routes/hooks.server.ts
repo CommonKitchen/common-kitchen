@@ -15,7 +15,7 @@ export const handle: Handle = async ({ event, resolve }) => {
 	const sessionId = event.cookies.get('auth_session_id');
 
 	if (sessionId) {
-		console.log('sessionId', sessionId);
+		// console.log('sessionId', sessionId);
 	}
 	// const session = sessions[sessionId];
 
