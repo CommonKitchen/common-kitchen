@@ -6,7 +6,6 @@
 	import Button from '$lib/components/ui/Button.svelte';
 
 	import { customer } from '$lib/stores/customerStore.js';
-	import { getWebApp } from '$lib/utils/telegram';
 
 	const { apiURL } = $props();
 
@@ -327,21 +326,12 @@
 		isLoading = true;
 		errorSendingMessage = '';
 
-		const webApp = getWebApp();
-
-		// @ts-ignore
-		const initData = webApp?.initData;
-		if (!initData) {
-			console.warn('Telegram WebApp.initData не знайдено. Замовлення неможливе.');
-			return;
-		}
-
 		try {
 			const response = await fetch(`${apiURL}/cakes/hs/shop/customers`, {
 				method: 'PUT',
 				headers: {
 					'Content-Type': 'application/json',
-					'X-Telegram-Init-Data': initData
+					'X-SessionId': '11'
 				},
 				body: JSON.stringify(entities())
 			});

@@ -3,7 +3,6 @@
 
 	import OrderTitle from '$lib/components/ui/OrderTitle.svelte';
 	import { clearCart } from '$lib/stores/cartStore';
-	import { getWebApp } from '$lib/utils/telegram';
 	import { cubicOut } from 'svelte/easing';
 	import { slide } from 'svelte/transition';
 
@@ -82,15 +81,6 @@
 		isLoading = true;
 		checkoutError = '';
 
-		const webApp = getWebApp();
-
-		// @ts-ignore
-		const initData = webApp?.initData;
-		if (!initData) {
-			console.warn('Telegram WebApp.initData не знайдено. Замовлення неможливе.');
-			return;
-		}
-
 		const payload = {
 			customer: customer.id,
 			paymentMethod: payment.id,
@@ -121,7 +111,7 @@
 				headers: {
 					'Content-Type': 'application/json',
 					Accept: 'application/json',
-					'X-Telegram-Init-Data': initData
+					'X-SessionId': '11'
 				},
 				body: JSON.stringify(payload)
 			});
@@ -252,7 +242,7 @@
 	</div>
 
 	{#if checkoutError}
-		<div class="checkout-error-message">
+		<div class="warning-block">
 			⚠️ {checkoutError}
 		</div>
 	{/if}
@@ -470,5 +460,17 @@
 		100% {
 			transform: rotate(360deg);
 		}
+	}
+
+	.warning-block {
+		background-color: #fff3cd;
+		color: #856404;
+		border: 1px solid #ffeeba;
+		padding: 10px 15px;
+		border-radius: 4px;
+		margin-bottom: 20px;
+		font-weight: 500;
+		text-align: left;
+		line-height: 1.6;
 	}
 </style>
