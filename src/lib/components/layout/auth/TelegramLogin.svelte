@@ -7,6 +7,8 @@
 
 	const { isMobile, customer } = $props();
 
+	console.log('customer', customer);
+
 	let authorized = $state(false);
 	let sessionId = $state('');
 	let waiting = $state(false);
