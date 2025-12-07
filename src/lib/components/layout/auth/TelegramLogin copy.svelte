@@ -11,6 +11,13 @@
 	let waiting = $state(false);
 	let error = $state(false);
 
+	let evtSource: EventSource | null = null;
+	let visibilityHandler: (() => void) | null = null;
+
+	function getSseLink() {
+		return `/api/sse?sessionId=${sessionId}`;
+	}
+
 	function getLoginLink() {
 		return `https://t.me/commonkitchenbot?start=id_${sessionId}`;
 	}
@@ -46,40 +53,6 @@
 		}
 	};
 
-	let pollingInterval: number | null = null; // Для хранения идентификатора интервала
-
-	function startPolling() {
-		if (!sessionId) {
-			console.error('Session ID not ready.');
-			return;
-		}
-
-		waiting = true;
-		error = false;
-
-		// Очищаем старый интервал, если он есть
-		if (pollingInterval) {
-			clearInterval(pollingInterval);
-		}
-
-		// Запускаем опрос каждые 4 секунды
-		pollingInterval = setInterval(async () => {
-			console.log('Polling /api/successlogin...');
-
-			// 2. Используем существующую функцию successLogin
-			const success = await successLogin(sessionId);
-
-			if (success) {
-				// Если успех, останавливаем опрос
-				if (pollingInterval) clearInterval(pollingInterval);
-				pollingInterval = null;
-
-				authorized = true;
-				waiting = false;
-			}
-		}, 2000) as unknown as number; // 4000 мс = 4 секунды
-	}
-
 	onMount(() => {
 		if ($customer) {
 			authorized = true;
@@ -88,14 +61,64 @@
 
 		sessionId = crypto.randomUUID();
 
+		visibilityHandler = () => {
+			if (!document.hidden && waiting && !authorized) {
+				console.log('Restoring SSE connection...');
+				startSSE();
+			}
+		};
+
+		document.addEventListener('visibilitychange', visibilityHandler);
+
 		if (!isMobile) {
-			startPolling();
+			startLogin();
 		}
 
 		return () => {
-			if (pollingInterval) clearInterval(pollingInterval); // Очистка при выходе
+			evtSource?.close();
+			if (visibilityHandler) {
+				document.removeEventListener('visibilitychange', visibilityHandler);
+			}
 		};
 	});
+
+	function startSSE() {
+		if (!sessionId) {
+			console.error('Session ID not ready.');
+			return;
+		}
+
+		waiting = true;
+		error = false;
+
+		if (evtSource) {
+			evtSource.close();
+		}
+
+		evtSource = new EventSource(getSseLink());
+
+		// Обработчик успешной авторизации
+		evtSource.addEventListener('authorized', async (event) => {
+			console.log('User authorized');
+
+			await successLogin(sessionId);
+
+			authorized = true;
+			waiting = false;
+			evtSource?.close();
+			evtSource = null;
+		});
+
+		// Обработчик ошибок SSE (потеря соединения, ошибка сервера и т.д.)
+		evtSource.onerror = () => {
+			waiting = false;
+			if (authorized) return;
+			console.error('SSE connection lost or error occurred');
+			error = true;
+			evtSource?.close();
+			evtSource = null;
+		};
+	}
 
 	/**
 	 * Основная функция запуска логина.
@@ -106,7 +129,7 @@
 			window.open(getLoginLink(), '_blank');
 		}
 
-		startPolling();
+		startSSE();
 	}
 </script>
 
