@@ -6,8 +6,6 @@
 
 	const { isMobile, customer } = $props();
 
-	console.log('customer', $customer);
-
 	let authorized = $state(false);
 	let sessionId = $state('');
 	let waiting = $state(false);
@@ -24,12 +22,8 @@
 		return `https://t.me/commonkitchenbot?start=id_${sessionId}`;
 	}
 
+	//#region successLogin
 	const successLogin = async (id: string) => {
-		// await fetch('/api/successlogin', {
-		// 	method: 'POST',
-		// 	headers: { 'Content-Type': 'application/json' },
-		// 	body: JSON.stringify({ sessionId: id })
-		// });
 		try {
 			const res = await fetch('/api/successlogin', {
 				method: 'POST',
@@ -43,6 +37,8 @@
 			}
 
 			const data = await res.json();
+
+			console.log('data', data);
 
 			if (data.customer) {
 				setCustomerData(data.customer);
