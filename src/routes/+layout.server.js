@@ -66,7 +66,7 @@ export async function load({ fetch, cookies }) {
 		Accept: 'application/json'
 	});
 	if (sessionId) {
-		headers.set('Authorization', `Bearer ${sessionId}`);
+		headers.set('X-SessionId', sessionId);
 	}
 
 	const requestOptions = {
