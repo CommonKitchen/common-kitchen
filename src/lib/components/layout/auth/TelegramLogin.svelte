@@ -7,7 +7,7 @@
 
 	const { isMobile, customer } = $props();
 
-	console.log('customer', customer);
+	console.log('customer', $customer);
 
 	let authorized = $state(false);
 	let sessionId = $state('');
@@ -59,7 +59,7 @@
 	};
 
 	onMount(() => {
-		if (customer) {
+		if ($customer) {
 			authorized = true;
 			return;
 		}
