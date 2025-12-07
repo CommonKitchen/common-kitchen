@@ -8,6 +8,8 @@ const API_URL = `https://${API_SERVER_URL}`;
 /* @type {Product[]} */
 /** @typedef {import('$lib/types/types.js').Category} Category */
 /* @type {Category[]} */
+/** @typedef {import('$lib/types/types.js').Customer} Customer */
+/* @type {Category[]} */
 
 /**
  * @typedef {object} ApiData
@@ -15,6 +17,7 @@ const API_URL = `https://${API_SERVER_URL}`;
  * @property {Category[]} categories - Массив категорий.
  * @property {object} checkoutConfig - Объект конфигурации заказа.
  * @property {string} apiURL - Объект конфигурации заказа.
+ * @property {Customer} customer - Объект конфигурации заказа.
  */
 
 /**
@@ -48,13 +51,9 @@ const API_URL = `https://${API_SERVER_URL}`;
 		throw new Error("Помилка валідациї даних: відсутній або некоректний об'єкт 'checkoutConfig'.");
 	}
 
-	// Если все проверки пройдены, возвращаем данные.
-	return {
-		products: data.products,
-		categories: data.categories,
-		checkoutConfig: data.checkoutConfig,
-		apiURL: API_URL
-	};
+	const res = { ...data, apiURL: API_URL };
+
+	return res;
 }
 
 export async function load({ fetch, cookies }) {

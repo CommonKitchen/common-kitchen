@@ -4,14 +4,16 @@
 	import '$lib/styles/global.css';
 	import Header from '$lib/components/layout/header/Header.svelte';
 	import Footer from '$lib/components/layout/Footer.svelte';
+	import Loader from '$lib/components/ui/Loader.svelte';
 	import { setCategoryContext } from '$lib/context/categoryContext.js';
 	import { setProductContext } from '$lib/context/productContext.js';
-	import Loader from '$lib/components/ui/Loader.svelte';
+	import { setCustomerData } from '$lib/stores/customerStore.js';
 
 	let { children, data } = $props();
 
 	setCategoryContext(data.shopData?.categories ?? []);
 	setProductContext(data.shopData?.products ?? []);
+	setCustomerData(data.shopData?.customer ?? null);
 
 	let isLoading = $state(true);
 
