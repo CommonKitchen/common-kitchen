@@ -3,7 +3,6 @@
 	import QrCode from 'svelte-qrcode';
 	import Button from '$lib/components/ui/Button.svelte';
 	import { setCustomerData } from '$lib/stores/customerStore';
-	import { sessions } from '$lib/types/sessions';
 
 	const { isMobile, customer } = $props();
 
@@ -106,12 +105,6 @@
 		evtSource.addEventListener('authorized', async (event) => {
 			const data = JSON.parse(event.data);
 			console.log('User authorized:', data);
-
-			const session = sessions[sessionId];
-			if (session && session?.customer) {
-				setCustomerData(session.customer);
-				session.customer = undefined;
-			}
 
 			await successLogin(sessionId);
 

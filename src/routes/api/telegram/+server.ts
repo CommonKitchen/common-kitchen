@@ -4,16 +4,15 @@ import { sessions } from '$lib/types/sessions';
 
 export const POST: RequestHandler = async ({ request }) => {
 	const data = await request.json();
-	const { customer, sessionId } = data;
+	const { sessionId } = data;
 
-	if (!customer) {
-		return new Response(`Missing data customer:'${customer}' sessionId:'${sessionId}'`, {
+	if (!sessionId) {
+		return new Response(`Missing data customer: sessionId:'${sessionId}'`, {
 			status: 400
 		});
 	}
 
 	sessions[sessionId] = {
-		customer,
 		authorized: true
 	};
 
