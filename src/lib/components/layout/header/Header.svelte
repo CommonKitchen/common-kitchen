@@ -10,8 +10,14 @@
 	import Login from '$lib/components/layout/icons/Login.svelte';
 	import Bag from '$lib/components/layout/icons/Bag.svelte';
 	import { itemCount } from '$lib/stores/cartStore.js';
+	import Telegram from '$lib/components/ui/Telegram.svelte';
+
+	const { isMobile } = $props();
+
+	console.log('isMobile', isMobile);
 
 	const phone = '+380738387677';
+	const telegramUser = 'https://t.me/manager_commonkitchen';
 
 	let isSearchOverlay = $state(false);
 
@@ -71,7 +77,11 @@
 				<Search isOverlay={isSearchOverlay} {toggleSearchOverlay} />
 			</div>
 			<div class="phone-block">
-				<Phone {phone} />
+				{#if isMobile}
+					<Telegram {telegramUser} />
+				{:else}
+					<Phone {phone} />
+				{/if}
 			</div>
 			<div class="icon-block">
 				<div class="icon-loupe">

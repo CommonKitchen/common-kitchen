@@ -25,7 +25,8 @@ const API_URL = `https://${API_SERVER_URL}`;
  * @param {ApiData} data - Объект, полученный после response.json().
  * @returns {ApiData} Возвращает проверенный объект с данными (products, categories и checkoutConfig).
  * @throws {Error} Выбрасывает ошибку, если данные не соответствуют ожидаемой структуре.
- */ function validateApiData(data) {
+ */
+function validateApiData(data) {
 	if (!data || typeof data !== 'object' || Array.isArray(data)) {
 		throw new Error("Помилка валідациї даних: відповідь API не являє собою коректний об'єкт.");
 	}
@@ -56,7 +57,10 @@ const API_URL = `https://${API_SERVER_URL}`;
 	return res;
 }
 
-export async function load({ fetch, cookies }) {
+export async function load({ fetch, cookies, request }) {
+	const ua = request.headers.get('user-agent') || '';
+	const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini|Mobile/i.test(ua);
+
 	const sessionId = cookies.get('auth_session_id');
 
 	let response;
@@ -100,7 +104,7 @@ export async function load({ fetch, cookies }) {
 			...item,
 			imageUrl: item.imageUrl || '/nophoto.png'
 		}));
-		return { shopData: { ...validatedData, products, sessionId } };
+		return { shopData: { ...validatedData, products, sessionId }, isMobile };
 	} catch (e) {
 		console.error('Error parsing JSON:', e);
 		throw error(500, {

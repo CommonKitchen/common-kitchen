@@ -16,6 +16,8 @@
 	setCustomerData(data.shopData?.customer ?? null);
 	sessionStore.set(data.shopData?.sessionId ?? null);
 
+	const isMobile = data?.isMobile ?? false;
+
 	let isLoading = $state(true);
 
 	onMount(() => (isLoading = false));
@@ -34,7 +36,7 @@
 {#if isLoading}
 	<Loader />
 {:else}
-	<Header />
+	<Header {isMobile} />
 	<div class="content-wrap">
 		{@render children?.()}
 	</div>
