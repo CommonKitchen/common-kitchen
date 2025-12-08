@@ -70,16 +70,16 @@
 		pollingInterval = setInterval(async () => {
 			const success = await successLogin(sessionId);
 			console.log('tik:', success);
-			if (success || error) {
+			if (success) {
 				if (pollingInterval) clearInterval(pollingInterval);
 				pollingInterval = null;
 
-				if (success) {
-					authorized = true;
-					waiting = false;
-				} else {
-					waiting = false;
-				}
+				// if (success) {
+				authorized = true;
+				waiting = false;
+				// } else {
+				// 	waiting = false;
+				// }
 			}
 		}, 2000) as unknown as number;
 	}
