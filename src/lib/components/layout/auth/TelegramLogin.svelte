@@ -24,12 +24,16 @@
 				body: JSON.stringify({ sessionId: id })
 			});
 
+			console.log('successLogin res', res);
+
 			if (!res.ok) {
 				console.error('Failed to complete login:', res.status);
 				return false;
 			}
 
 			const data = await res.json();
+
+			console.log('data', data);
 
 			if (data.customer) {
 				setCustomerData(data.customer);
@@ -52,6 +56,8 @@
 			return;
 		}
 
+		console.log('Start polling');
+
 		waiting = true;
 		error = false;
 
@@ -61,7 +67,7 @@
 
 		pollingInterval = setInterval(async () => {
 			const success = await successLogin(sessionId);
-
+			console.log('tik:', success);
 			if (success) {
 				if (pollingInterval) clearInterval(pollingInterval);
 				pollingInterval = null;
