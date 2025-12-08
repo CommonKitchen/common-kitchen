@@ -26,7 +26,11 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
 			body: JSON.stringify({ sessionId })
 		});
 		if (!res.ok) {
-			throw new Error(`Telegram bot responded with ${res.status}`);
+			console.error(`Telegram bot API responded with ${res.status}: ${res.statusText}`);
+			return new Response(JSON.stringify({ error: `External API error: ${res.status}` }), {
+				status: 502,
+				headers: { 'Content-Type': 'application/json' }
+			});
 		}
 		customerData = await res.json();
 	} catch (err) {
