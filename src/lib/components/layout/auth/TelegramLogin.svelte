@@ -27,10 +27,10 @@
 			console.log('successLogin res', res);
 
 			if (!res.ok) {
-				console.error('Failed to complete login:', res.status);
+				console.error('Failed to complete login:', res.status, res.statusText);
+				error = true;
 				return false;
 			}
-
 			const data = await res.json();
 
 			console.log('data', data);
@@ -39,11 +39,13 @@
 				setCustomerData(data.customer);
 			} else {
 				console.warn('No customer data returned from server');
+				return false;
 			}
 
 			return true;
 		} catch (err) {
 			console.error('Error during successLogin:', err);
+			error = true;
 			return false;
 		}
 	};
@@ -68,12 +70,16 @@
 		pollingInterval = setInterval(async () => {
 			const success = await successLogin(sessionId);
 			console.log('tik:', success);
-			if (success) {
+			if (success || error) {
 				if (pollingInterval) clearInterval(pollingInterval);
 				pollingInterval = null;
 
-				authorized = true;
-				waiting = false;
+				if (success) {
+					authorized = true;
+					waiting = false;
+				} else {
+					waiting = false;
+				}
 			}
 		}, 2000) as unknown as number;
 	}
