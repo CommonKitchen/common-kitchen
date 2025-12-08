@@ -25,6 +25,13 @@
 	<nav class="nav-list">
 		{#if !isProductions}
 			<a href="/cart" class="nav-link" onclick={close}>Корзина</a>
+			<a
+				href="https://t.me/manager_commonkitchen"
+				class="nav-link"
+				onclick={close}
+				target="_blank"
+				rel="noopener noreferrer">Написати менеджеру</a
+			>
 			{#if hasCustomer}
 				<div class="nav-separator"></div>
 				<a href="/orders" class="nav-link" onclick={close}>Мої замовлення</a>
