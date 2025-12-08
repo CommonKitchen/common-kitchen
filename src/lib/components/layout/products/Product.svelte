@@ -1,7 +1,7 @@
 <script>
 	import CartButtons from '$lib/components/ui/CartButtons.svelte';
-	import heart from '$lib/assets/icon-favorite-24x24.svg';
-	import fillHeart from '$lib/assets/icon-favorite2-24x24.svg';
+	// import heart from '$lib/assets/icon-favorite-24x24.svg';
+	// import fillHeart from '$lib/assets/icon-favorite2-24x24.svg';
 	import Image from '$lib/components/ui/Image.svelte';
 
 	const {
@@ -21,7 +21,7 @@
 <div class="product-tile">
 	<a href={productUrl} class="product-tile-link">
 		<Image src={imageUrl_168x168} alt={title} className="image-container" />
-		<div class="icon-heart">
+		<!-- <div class="icon-heart">
 			<button
 				type="button"
 				class="favorite-button"
@@ -37,7 +37,7 @@
 					<img src={fillHeart} alt="Прибрати з улюбленого" />
 				{/if}
 			</button>
-		</div>
+		</div> -->
 	</a>
 	<div class="product-content">
 		<div class="product-title">{title}</div>
@@ -84,7 +84,7 @@
 		box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
 	}
 
-	.icon-heart {
+	/* .icon-heart {
 		position: absolute;
 		top: 5px;
 		right: 5px;
@@ -110,7 +110,7 @@
 		border-radius: 50%;
 		padding: 4px;
 		background-color: rgba(204, 204, 204, 0.3);
-	}
+	} */
 
 	.product-content {
 		width: 100%;
