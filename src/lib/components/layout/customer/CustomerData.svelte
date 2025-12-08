@@ -338,7 +338,6 @@
 
 			if (!response.ok) {
 				let errorMessage = `Помилка сервера: ${response.status}`;
-				console.log(response);
 				try {
 					const errorBody = await response.json();
 					errorMessage = errorBody.message || errorMessage;
@@ -346,7 +345,6 @@
 					errorMessage = errorMessage;
 				}
 
-				console.log(`errorMessage ${errorMessage}`);
 				throw new Error(errorMessage);
 			} else {
 				dataSaved = true;
