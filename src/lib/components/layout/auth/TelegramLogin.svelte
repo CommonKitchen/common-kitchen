@@ -28,7 +28,7 @@
 
 			if (!res.ok) {
 				console.error('Failed to complete login:', res.status, res.statusText);
-				error = true;
+				// error = true;
 				return false;
 			}
 			const data = await res.json();
@@ -45,7 +45,7 @@
 			return true;
 		} catch (err) {
 			console.error('Error during successLogin:', err);
-			error = true;
+			// error = true;
 			return false;
 		}
 	};
