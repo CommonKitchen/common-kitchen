@@ -3,6 +3,7 @@
 	import QrCode from 'svelte-qrcode';
 	import Button from '$lib/components/ui/Button.svelte';
 	import { setCustomerData } from '$lib/stores/customerStore';
+	import { sessionStore } from '$lib/stores/sessionStore';
 
 	const { isMobile, customer } = $props();
 
@@ -33,6 +34,7 @@
 
 			if (data.customer) {
 				setCustomerData(data.customer);
+				sessionStore.set(id);
 			} else {
 				console.warn('No customer data returned from server');
 				return false;

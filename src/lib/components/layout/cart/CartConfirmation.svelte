@@ -3,6 +3,7 @@
 
 	import OrderTitle from '$lib/components/ui/OrderTitle.svelte';
 	import { clearCart } from '$lib/stores/cartStore';
+	import { sessionStore } from '$lib/stores/sessionStore';
 	import { cubicOut } from 'svelte/easing';
 	import { slide } from 'svelte/transition';
 
@@ -82,6 +83,7 @@
 		checkoutError = '';
 
 		const payload = {
+			sessionId: $sessionStore,
 			customer: customer.id,
 			paymentMethod: payment.id,
 			delivery: {
@@ -110,8 +112,7 @@
 				method: 'POST',
 				headers: {
 					'Content-Type': 'application/json',
-					Accept: 'application/json',
-					'X-SessionId': '11'
+					Accept: 'application/json'
 				},
 				body: JSON.stringify(payload)
 			});

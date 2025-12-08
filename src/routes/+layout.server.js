@@ -100,7 +100,7 @@ export async function load({ fetch, cookies }) {
 			...item,
 			imageUrl: item.imageUrl || '/nophoto.png'
 		}));
-		return { shopData: { ...validatedData, products } };
+		return { shopData: { ...validatedData, products, sessionId } };
 	} catch (e) {
 		console.error('Error parsing JSON:', e);
 		throw error(500, {

@@ -8,12 +8,13 @@
 	import { setCategoryContext } from '$lib/context/categoryContext.js';
 	import { setProductContext } from '$lib/context/productContext.js';
 	import { setCustomerData } from '$lib/stores/customerStore.js';
-
+	import { sessionStore } from '$lib/stores/sessionStore.js';
 	let { children, data } = $props();
 
 	setCategoryContext(data.shopData?.categories ?? []);
 	setProductContext(data.shopData?.products ?? []);
 	setCustomerData(data.shopData?.customer ?? null);
+	sessionStore.set(data.shopData?.sessionId ?? null);
 
 	let isLoading = $state(true);
 
