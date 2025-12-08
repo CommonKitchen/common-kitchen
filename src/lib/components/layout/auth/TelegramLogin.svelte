@@ -31,8 +31,6 @@
 
 			const data = await res.json();
 
-			console.log('data', data);
-
 			if (data.customer) {
 				setCustomerData(data.customer);
 			} else {
@@ -46,7 +44,7 @@
 		}
 	};
 
-	let pollingInterval: number | null = null; // Для хранения идентификатора интервала
+	let pollingInterval: number | null = null;
 
 	function startPolling() {
 		if (!sessionId) {
@@ -57,27 +55,21 @@
 		waiting = true;
 		error = false;
 
-		// Очищаем старый интервал, если он есть
 		if (pollingInterval) {
 			clearInterval(pollingInterval);
 		}
 
-		// Запускаем опрос каждые 4 секунды
 		pollingInterval = setInterval(async () => {
-			console.log('Polling /api/successlogin...');
-
-			// 2. Используем существующую функцию successLogin
 			const success = await successLogin(sessionId);
 
 			if (success) {
-				// Если успех, останавливаем опрос
 				if (pollingInterval) clearInterval(pollingInterval);
 				pollingInterval = null;
 
 				authorized = true;
 				waiting = false;
 			}
-		}, 2000) as unknown as number; // 4000 мс = 4 секунды
+		}, 2000) as unknown as number;
 	}
 
 	onMount(() => {
@@ -93,14 +85,10 @@
 		}
 
 		return () => {
-			if (pollingInterval) clearInterval(pollingInterval); // Очистка при выходе
+			if (pollingInterval) clearInterval(pollingInterval);
 		};
 	});
 
-	/**
-	 * Основная функция запуска логина.
-	 * На мобильном открывает окно, на десктопе просто запускает SSE.
-	 */
 	function startLogin() {
 		if (isMobile) {
 			window.open(getLoginLink(), '_blank');
@@ -118,7 +106,7 @@
 			<p>Помилка підключення.</p>
 			<button
 				onclick={() => {
-					sessionId = crypto.randomUUID(); // Генерируем новый ID сразу
+					sessionId = crypto.randomUUID();
 					startLogin();
 				}}
 			>
