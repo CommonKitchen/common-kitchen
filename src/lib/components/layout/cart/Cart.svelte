@@ -1,3 +1,4 @@
+<!-- $lib/components/layout/cart -->
 <script>
 	import { goto } from '$app/navigation';
 	import { cart, updateCart, total as cartAmount, removeItem } from '$lib/stores/cartStore.js';
@@ -149,6 +150,7 @@
 			delivery: {
 				title: selectedDeliveryType.title,
 				method: selectedDeliveryType.shippingMethod,
+				deliveryTypeId: selectedDeliveryTypeId,
 				date: deliveryDate.toLocaleDateString('en-CA', {
 					year: 'numeric',
 					month: '2-digit',

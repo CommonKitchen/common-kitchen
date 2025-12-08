@@ -16,7 +16,7 @@
 	function toggleProducts() {
 		isExpanded = !isExpanded;
 	}
-
+	//
 	/**
 	 * Функція для створення та відправки динамічної форми для перенаправлення
 	 * на платіжний шлюз (наприклад, Wayforpay).
@@ -91,7 +91,8 @@
 				date: delivery.date,
 				amount: delivery.amount,
 				location: delivery.location,
-				pickupLocation: delivery.pickupLocation
+				pickupLocation: delivery.pickupLocation,
+				deliveryTypeId: delivery.deliveryTypeId
 			},
 			comment: note,
 			subtotal: summary.subtotal,
