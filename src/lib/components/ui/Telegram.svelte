@@ -5,7 +5,7 @@
 
 <a href={telegramUser} class="telegram-link">
 	<TelegramIcon />
-	Написати менеджеру
+	<span class="description">Написати менеджеру</span>
 </a>
 
 <style>
@@ -22,5 +22,15 @@
 
 	.telegram-link:hover {
 		color: var(--main-color, #e24511);
+	}
+
+	.description {
+		display: none;
+	}
+
+	@media (min-width: 768px) {
+		.description {
+			display: block;
+		}
 	}
 </style>

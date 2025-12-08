@@ -76,19 +76,19 @@
 			<div class="search-block">
 				<Search isOverlay={isSearchOverlay} {toggleSearchOverlay} />
 			</div>
-			<div class="phone-block">
-				{#if isMobile}
-					<Telegram {telegramUser} />
-				{:else}
+			{#if isMobile}
+				<Telegram {telegramUser} />
+			{:else}
+				<div class="phone-block">
 					<Phone {phone} />
-				{/if}
-			</div>
+				</div>
+			{/if}
 			<div class="icon-block">
 				<div class="icon-loupe">
 					<ActionIcon onclick={toggleSearchOverlay} icon={Loupe} />
 				</div>
 				<ActionIcon href="/login" icon={Login} />
-				<ActionIcon href="/wishlist" icon={Heart} stretch={true} />
+				<!-- <ActionIcon href="/wishlist" icon={Heart} stretch={true} /> -->
 				<ActionIcon href="/cart" icon={Bag} count={$itemCount} />
 			</div>
 		</div>
