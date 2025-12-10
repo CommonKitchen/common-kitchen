@@ -226,6 +226,7 @@
 	}
 </script>
 
+// #region html
 <div class="cart-container">
 	{#if isOrderSuccess}
 		<CartMessage option="success" />
@@ -291,7 +292,7 @@
 
 				<DatePicker
 					title="Дата доставки (приготування):"
-					availableDays={currentCustomerLocation?.availableDays || [1, 2, 3, 4, 5]}
+					availableDays={currentCustomerLocation?.availableDays || []}
 					bind:selectedDate={deliveryDate}
 				/>
 
