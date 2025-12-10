@@ -4,6 +4,7 @@
 	import Button from '$lib/components/ui/Button.svelte';
 	import { setCustomerData } from '$lib/stores/customerStore';
 	import { sessionStore } from '$lib/stores/sessionStore';
+	import { goto } from '$app/navigation';
 
 	const { isMobile, customer } = $props();
 
@@ -72,6 +73,7 @@
 				// if (success) {
 				authorized = true;
 				waiting = false;
+				goto('/customer');
 				// } else {
 				// 	waiting = false;
 				// }

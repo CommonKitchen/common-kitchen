@@ -26,7 +26,7 @@
 		selectedDate = $bindable(),
 		availableDays = [1, 2, 3, 4, 5],
 		blockedDays = [],
-		cutOffHour = 18
+		cutOffHour = 10
 	} = $props();
 
 	const NOW = new Date();

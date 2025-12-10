@@ -94,8 +94,6 @@
 		currentCustomerLocations().find((loc) => loc.id === currentCustomerLocationId)
 	);
 
-	console.log('currentCustomerLocation', currentCustomerLocation);
-
 	$effect(() => {
 		const locations = currentEntity()?.customerLocations;
 
