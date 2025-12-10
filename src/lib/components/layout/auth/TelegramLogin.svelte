@@ -31,11 +31,12 @@
 				// error = true;
 				return false;
 			}
+			console.log('res', res);
+
 			const data = await res.json();
 
 			if (data.customer) {
-				console.log('customer', data.customer);
-				setCustomerData({ ...data.customer });
+				setCustomerData(data.customer);
 				sessionStore.set(id);
 			} else {
 				console.warn('No customer data returned from server');
