@@ -34,6 +34,7 @@
 			const data = await res.json();
 
 			if (data.customer) {
+				console.log('customer', data.customer);
 				setCustomerData(data.customer);
 				sessionStore.set(id);
 			} else {
