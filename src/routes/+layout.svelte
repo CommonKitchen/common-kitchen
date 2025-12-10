@@ -16,6 +16,8 @@
 	setCustomerData(data.shopData?.customer ?? null);
 	sessionStore.set(data.shopData?.sessionId ?? null);
 
+	console.log('customer', data.shopData?.customer ?? null);
+
 	const isMobile = data?.isMobile ?? false;
 
 	let isLoading = $state(true);
