@@ -29,6 +29,8 @@
 		cutOffHour = 10
 	} = $props();
 
+	console.log('availableDays', availableDays);
+
 	const NOW = new Date();
 	const today = startOfDay(NOW);
 	let isCalendarOpen = $state(false);

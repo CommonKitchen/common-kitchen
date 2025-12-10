@@ -226,7 +226,7 @@
 	}
 </script>
 
-// #region html
+<!-- #region html -->
 <div class="cart-container">
 	{#if isOrderSuccess}
 		<CartMessage option="success" />
