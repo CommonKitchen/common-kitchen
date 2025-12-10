@@ -290,6 +290,13 @@
 					</div>
 				{/if}
 
+				<p style="margin: 0;">Entity ID: {currentEntityId}</p>
+				<p style="margin: 0;">Location ID: {currentCustomerLocationId}</p>
+				<p style="margin: 0;">
+					Available Days (Count):
+					{currentCustomerLocation?.availableDays?.length ?? 'Location not found or days missing'}
+				</p>
+
 				<DatePicker
 					title="Дата доставки (приготування):"
 					availableDays={currentCustomerLocation?.availableDays || []}

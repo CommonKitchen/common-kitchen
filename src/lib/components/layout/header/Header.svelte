@@ -14,8 +14,6 @@
 
 	const { isMobile } = $props();
 
-	console.log('isMobile', isMobile);
-
 	const phone = '+380738387677';
 	const telegramUser = 'https://t.me/manager_commonkitchen';
 
