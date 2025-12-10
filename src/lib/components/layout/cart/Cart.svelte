@@ -90,6 +90,7 @@
 		return currentEntity()?.customerLocations ?? [];
 	});
 
+	console.log('currentCustomerLocations', currentCustomerLocations);
 	console.log('currentCustomerLocationId', currentCustomerLocationId);
 
 	const currentCustomerLocation = $derived(
