@@ -36,8 +36,8 @@
 			console.log('data.customer', data.customer);
 
 			if (data.customer) {
-				setCustomerData(null);
-				setCustomerData(data?.customer ?? null);
+				const { customer } = data.customer;
+				setCustomerData(customer ?? null);
 				sessionStore.set(id);
 			} else {
 				console.warn('No customer data returned from server');
