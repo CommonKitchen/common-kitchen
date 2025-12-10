@@ -33,7 +33,6 @@
 			}
 
 			const data = await res.json();
-			console.log('data.customer', data.customer);
 
 			if (data.customer) {
 				const { customer } = data.customer;

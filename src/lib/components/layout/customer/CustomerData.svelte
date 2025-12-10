@@ -7,8 +7,6 @@
 
 	import { customer } from '$lib/stores/customerStore.js';
 
-	console.log('customerData', $customer);
-
 	const { apiURL } = $props();
 
 	/** @typedef {import('$lib/types/types.js').Customer} Customer */
