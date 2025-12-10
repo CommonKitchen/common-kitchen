@@ -33,10 +33,11 @@
 			}
 
 			const data = await res.json();
-			console.log('data', data);
+			console.log('data.customer', data.customer);
 
 			if (data.customer) {
-				setCustomerData(data.customer);
+				setCustomerData(null);
+				setCustomerData(data?.customer ?? null);
 				sessionStore.set(id);
 			} else {
 				console.warn('No customer data returned from server');
