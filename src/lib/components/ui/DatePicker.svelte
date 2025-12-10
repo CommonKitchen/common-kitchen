@@ -26,10 +26,8 @@
 		selectedDate = $bindable(),
 		availableDays = [1, 2, 3, 4, 5],
 		blockedDays = [],
-		cutOffHour = 10
+		cutOffHour = 18
 	} = $props();
-
-	console.log('availableDays', availableDays);
 
 	const NOW = new Date();
 	const today = startOfDay(NOW);
