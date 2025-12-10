@@ -7,7 +7,7 @@
 
 	import { customer } from '$lib/stores/customerStore.js';
 
-	console.log('customerData', customer);
+	console.log('customerData', $customer);
 
 	const { apiURL } = $props();
 
