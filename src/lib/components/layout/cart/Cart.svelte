@@ -90,13 +90,11 @@
 		return currentEntity()?.customerLocations ?? [];
 	});
 
-	console.log('currentCustomerLocations', currentCustomerLocations());
+	console.log('currentCustomerLocationId', currentCustomerLocationId);
 
 	const currentCustomerLocation = $derived(
 		currentCustomerLocations().find((loc) => loc.id === currentCustomerLocationId)
 	);
-
-	console.log('currentCustomerLocation', currentCustomerLocation());
 
 	$effect(() => {
 		const locations = currentEntity()?.customerLocations;
