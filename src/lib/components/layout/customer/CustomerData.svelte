@@ -6,6 +6,7 @@
 	import Button from '$lib/components/ui/Button.svelte';
 
 	import { customer } from '$lib/stores/customerStore.js';
+	import { sessionStore } from '$lib/stores/sessionStore';
 
 	const { apiURL } = $props();
 
@@ -331,7 +332,7 @@
 				method: 'PUT',
 				headers: {
 					'Content-Type': 'application/json',
-					'X-SessionId': '11'
+					'X-SessionId': $sessionStore ?? ''
 				},
 				body: JSON.stringify(entities())
 			});
