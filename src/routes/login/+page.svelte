@@ -1,4 +1,6 @@
+<!-- src/routes/login/+page.svelte -->
 <script lang="ts">
+	import { page } from '$app/state';
 	import TelegramLogin from '$lib/components/layout/auth/TelegramLogin.svelte';
 	import { customer } from '$lib/stores/customerStore.js';
 	const { data } = $props();
@@ -8,7 +10,11 @@
 <div class="logo-header">
 	<h3>Авторизуватися за допомогою Telegram</h3>
 </div>
-<TelegramLogin {isMobile} {customer} />
+{#if $customer}
+	goto('/customer');
+{:else}
+	<TelegramLogin {isMobile} {customer} />
+{/if}
 
 <style>
 	.logo-header {
