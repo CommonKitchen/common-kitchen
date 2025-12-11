@@ -3,9 +3,12 @@
 	import { goto } from '$app/navigation';
 	import TelegramLogin from '$lib/components/layout/auth/TelegramLogin.svelte';
 	import { customer } from '$lib/stores/customerStore.js';
+	import { onMount } from 'svelte';
 	const { data } = $props();
 	const { isMobile } = data;
-	if ($customer) goto('/customer');
+	onMount(() => {
+		if ($customer) goto('/customer');
+	});
 </script>
 
 <div class="logo-header">
