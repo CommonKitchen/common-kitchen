@@ -13,13 +13,13 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
 	}
 	const API_URL = `https://${API_SERVER_URL}/cakes/hs/shop/customers`;
 
-	// origin: `https://common-kitchen.vercel.app`,
 	try {
 		const res = await fetch(API_URL, {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json',
-				'X-SessionId': sessionId
+				'X-SessionId': sessionId,
+				origin: `https://common-kitchen.vercel.app`
 			}
 		});
 
