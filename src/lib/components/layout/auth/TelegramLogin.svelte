@@ -26,7 +26,7 @@
 			});
 
 			if (!res.ok) {
-				console.error('Failed to complete login:', res.status, res.statusText);
+				// console.error('Failed to complete login:', res.status, res.statusText);
 				// error = true;
 				return false;
 			}

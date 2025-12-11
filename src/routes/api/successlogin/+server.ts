@@ -3,16 +3,22 @@ import { API_SERVER_URL } from '$env/static/private';
 import type { RequestHandler } from './$types';
 
 export const POST: RequestHandler = async ({ request, cookies }) => {
-	const { sessionId } = await request.json();
+	const sessionId = request.headers.get('X-SessionId');
 
+	if (!sessionId || typeof sessionId !== 'string') {
+		return new Response(JSON.stringify({ error: 'Missing or invalid X-SessionId header' }), {
+			status: 400,
+			headers: { 'Content-Type': 'application/json' }
+		});
+	}
 	const API_URL = `https://${API_SERVER_URL}/cakes/hs/shop/customers`;
 
+	// origin: `https://common-kitchen.vercel.app`,
 	try {
 		const res = await fetch(API_URL, {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json',
-				origin: `https://common-kitchen.vercel.app`,
 				'X-SessionId': sessionId
 			}
 		});
@@ -26,6 +32,13 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
 		}
 
 		const customerData = await res.json();
+
+		if (!sessionId) {
+			return new Response(JSON.stringify({ error: 'sessionId is required' }), {
+				status: 400,
+				headers: { 'Content-Type': 'application/json' }
+			});
+		}
 
 		cookies.set('auth_session_id', sessionId, {
 			path: '/',
