@@ -10,8 +10,11 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
 	try {
 		const res = await fetch(API_URL, {
 			method: 'POST',
-			headers: { 'Content-Type': 'application/json', origin: `https://common-kitchen.vercel.app` },
-			body: JSON.stringify({ sessionId })
+			headers: {
+				'Content-Type': 'application/json',
+				origin: `https://common-kitchen.vercel.app`,
+				'X-SessionId': sessionId
+			}
 		});
 
 		if (!res.ok) {

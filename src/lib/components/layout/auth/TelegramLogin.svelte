@@ -22,8 +22,7 @@
 		try {
 			const res = await fetch('/api/successlogin', {
 				method: 'POST',
-				headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify({ sessionId: id })
+				headers: { 'Content-Type': 'application/json', 'X-SessionId': sessionId }
 			});
 
 			if (!res.ok) {
