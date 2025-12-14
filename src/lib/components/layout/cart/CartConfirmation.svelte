@@ -83,7 +83,6 @@
 		checkoutError = '';
 
 		const payload = {
-			sessionId: $sessionStore,
 			customer: customer.id,
 			paymentMethod: payment.id,
 			delivery: {
@@ -113,6 +112,7 @@
 				method: 'POST',
 				headers: {
 					'Content-Type': 'application/json',
+					'x-sessionid': $sessionStore ?? '',
 					Accept: 'application/json'
 				},
 				body: JSON.stringify(payload)
