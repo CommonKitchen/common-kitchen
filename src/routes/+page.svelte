@@ -1,22 +1,16 @@
-<script>
+<script lang="ts">
 	import Main from '$lib/components/layout/Main.svelte';
 	import Bestsellers from '$lib/components/layout/Bestsellers.svelte';
 	import Categories from '$lib/components/layout/categories/Categories.svelte';
-
-	import { getCategoryContext } from '$lib/context/categoryContext.js';
-	import { getProductContext } from '$lib/context/productContext.js';
-
-	const categories = getCategoryContext() ?? [];
-	const products = getProductContext() ?? [];
-	const bestsellers = $derived(products.filter((product) => product.bestseller));
+	import { categories } from '$lib/stores/categoriesStore';
 </script>
 
 <Main />
-<Bestsellers products={bestsellers} />
+<Bestsellers />
 
 <div class="container">
 	<h2>Наша продукція</h2>
-	<Categories {categories} />
+	<Categories categories={$categories} />
 </div>
 
 <style>

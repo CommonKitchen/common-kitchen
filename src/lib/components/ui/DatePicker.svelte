@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
 	import { onMount } from 'svelte';
 
 	const DAYS_OF_WEEK = ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Нд'];
@@ -18,8 +18,8 @@
 	];
 
 	const inputId = `date-input-${Math.random().toString(36).substring(2, 9)}`;
-	/** @type {HTMLDivElement | undefined} */
-	let calendarBlockRef;
+
+	let calendarBlockRef: HTMLDivElement | undefined;
 
 	let {
 		title,
@@ -34,26 +34,17 @@
 	let isCalendarOpen = $state(false);
 	let availableDaysKey = $state(availableDays.join(','));
 
-	/** @param {Date} date
-	 * @returns {Date} */
-	function startOfDay(date) {
+	function startOfDay(date: Date): Date {
 		const newDate = new Date(date);
 		newDate.setHours(0, 0, 0, 0);
 		return newDate;
 	}
 
-	/**
-	 * @param {Date} date
-	 * @returns {string} */
-	function toDateString(date) {
+	function toDateString(date: Date): string {
 		return `${date.getFullYear()}-${(date.getMonth() + 1).toString().padStart(2, '0')}-${date.getDate().toString().padStart(2, '0')}`;
 	}
 
-	/**
-	 * Проверяет, является ли день доступным с учетом availableDays и blockedDays.
-	 * @param {Date} date
-	 * @returns {boolean} */
-	function isAvailableDate(date) {
+	function isAvailableDate(date: Date): boolean {
 		// 1. Проверка доступных дней недели (1=Пн, 7=Нд)
 		const dayOfWeek = date.getDay() === 0 ? 7 : date.getDay();
 		if (!availableDays.includes(dayOfWeek)) {
@@ -68,12 +59,7 @@
 		return true;
 	}
 
-	/**
-	 * Находит минимальную дату, которая находится после отсечки времени
-	 * И которая является доступной (isAvailableDate).
-	 * @returns {Date}
-	 */
-	function findMinimalDate() {
+	function findMinimalDate(): Date {
 		let date = startOfDay(NOW);
 		let daysSearched = 0;
 		const MAX_SEARCH_DAYS = 365; // Ограничиваем поиск одним годом
@@ -158,10 +144,7 @@
 		currentMonth = new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1, 1);
 	}
 
-	/**
-	 * @param {Date} date
-	 * @returns {boolean} */
-	function isSelectable(date) {
+	function isSelectable(date: Date): boolean {
 		if (date.getTime() < minimalDate.getTime()) {
 			return false;
 		}
@@ -216,27 +199,18 @@
 		return days;
 	});
 
-	/**
-	 * @param {Date} date */
-	function handleDayClick(date) {
+	function handleDayClick(date: Date) {
 		if (isSelectable(date)) {
 			selectedDate = date;
 			isCalendarOpen = false;
 		}
 	}
 
-	/**
-	 * @param {Date} date
-	 * @returns {boolean} */
-	function isSelected(date) {
+	function isSelected(date: Date): boolean {
 		return selectedDate.getTime() === date.getTime();
 	}
 
-	/**
-	 * Обработка нажатия клавиши Escape для закрытия календаря и возврата фокуса.
-	 * @param {KeyboardEvent} e
-	 */
-	function handleEscape(e) {
+	function handleEscape(e: KeyboardEvent) {
 		if (isCalendarOpen && e.key === 'Escape') {
 			isCalendarOpen = false;
 			e.stopPropagation();
@@ -245,11 +219,7 @@
 		}
 	}
 
-	/**
-	 * Обработка клика вне календаря для его закрытия.
-	 * @param {MouseEvent} event
-	 */
-	function handleOutsideClick(event) {
+	function handleOutsideClick(event: MouseEvent) {
 		const targetNode = event.target;
 		if (
 			isCalendarOpen &&

@@ -1,12 +1,6 @@
-<script>
+<script lang="ts">
 	import Phone from '$lib/components/ui/Phone.svelte';
 	const phones = ['+380738387677', '+380938730992'];
-	const links = [
-		{ href: '/', title: 'Договір публічної оферти' },
-		{ href: '/', title: 'Доставка та оплата' },
-		{ href: '/', title: 'Політика конфіденційності' },
-		{ href: '/', title: 'Повернення грошових коштів' }
-	];
 </script>
 
 <div class="footer">
@@ -18,7 +12,6 @@
 				{#each phones as phone}
 					<li><Phone {phone} /></li>
 				{/each}
-				<!-- <li><a href="/">Карта проїзду</a></li> -->
 			</ul>
 		</div>
 		<div class="footer-column">
@@ -27,14 +20,6 @@
 				<li>Пн-Нд з 9:00 до 18:00</li>
 			</ul>
 		</div>
-		<!-- <div class="footer-column">
-			<h4>Інформація:</h4>
-			<ul>
-				{#each links as link}
-					<li><a href={link.href}>{link.title}</a></li>
-				{/each}
-			</ul>
-		</div> -->
 	</div>
 </div>
 

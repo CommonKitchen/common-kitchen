@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
 	import Button from '$lib/components/ui/Button.svelte';
 	import QuantitySelector from '$lib/components/ui/QuantitySelector.svelte';
 
@@ -11,20 +11,13 @@
 
 	const minQuantity = minOrder ?? 1;
 
-	/**
-	 * Обработчик события добавления товара в корзину.
-	 * @param {MouseEvent} event
-	 */
-	function addProduct(event) {
+	function addProduct(event: MouseEvent) {
 		event.stopPropagation();
 		event.preventDefault();
 		updateCart(id, price, minQuantity);
 	}
 
-	/**
-	 * @param {number} quantity
-	 */
-	function changeQuantity(quantity) {
+	function changeQuantity(quantity: number) {
 		const newQuantity = currentQuantity + quantity;
 
 		if (newQuantity < minQuantity && quantity < 0) {

@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
 	import BurgerMenuButton from '$lib/components/layout/header/BurgerMenuButton.svelte';
 	import Menu from '$lib/components/layout/menu/Menu.svelte';
 	import ActionIcon from '$lib/components/ui/ActionIcon.svelte';
@@ -6,7 +6,6 @@
 	import Search from '$lib/components/layout/header/Search.svelte';
 	import Loupe from '$lib/components/layout/icons/Loupe.svelte';
 	import logo from '$lib/assets/logo.svg';
-	import Heart from '$lib/components/layout/icons/Heart.svelte';
 	import Login from '$lib/components/layout/icons/Login.svelte';
 	import Bag from '$lib/components/layout/icons/Bag.svelte';
 	import { itemCount } from '$lib/stores/cartStore.js';
@@ -37,8 +36,7 @@
 		if (isSearchOverlay) {
 			document.body.style.overflow = 'hidden';
 
-			/** @param {KeyboardEvent} event */
-			function handleKeydown(event) {
+			function handleKeydown(event: KeyboardEvent) {
 				if (event.key === 'Escape') {
 					toggleSearchOverlay();
 				}

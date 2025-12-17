@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
 	import ActionIcon from './ActionIcon.svelte';
 
 	let { title, value = $bindable(), items, controls = [] } = $props();
@@ -17,7 +17,8 @@
 						onclick={control.action}
 						tooltip={control.tooltip}
 						color={control.color}
-						size="24"
+						width="24"
+						height="24"
 						disabled={control.disabled()}
 					/>
 				{/each}

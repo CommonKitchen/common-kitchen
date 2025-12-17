@@ -1,4 +1,4 @@
-//src/routes/payment/+page.js
+//src/routes/payment/+page.ts
 export function load({ url }) {
 	const status = url.searchParams.get('status');
 	return {

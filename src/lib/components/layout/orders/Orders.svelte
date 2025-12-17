@@ -1,21 +1,17 @@
-<script>
+<script lang="ts">
 	import { customer } from '$lib/stores/customerStore.js';
 	import Order from '$lib/components/layout/orders/Order.svelte';
 	import { clearCart, updateCart } from '$lib/stores/cartStore';
 	import { goto } from '$app/navigation';
+	import type { Order as OrderType } from '$lib/types/types';
 
-	import { getProductContext } from '$lib/context/productContext';
-	const products = getProductContext() ?? [];
+	import { products } from '$lib/stores/productsStore';
 
-	/** @typedef {import('$lib/types/types.js').Order} OrderType
-	 * @typedef {import('$lib/types/types').Product} Product
-	 * @param {OrderType} order
-	 */
-	function handleRepeat(order) {
+	function handleRepeat(order: OrderType) {
 		clearCart();
 
 		order.products.forEach((product) => {
-			const currentProduct = products.find((/** @type {Product} */ item) => item.id === product.id);
+			const currentProduct = $products.find((item) => item.id === product.id);
 
 			if (!currentProduct) {
 				return;

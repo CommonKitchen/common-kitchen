@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
 	import { slide } from 'svelte/transition';
 	import Button from '$lib/components/ui/Button.svelte';
 	import OrderTitle from '$lib/components/ui/OrderTitle.svelte';

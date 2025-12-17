@@ -1,10 +1,7 @@
-<script>
-	import { getCategoryContext } from '$lib/context/categoryContext.js';
+<script lang="ts">
 	import { customer } from '$lib/stores/customerStore.js';
+	import { categories } from '$lib/stores/categoriesStore';
 
-	/** @typedef {import('$lib/types/types.js').Category} Category */
-	/** @type {Category[]} */
-	const categories = $derived(getCategoryContext() ?? []);
 	const hasCustomer = $derived(!!$customer);
 	const { close } = $props();
 
@@ -38,7 +35,7 @@
 				<a href="/customer" class="nav-link" onclick={close}>Мої дані</a>
 			{/if}
 		{:else}
-			{#each categories as category (category.slug)}
+			{#each $categories as category (category.slug)}
 				<a href="/categories/{category.slug}" class="nav-link" onclick={close}>
 					{category.title}
 				</a>

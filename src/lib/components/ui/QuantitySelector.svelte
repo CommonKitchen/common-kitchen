@@ -1,12 +1,7 @@
-<script>
+<script lang="ts">
 	const { quantity, minOrder, changeQuantity, block = false } = $props();
 
-	/**
-	 * Обработчик события добавления товара в корзину.
-	 * @param {MouseEvent} event
-     /* @param {number} change     
-	 */
-	function handleClick(event, change) {
+	function handleClick(event: MouseEvent, change: number) {
 		event.stopPropagation();
 		event.preventDefault();
 		changeQuantity(change);

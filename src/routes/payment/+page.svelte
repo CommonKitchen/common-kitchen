@@ -1,23 +1,19 @@
 <!-- src/routes/payment/+page.svelte -->
-<script>
+<script lang="ts">
 	import { goto } from '$app/navigation';
 	import Button from '$lib/components/ui/Button.svelte';
 
-	/**
-	 * @typedef {object} PageData
-	 * @property {string} paymentStatus
-	 */
+	type PageData = {
+		paymentStatus: string;
+	};
+	type PaymentStatusKeys = 'success' | 'declined' | 'error' | 'initial';
+	type Message = { title: string; text: string };
 
-	/**
-	 * @typedef {'success' | 'declined' | 'error' | 'initial'} PaymentStatusKeys
-	 */
+	let { data } = $props<{ data: PageData }>();
 
-	/** @type {{ data: PageData }} */
-	let { data } = $props();
+	const status: string = data.paymentStatus ?? 'initial';
 
-	const status = data.paymentStatus ?? 'initial';
-
-	const messages = {
+	const messages: Record<PaymentStatusKeys, Message> = {
 		success: {
 			title: 'Оплата пройшла успішно!',
 			text: 'Дякуємо за ваше замовлення.'
@@ -36,7 +32,7 @@
 		}
 	};
 
-	const currentMessage = messages[/** @type {PaymentStatusKeys} */ (status)] || messages.error;
+	const currentMessage: Message = messages[status as PaymentStatusKeys] || messages.error;
 </script>
 
 <div class="message-block">

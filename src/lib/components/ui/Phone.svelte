@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
 	import { formatPhoneNumber } from '$lib/utils/utils.js';
 	import ico from '$lib/assets/icon-phone-24x24.svg';
 	const { phone } = $props();

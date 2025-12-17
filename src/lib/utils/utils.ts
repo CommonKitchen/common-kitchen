@@ -3,7 +3,7 @@
  * @param {string} num - Чистый номер телефона (например, '+380990000100').
  * @returns {string} Форматированный номер.
  */
-export function formatPhoneNumber(num) {
+export function formatPhoneNumber(num: string): string {
 	// 1. Убираем все, кроме цифр и знака '+'
 	const cleaned = num.replace(/[^+\d]/g, '');
 

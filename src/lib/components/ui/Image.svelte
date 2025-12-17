@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
 	const { className, alt, src, ...restProps } = $props();
 	let isLoading = $state(true);
 

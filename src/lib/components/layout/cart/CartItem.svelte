@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
 	import ActionIcon from '$lib/components/ui/ActionIcon.svelte';
 	import Remove from '../icons/Remove.svelte';
 	import Image from '$lib/components/ui/Image.svelte';
@@ -26,7 +26,7 @@
 			<QuantitySelector
 				quantity={item.quantity}
 				minOrder={item.minOrder}
-				changeQuantity={(/** @type {number} */ change) => changeQuantity(item.id, change)}
+				changeQuantity={(change: number) => changeQuantity(item.id, change)}
 				block={true}
 			/>
 		</div>
@@ -35,7 +35,8 @@
 			onclick={() => removeItem(item.id)}
 			tooltip="Видалити товар"
 			icon={Remove}
-			size="24"
+			width="24"
+			height="24"
 			color="var(--main-color)"
 		/>
 	</div>

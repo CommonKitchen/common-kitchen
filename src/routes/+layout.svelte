@@ -1,19 +1,21 @@
 <!-- /routes/+layout.svelte -->
-<script>
+<script lang="ts">
 	import { onMount } from 'svelte';
 	import '$lib/styles/global.css';
 	import Header from '$lib/components/layout/header/Header.svelte';
 	import Footer from '$lib/components/layout/Footer.svelte';
 	import Loader from '$lib/components/ui/Loader.svelte';
-	import { setCategoryContext } from '$lib/context/categoryContext.js';
-	import { setProductContext } from '$lib/context/productContext.js';
-	import { setCustomerData } from '$lib/stores/customerStore.js';
-	import { sessionStore } from '$lib/stores/sessionStore.js';
+	import { setCustomerData } from '$lib/stores/customerStore';
+	import { setCheckoutConfig } from '$lib/stores/checkoutConfig';
+	import { setProducts } from '$lib/stores/productsStore';
+	import { setCategories } from '$lib/stores/categoriesStore';
+	import { sessionStore } from '$lib/stores/sessionStore';
 	let { children, data } = $props();
 
-	setCategoryContext(data.shopData?.categories ?? []);
-	setProductContext(data.shopData?.products ?? []);
+	setCategories(data.shopData?.categories ?? []);
+	setProducts(data.shopData?.products ?? []);
 	setCustomerData(data.shopData?.customer ?? null);
+	setCheckoutConfig(data.shopData?.checkoutConfig ?? null);
 	sessionStore.set(data.shopData?.sessionId ?? null);
 
 	const isMobile = data?.isMobile ?? false;

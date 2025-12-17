@@ -1,5 +1,5 @@
-<script>
-	/** @typedef {import('$lib/types/types.js').CartItem} CartItem */
+<script lang="ts">
+	import type { CartItem } from '$lib/types/types';
 
 	import OrderTitle from '$lib/components/ui/OrderTitle.svelte';
 	import { clearCart } from '$lib/stores/cartStore';
@@ -16,16 +16,10 @@
 	function toggleProducts() {
 		isExpanded = !isExpanded;
 	}
-	//
-	/**
-	 * Функція для створення та відправки динамічної форми для перенаправлення
-	 * на платіжний шлюз (наприклад, Wayforpay).
-	 * Це необхідно, оскільки fetch не може виконати POST-запит з подальшим перенаправленням
-	 * вкладки браузера на інший домен.
-	 * @param {{ url: string, body: Record<string, string> } | undefined} paymentData
-	 * @returns {void}
-	 */
-	function wayforpayRedirect(paymentData) {
+
+	function wayforpayRedirect(
+		paymentData: { url: string; body: Record<string, string> } | undefined
+	): void {
 		// Перевіряємо, чи є необхідні дані для перенаправлення
 		if (
 			paymentData &&
@@ -44,8 +38,7 @@
 			for (const key in body) {
 				// Перевірка, щоб не обробляти успадковані властивості
 				if (Object.prototype.hasOwnProperty.call(body, key)) {
-					/** @type {string | string[]} */
-					const value = body[key];
+					const value: string | string[] = body[key];
 
 					if (Array.isArray(value)) {
 						value.forEach((item) => {
@@ -73,10 +66,7 @@
 		}
 	}
 
-	/**
-	 * @param {MouseEvent} event
-	 */
-	async function handleCheckout(event) {
+	async function handleCheckout(event: MouseEvent) {
 		event.preventDefault();
 
 		isLoading = true;
@@ -96,7 +86,7 @@
 			comment: note,
 			subtotal: summary.subtotal,
 			totalAmount: summary.finalTotal,
-			products: products.map((/** @type {CartItem} */ item) => ({
+			products: products.map((item: CartItem) => ({
 				id: item.id,
 				quantity: item.quantity,
 				price: item.price,
@@ -104,8 +94,7 @@
 			}))
 		};
 
-		/** @type {any} */
-		let data = null;
+		let data: any = null;
 
 		try {
 			const response = await fetch(`${apiURL}/cakes/hs/shop/orders`, {

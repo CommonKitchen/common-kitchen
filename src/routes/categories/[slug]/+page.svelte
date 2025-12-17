@@ -1,55 +1,42 @@
-<script>
-	import { getCategoryContext } from '$lib/context/categoryContext.js';
-	import { getProductContext } from '$lib/context/productContext.js';
+<!-- src/routes/categories/[slug]/+page.svelte -->
+<script lang="ts">
 	import Products from '$lib/components/layout/products/Products.svelte';
 	import CategoryLink from '$lib/components/layout/categories/CategoryLink.svelte';
-	/** @typedef {import('$lib/types/types.js').Category} Category */
-	/** @typedef {import('$lib/types/types.js').Product} Product */
+	import {
+		categories,
+		currentCategory,
+		currentCategorySlug,
+		setCurrentCategorySlug
+	} from '$lib/stores/categoriesStore';
+	import { categoryProducts } from '$lib/stores/productsStore';
 
 	const { params } = $props();
 
-	/** @type {Category[]} */
-	const categories = getCategoryContext() ?? [];
-
-	/** @type {Product[]} */
-	const products = getProductContext() ?? [];
-
-	const currentCategory = $derived(categories.find((c) => c.slug === params?.slug));
-
-	const categoryProducts = $derived(
-		(() => {
-			const categoryId = currentCategory?.id;
-
-			if (!categoryId) {
-				return [];
-			} else if (params?.slug === 'all') {
-				return products;
-			}
-
-			return products.filter((/** @type {Product} */ p) => p.categoryId === categoryId);
-		})()
-	);
+	$effect(() => {
+		const slug = params?.slug ?? null;
+		setCurrentCategorySlug(slug);
+	});
 </script>
 
 <div class="category-page-wrapper">
 	<div class="category-header">
-		{#if currentCategory}
-			<h1>Товари в категорії: {currentCategory.title}</h1>
+		{#if $currentCategory}
+			<h1>Товари в категорії: {$currentCategory?.title}</h1>
 		{:else}
-			<h1>Категорія не знайдена: {params?.slug}</h1>
+			<h1>Категорія не знайдена</h1>
 		{/if}
 	</div>
 
 	<div class="category-container">
 		<aside class="category-sidebar">
 			<div class="category-list">
-				{#each categories as category (category.id)}
-					<CategoryLink {...category} isActive={category.slug === params.slug} />
+				{#each $categories as category (category.id)}
+					<CategoryLink {...category} isActive={category.slug === $currentCategorySlug} />
 				{/each}
 			</div>
 		</aside>
 		<div class="products-section">
-			<Products products={categoryProducts} />
+			<Products products={$categoryProducts} />
 		</div>
 	</div>
 </div>

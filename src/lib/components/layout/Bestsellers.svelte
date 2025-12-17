@@ -1,12 +1,11 @@
-<script>
+<script lang="ts">
 	import Products from '$lib/components/layout/products/Products.svelte';
-
-	const { products } = $props();
+	import { bestsellers } from '$lib/stores/productsStore';
 </script>
 
 <div class="container">
 	<h2>Наші хіти</h2>
-	<Products {products} />
+	<Products products={$bestsellers} />
 </div>
 
 <style>

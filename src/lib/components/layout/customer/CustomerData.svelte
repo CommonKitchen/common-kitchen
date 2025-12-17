@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
 	import SelectOptions from '$lib/components/ui/SelectOptions.svelte';
 	import iconRemove from '$lib/components/layout/icons/Remove.svelte';
 	import iconPlus from '$lib/components/layout/icons/Plus.svelte';
@@ -8,11 +8,8 @@
 	import { customer } from '$lib/stores/customerStore.js';
 	import { sessionStore } from '$lib/stores/sessionStore';
 
+	import type { Customer, LegalEntity, CustomerLocation } from '$lib/types/types';
 	const { apiURL } = $props();
-
-	/** @typedef {import('$lib/types/types.js').Customer} Customer */
-	/** @typedef {import('$lib/types/types.js').legalEntity} legalEntity */
-	/** @typedef {import('$lib/types/types.js').CustomerLocation} CustomerLocation */
 
 	let isNewItem = $state(false);
 	let editingMode = $state('');
@@ -33,10 +30,8 @@
 	};
 
 	let tmpState = $state({ ...EMPTY_STATE });
-	/** @type {string | null} */
-	let currentEntityId = $state(null);
-	/** @type {string | null} */
-	let currentLocationId = $state(null);
+	let currentEntityId: string | null = $state(null);
+	let currentLocationId: string | null = $state(null);
 
 	const entities = $derived(() => $customer?.legalEntities ?? []);
 
@@ -121,11 +116,7 @@
 		}
 	];
 
-	/**
-	 * Универсальная функция для обновления customer store
-	 * @param {(curr: Customer) => Partial<Customer> | void} updater
-	 */
-	function updateCustomer(updater) {
+	function updateCustomer(updater: (curr: Customer) => Partial<Customer> | void): void {
 		customer.update((curr) => {
 			if (!curr) return curr;
 			const updated = updater(curr);
@@ -133,12 +124,7 @@
 		});
 	}
 
-	/**
-	 * Initializes the editing mode and populates/clears the temporary state variables.
-	 * @param {'entity' | 'location'} mode The type of item being edited.
-	 * @param {boolean} isNew True if adding a new item (fields should be cleared).
-	 */
-	function initializeEditMode(mode, isNew = false) {
+	function initializeEditMode(mode: 'entity' | 'location', isNew: boolean = false) {
 		editingMode = mode;
 		isNewItem = isNew;
 		dataSaved = false;
@@ -175,12 +161,7 @@
 		editingMode = '';
 	}
 
-	/**
-	 * Зберігає зміни для замовника (entity)
-	 * @param {Customer} curr
-	 * @returns {legalEntity[]}
-	 */
-	function saveEntity(curr) {
+	function saveEntity(curr: Customer): LegalEntity[] {
 		const entityList = curr.legalEntities ?? [];
 
 		if (isNewItem) {
@@ -196,12 +177,7 @@
 		return entityList.map((e) => (e.id === currentEntityId ? { ...e, ...tmpState } : e));
 	}
 
-	/**
-	 * Зберігає зміни для закладу (location)
-	 * @param {Customer} curr
-	 * @returns {legalEntity[]}
-	 */
-	function saveLocation(curr) {
+	function saveLocation(curr: Customer): LegalEntity[] {
 		return curr.legalEntities.map((e) => {
 			if (e.id !== currentEntityId) return e;
 			const locList = e.customerLocations ?? [];
@@ -307,13 +283,7 @@
 		errorMessage = '';
 	}
 
-	/**
-	 * Универсальный обработчик для телефонов.
-	 * Фильтрует всё кроме цифр и +, ограничивает длину до maxLength.
-	 * @param {Event} e
-	 * @param {number} maxLength
-	 */
-	function handlePhoneInput(e, maxLength = 13) {
+	function handlePhoneInput(e: Event, maxLength: number = 13) {
 		if (!e.target || !(e.target instanceof HTMLInputElement)) return;
 
 		let val = e.target.value.replace(/[^\d+]/g, ''); // оставляем только цифры и '+'

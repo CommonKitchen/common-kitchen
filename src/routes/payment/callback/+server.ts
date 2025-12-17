@@ -1,4 +1,4 @@
-// src/routes/payment/callback/+server.js
+// src/routes/payment/callback/+server.ts
 import { redirect } from '@sveltejs/kit';
 
 export async function POST({ request }) {

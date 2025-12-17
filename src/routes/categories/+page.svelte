@@ -1,15 +1,13 @@
-<script>
-	import { getCategoryContext } from '$lib/context/categoryContext.js';
+<script lang="ts">
 	import Categories from '$lib/components/layout/categories/Categories.svelte';
-
-	const categories = getCategoryContext() ?? [];
+	import { categories } from '$lib/stores/categoriesStore';
 </script>
 
 <div class="categories-container">
 	<h1>Наша продукція</h1>
 
-	{#if categories.length > 0}
-		<Categories {categories} />
+	{#if $categories.length > 0}
+		<Categories categories={$categories} />
 	{:else}
 		<p>Наразі категорії товарів відсутні. Спробуйте пізніше.</p>
 	{/if}

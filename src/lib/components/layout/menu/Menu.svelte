@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
 	import { onMount } from 'svelte';
 	import { slide, fly, fade } from 'svelte/transition';
 	import { cubicOut, linear } from 'svelte/easing';
@@ -26,8 +26,7 @@
 			document.body.style.overflow = '';
 		}
 
-		/** @param {KeyboardEvent} event */
-		function handleKeydown(event) {
+		function handleKeydown(event: KeyboardEvent) {
 			if (event.key === 'Escape') {
 				close();
 			}

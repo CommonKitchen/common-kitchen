@@ -1,19 +1,8 @@
-<script>
+<script lang="ts">
 	import CartButtons from '$lib/components/ui/CartButtons.svelte';
-	// import heart from '$lib/assets/icon-favorite-24x24.svg';
-	// import fillHeart from '$lib/assets/icon-favorite2-24x24.svg';
 	import Image from '$lib/components/ui/Image.svelte';
 
-	const {
-		id,
-		title,
-		price,
-		weight,
-		minOrder,
-		imageUrl,
-		toggleFavorite,
-		isFavorite = false
-	} = $props();
+	const { id, title, price, weight, minOrder, imageUrl } = $props();
 	const productUrl = `/products/${id}`;
 	const imageUrl_168x168 = imageUrl.replace('w_400,h_400', 'w_168,h_168');
 </script>
@@ -21,23 +10,6 @@
 <div class="product-tile">
 	<a href={productUrl} class="product-tile-link">
 		<Image src={imageUrl_168x168} alt={title} className="image-container" />
-		<!-- <div class="icon-heart">
-			<button
-				type="button"
-				class="favorite-button"
-				onclick={(event) => {
-					event.stopPropagation();
-					event.preventDefault();
-					toggleFavorite(id);
-				}}
-			>
-				{#if !isFavorite}
-					<img src={heart} alt="Додати до улюбленого" />
-				{:else}
-					<img src={fillHeart} alt="Прибрати з улюбленого" />
-				{/if}
-			</button>
-		</div> -->
 	</a>
 	<div class="product-content">
 		<div class="product-title">{title}</div>

@@ -1,5 +1,4 @@
-<script>
-	import { getProductContext } from '$lib/context/productContext.js';
+<script lang="ts">
 	import { goto } from '$app/navigation';
 	import CartButtons from '$lib/components/ui/CartButtons.svelte';
 	import Button from '$lib/components/ui/Button.svelte';
@@ -7,17 +6,12 @@
 	import { error } from '@sveltejs/kit';
 	import Image from '$lib/components/ui/Image.svelte';
 
-	/** @typedef {import('$lib/types/types.js').Product} Product */
-	/** @type {Product[]} */
-	const products = getProductContext() ?? [];
+	import { products } from '$lib/stores/productsStore';
 
 	const { params } = $props();
 	const id = Number(params.id);
 
-	const product = products?.find(
-		/** @param {Product} p */
-		(p) => p.id === id
-	);
+	const product = $products?.find((p) => p.id === id);
 
 	if (!product) {
 		throw error(404, {

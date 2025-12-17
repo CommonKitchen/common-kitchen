@@ -1,32 +1,11 @@
-import { API_SERVER_URL } from '$env/static/private';
-
+import type { LayoutServerLoad } from './$types';
 import { error } from '@sveltejs/kit';
+import { API_SERVER_URL } from '$env/static/private';
+import type { ApiData, LayoutData, ShopDataClient } from '$lib/types/types';
 
 const API_URL = `https://${API_SERVER_URL}`;
 
-/** @typedef {import('$lib/types/types.js').Product} Product */
-/* @type {Product[]} */
-/** @typedef {import('$lib/types/types.js').Category} Category */
-/* @type {Category[]} */
-/** @typedef {import('$lib/types/types.js').Customer} Customer */
-/* @type {Category[]} */
-
-/**
- * @typedef {object} ApiData
- * @property {Product[]} products - Массив товаров.
- * @property {Category[]} categories - Массив категорий.
- * @property {object} checkoutConfig - Объект конфигурации заказа.
- * @property {string} apiURL - Объект конфигурации заказа.
- * @property {Customer} customer - Объект конфигурации заказа.
- */
-
-/**
- * Проверяет, что полученный JSON-объект содержит необходимые структуры данных.
- * @param {ApiData} data - Объект, полученный после response.json().
- * @returns {ApiData} Возвращает проверенный объект с данными (products, categories и checkoutConfig).
- * @throws {Error} Выбрасывает ошибку, если данные не соответствуют ожидаемой структуре.
- */
-function validateApiData(data) {
+function validateApiData(data: ApiData): ShopDataClient {
 	if (!data || typeof data !== 'object' || Array.isArray(data)) {
 		throw new Error("Помилка валідациї даних: відповідь API не являє собою коректний об'єкт.");
 	}
@@ -57,7 +36,7 @@ function validateApiData(data) {
 	return res;
 }
 
-export async function load({ fetch, cookies, request }) {
+export const load: LayoutServerLoad = async ({ fetch, cookies, request }): Promise<LayoutData> => {
 	const ua = request.headers.get('user-agent') || '';
 	const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini|Mobile/i.test(ua);
 
@@ -96,14 +75,22 @@ export async function load({ fetch, cookies, request }) {
 
 	// 4. Успешный ответ (status 200-299)
 	try {
-		const allData = await response.json();
-
-		const validatedData = validateApiData(allData);
+		const allData: ApiData = await response.json();
+		let validatedData: ShopDataClient;
+		try {
+			validatedData = validateApiData(allData);
+		} catch (e) {
+			console.error('Data validation error:', (e as Error).message);
+			throw error(500, {
+				message: `Внутрішня помилка: ${(e as Error).message}`
+			});
+		}
 
 		const products = validatedData.products.map((item) => ({
 			...item,
 			imageUrl: item.imageUrl || '/nophoto.png'
 		}));
+
 		return { shopData: { ...validatedData, products, sessionId }, isMobile };
 	} catch (e) {
 		console.error('Error parsing JSON:', e);
@@ -111,4 +98,4 @@ export async function load({ fetch, cookies, request }) {
 			message: 'Помилка обробки отриманої відповіді (некоректний JSON).'
 		});
 	}
-}
+};

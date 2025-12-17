@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
 	import Image from '$lib/components/ui/Image.svelte';
 	const { title, slug, imageUrl } = $props();
 	const imageUrl_220x220 = imageUrl.replace('w_400,h_400', 'w_220,h_220');

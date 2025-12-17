@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
 	const {
 		class: className = 'primary',
 		title = 'Перейти до продукції',

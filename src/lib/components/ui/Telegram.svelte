@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
 	import TelegramIcon from '$lib/components/layout/icons/Telegram.svelte';
 	const { telegramUser } = $props();
 </script>

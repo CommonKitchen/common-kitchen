@@ -1,19 +1,15 @@
-<script>
+<script lang="ts">
 	import { goto } from '$app/navigation';
 	import ico from '$lib/assets/icon-search-24x24.svg';
-	import { getProductContext } from '$lib/context/productContext.js';
 
-	/** @typedef {import('$lib/types/types.js').Product} Product */
-	/** @type {Product[]} */
-	const products = $derived(getProductContext() ?? []);
+	import { products } from '$lib/stores/productsStore';
 
 	const { isOverlay, toggleSearchOverlay } = $props();
 
 	let searchString = $state('');
 	let activeIndex = $state(-1);
 
-	/** @type {HTMLInputElement} */
-	let searchInput;
+	let searchInput: HTMLInputElement;
 
 	const minimalCharacters = 4;
 	const queryLength = $derived(searchString.trim().length);
@@ -25,18 +21,14 @@
 			return [];
 		}
 
-		return products.filter((product) => product.title.toLowerCase().includes(query)).slice(0, 5);
+		return $products.filter((product) => product.title.toLowerCase().includes(query)).slice(0, 5);
 	});
 
 	$effect(() => {
 		activeIndex = -1;
 	});
 
-	/**
-	 * Обработчик нажатия клавиш для навигации по результатам.
-	 * @param {KeyboardEvent} event
-	 */
-	function handleKeyDown(event) {
+	function handleKeyDown(event: KeyboardEvent) {
 		const resultsCount = searchResults().length;
 		if (resultsCount === 0) return;
 
@@ -73,10 +65,7 @@
 		}
 	}
 
-	/**
-	 * @param {Event} event
-	 */
-	function handleFormSubmit(event) {
+	function handleFormSubmit(event: Event) {
 		event.preventDefault();
 		if (searchString.trim() !== '') {
 		}

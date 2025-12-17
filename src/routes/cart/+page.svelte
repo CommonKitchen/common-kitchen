@@ -1,17 +1,24 @@
-<script>
+<script lang="ts">
 	import Cart from '$lib/components/layout/cart/Cart.svelte';
-	import { getProductContext } from '$lib/context/productContext.js';
-	import { customer } from '$lib/stores/customerStore.js';
+	import { setCustomerData } from '$lib/stores/customerStore';
 
 	const { data } = $props();
-	const products = getProductContext() ?? [];
-	const checkoutConfig = $derived(data?.shopData?.checkoutConfig ?? {});
+
+	const { customer, error } = data;
+	if (customer) {
+		setCustomerData(customer);
+	}
+
 	const apiURL = $derived(data?.shopData?.apiURL ?? '');
 </script>
 
-<div class="cart-block">
-	<Cart {products} {checkoutConfig} customer={$customer} {apiURL} />
-</div>
+{#if error}
+	<p>Виникла помилка отримання даних користувача</p>
+{:else}
+	<div class="cart-block">
+		<Cart {customer} {apiURL} />
+	</div>
+{/if}
 
 <style>
 	.cart-block {

@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
 	const { title, slug, isActive } = $props();
 	const categoryUrl = `/categories/${slug}`;
 </script>

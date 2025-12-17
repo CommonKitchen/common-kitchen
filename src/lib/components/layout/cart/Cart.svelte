@@ -1,7 +1,16 @@
 <!-- $lib/components/layout/cart -->
-<script>
+<script lang="ts">
 	import { goto } from '$app/navigation';
 	import { cart, updateCart, total as cartAmount, removeItem } from '$lib/stores/cartStore.js';
+
+	import type {
+		DeliveryType,
+		PickupLocation,
+		PaymentMethod,
+		OrderProduct,
+		Product
+	} from '$lib/types/types';
+	import type { Customer, LegalEntity } from '$lib/types/types';
 
 	import Button from '$lib/components/ui/Button.svelte';
 	import DatePicker from '$lib/components/ui/DatePicker.svelte';
@@ -11,62 +20,44 @@
 	import CartItem from './CartItem.svelte';
 	import CartConfirmation from './CartConfirmation.svelte';
 
-	/** @typedef {import('$lib/types/types.js').Product} Product */
-	/** @typedef {import('$lib/types/types.js').CheckoutConfig} CheckoutConfig */
-	/** @typedef {import('$lib/types/types.js').DeliveryType} DeliveryType */
-	/** @typedef {import('$lib/types/types.js').PickupLocation} PickupLocation */
-	/** @typedef {import('$lib/types/types.js').PaymentMethod} PaymentMethod */
-	/** @typedef {import('$lib/types/types.js').CartItem} CartItem */
-	/** @typedef {import('$lib/types/types.js').Customer} Customer */
-	/** @typedef {import('$lib/types/types.js').legalEntity} legalEntity */
+	import { checkoutConfig } from '$lib/stores/checkoutConfig';
+	import { products } from '$lib/stores/productsStore';
+	const { customer, apiURL } = $props<{
+		customer: Customer | undefined | null;
+		apiURL: string;
+	}>();
 
-	const {
-		/** @type {Product[]} */
-		products,
-		/** @type {CheckoutConfig} */
-		checkoutConfig,
-		/** @type {Customer} */
-		customer,
-		/** @type {string} */
-		apiURL
-	} = $props();
+	let deliveryTypes = $state<DeliveryType[]>([]);
+	let pickupLocations = $state<PickupLocation[]>([]);
+	let paymentMethods = $state<PaymentMethod[]>([]);
 
-	const {
-		/** @type {DeliveryType[]} */
-		deliveryTypes,
-		/** @type {PickupLocation[]} */
-		pickupLocations,
-		/** @type {PaymentMethod[]} */
-		paymentMethods
-	} = checkoutConfig;
+	if ($checkoutConfig) {
+		deliveryTypes = $checkoutConfig.deliveryTypes;
+		pickupLocations = $checkoutConfig.pickupLocations;
+		paymentMethods = $checkoutConfig.paymentMethods;
+	}
 
-	const hasCustomer = !!customer;
+	const hasCustomer: boolean = !!customer;
 	let isOrderSuccess = $state(false);
 	let isConfirmationPage = $state(false);
 	let note = $state('');
 	let checkoutError = $state('');
 	let deliveryDate = $state(new Date());
-	let selectedPaymentMethodId = $state(paymentMethods[0].id);
-	let currentPickupLocationId = $state(pickupLocations[0].id);
-	let selectedDeliveryTypeId = $state(deliveryTypes[0].id);
+
+	let selectedPaymentMethodId = $state<string | undefined>(undefined);
+	let currentPickupLocationId = $state<string | undefined>(undefined);
+	let selectedDeliveryTypeId = $state<string | undefined>(undefined);
+
 	const selectedPaymentMethod = $derived(
-		paymentMethods.find((/** @type {PaymentMethod} */ item) => item.id === selectedPaymentMethodId)
+		paymentMethods.find((item) => item.id === selectedPaymentMethodId) ?? ({} as PaymentMethod)
 	);
 	const selectedDeliveryType = $derived(
-		deliveryTypes.find((/** @type {DeliveryType} */ item) => item.id === selectedDeliveryTypeId)
+		deliveryTypes.find((item) => item.id === selectedDeliveryTypeId) ?? ({} as DeliveryType)
 	);
-
-	let minAmount = $derived(selectedDeliveryType?.minAmount);
-	let freeShippingThreshold = $derived(selectedDeliveryType?.freeShippingThreshold);
-
-	const toggleConfirmationPage = () => (isConfirmationPage = !isConfirmationPage);
-	const toggleOrderSuccess = () => (isOrderSuccess = !isOrderSuccess);
-
-	/** @type {PickupLocation} */
+	let minAmount = $derived(selectedDeliveryType?.minAmount ?? 0);
+	let freeShippingThreshold = $derived(selectedDeliveryType?.freeShippingThreshold ?? 0);
 	const currentPickupLocation = $derived(
-		pickupLocations.find(
-			(/** @type {PickupLocation} */ location) => location.id === currentPickupLocationId
-		)
+		pickupLocations.find((location) => location.id === currentPickupLocationId)
 	);
 
 	const firstEntity = customer?.legalEntities?.length > 0 ? customer.legalEntities[0] : null;
@@ -78,12 +69,10 @@
 	let currentEntityId = $state(firstEntity ? firstEntity.id : null);
 	let currentCustomerLocationId = $state(firstLocation ? firstLocation.id : null);
 
-	const currentEntity = $derived(() => {
-		/** @type {legalEntity[]} */
-		const entityList = customer?.legalEntities ?? [];
+	const currentEntity = $derived((): LegalEntity | undefined => {
+		const entityList: LegalEntity[] = customer?.legalEntities ?? [];
 		return entityList.find((entity) => entity.id === currentEntityId);
 	});
-
 	const hasEntity = $derived(() => !!currentEntity());
 
 	const currentCustomerLocations = $derived(() => {
@@ -93,6 +82,113 @@
 	const currentCustomerLocation = $derived(
 		currentCustomerLocations().find((loc) => loc.id === currentCustomerLocationId)
 	);
+
+	const deliveryAmount = $derived((): number => {
+		if ($cartAmount >= freeShippingThreshold) {
+			return 0;
+		}
+
+		const selectedOption = $checkoutConfig?.deliveryTypes.find(
+			(item: DeliveryType) => item.id === selectedDeliveryTypeId
+		);
+
+		return selectedOption ? selectedOption.amount : 0;
+	});
+
+	const isMinOrderReached = $derived($cartAmount >= minAmount);
+	const amountToReachMin = $derived(isMinOrderReached ? 0 : minAmount - $cartAmount);
+	const finalTotal = $derived($cartAmount + deliveryAmount());
+
+	interface CartItemDetail extends OrderProduct {
+		title: string;
+		imageUrl?: string;
+		minOrder: number;
+	}
+
+	const cartItems = $derived(
+		$cart.map((cartItem): CartItemDetail => {
+			const productList: Product[] = $products as Product[];
+			const productDetail = productList.find((p) => p.id === cartItem.id);
+			return {
+				...cartItem,
+				title: productDetail?.title || 'Товар видалено',
+				imageUrl: productDetail?.imageUrl,
+				minOrder: productDetail?.minOrder || 1,
+				quantity: cartItem.quantity,
+				amount: cartItem.price * cartItem.quantity,
+				discount: 0,
+				discountedAmount: cartItem.price * cartItem.quantity
+			};
+		})
+	);
+
+	interface OrderData {
+		apiURL: string;
+		customer: { id: string; title: string; phone: string; location: string };
+		delivery: {
+			title: string;
+			method: string;
+			deliveryTypeId: string;
+			date: string;
+			location: string | null;
+			pickupLocation: string | null | undefined;
+			amount: number;
+		};
+		payment: { id: string | undefined; title: string };
+		summary: { subtotal: number; deliveryAmount: number; finalTotal: number };
+		note: string;
+		products: CartItemDetail[];
+	}
+
+	const orderData = $derived((): OrderData => {
+		return {
+			apiURL: apiURL,
+			customer: {
+				id: currentEntityId || '',
+				title: currentEntity()?.title || 'Не вказано',
+				phone: customer?.phone || 'Не вказано',
+				location: currentCustomerLocation?.title || 'Не вказано'
+			},
+			delivery: {
+				title: selectedDeliveryType.title || 'Не вказано',
+				method: selectedDeliveryType.shippingMethod || 'Не вказано',
+				deliveryTypeId: selectedDeliveryTypeId || '',
+				date: deliveryDate.toLocaleDateString('en-CA', {
+					year: 'numeric',
+					month: '2-digit',
+					day: '2-digit'
+				}),
+				location: currentCustomerLocationId,
+				pickupLocation: currentPickupLocationId,
+				amount: deliveryAmount()
+			},
+			payment: {
+				id: selectedPaymentMethodId,
+				title: selectedPaymentMethod.title || 'Не вказано'
+			},
+			summary: {
+				subtotal: $cartAmount,
+				deliveryAmount: deliveryAmount(),
+				finalTotal: finalTotal
+			},
+			note: note.trim() || '',
+			products: cartItems
+		};
+	});
+
+	$effect(() => {
+		if (paymentMethods.length > 0 && selectedPaymentMethodId === undefined) {
+			selectedPaymentMethodId = paymentMethods[0].id;
+		}
+
+		if (deliveryTypes.length > 0 && selectedDeliveryTypeId === undefined) {
+			selectedDeliveryTypeId = deliveryTypes[0].id;
+		}
+
+		if (pickupLocations.length > 0 && currentPickupLocationId === undefined) {
+			currentPickupLocationId = pickupLocations[0].id;
+		}
+	});
 
 	$effect(() => {
 		const locations = currentEntity()?.customerLocations;
@@ -107,76 +203,7 @@
 		}
 	});
 
-	const deliveryAmount = $derived(() => {
-		if ($cartAmount >= freeShippingThreshold) {
-			return 0;
-		}
-
-		const selectedOption = checkoutConfig.deliveryTypes.find(
-			(/** @type {DeliveryType} */ item) => item.id === selectedDeliveryTypeId
-		);
-
-		return selectedOption ? selectedOption.amount : 0;
-	});
-
-	const isMinOrderReached = $derived($cartAmount >= minAmount);
-	const amountToReachMin = $derived(isMinOrderReached ? 0 : minAmount - $cartAmount);
-
-	const finalTotal = $derived($cartAmount + deliveryAmount());
-
-	const cartItems = $derived(
-		$cart.map((cartItem) => {
-			/** @type {Product[]} */
-			const productList = products;
-			const productDetail = productList.find((p) => p.id === cartItem.id);
-			return {
-				...cartItem,
-				title: productDetail?.title || 'Товар видалено',
-				imageUrl: productDetail?.imageUrl,
-				minOrder: productDetail?.minOrder || 1
-			};
-		})
-	);
-
-	const orderData = $derived(() => {
-		return {
-			apiURL: apiURL,
-			customer: {
-				id: currentEntityId || '',
-				title: currentEntity()?.title || 'Не вказано',
-				phone: customer?.phone || 'Не вказано',
-				location: currentCustomerLocation?.title || 'Не вказано'
-			},
-			delivery: {
-				title: selectedDeliveryType.title,
-				method: selectedDeliveryType.shippingMethod,
-				deliveryTypeId: selectedDeliveryTypeId,
-				date: deliveryDate.toLocaleDateString('en-CA', {
-					year: 'numeric',
-					month: '2-digit',
-					day: '2-digit'
-				}),
-				location: currentCustomerLocationId,
-				pickupLocation: currentPickupLocationId,
-				amount: deliveryAmount()
-			},
-			payment: {
-				id: selectedPaymentMethodId,
-				title: selectedPaymentMethod.title
-			},
-			summary: {
-				subtotal: $cartAmount,
-				deliveryAmount: deliveryAmount(),
-				finalTotal: finalTotal
-			},
-			note: note.trim() || '',
-			products: cartItems
-		};
-	});
-
-	/** @param {number} id
-	 * @param {number} quantity */
-	function changeQuantity(id, quantity = 1) {
+	function changeQuantity(id: string, quantity = 1) {
 		const item = cartItems.find((i) => i.id === id);
 
 		if (item) {
@@ -184,6 +211,7 @@
 			if (newQuantity < item.minOrder) {
 				removeItem(id);
 			} else {
+				// Припускаємо, що price береться з cartItem, яке має price з кошика
 				updateCart(item.id, item.price, newQuantity);
 			}
 		}
@@ -192,7 +220,7 @@
 	/**
 	 * @returns {boolean} True, если все проверки пройдены; False в противном случае.
 	 */
-	function validateCheckout() {
+	function validateCheckout(): boolean {
 		checkoutError = '';
 
 		if (!isMinOrderReached) {
@@ -210,6 +238,11 @@
 			return false;
 		}
 
+		if (!selectedDeliveryType.shippingMethod || !selectedPaymentMethod.id) {
+			checkoutError = 'Помилка конфігурації доставки/оплати.';
+			return false;
+		}
+
 		if (selectedDeliveryType.shippingMethod === 'pickup' && !currentPickupLocationId) {
 			checkoutError = 'Будь ласка, оберіть точку видачі.';
 			return false;
@@ -224,6 +257,9 @@
 			checkoutError = '';
 		}
 	}
+
+	const toggleConfirmationPage = () => (isConfirmationPage = !isConfirmationPage);
+	const toggleOrderSuccess = () => (isOrderSuccess = !isOrderSuccess);
 </script>
 
 <!-- #region html -->
