@@ -9,13 +9,13 @@
 	import { products } from '$lib/stores/productsStore';
 
 	const { params } = $props();
-	const id = Number(params.id);
+	// const id = Number(params.id);
 
-	const product = $products?.find((p) => p.id === id);
+	const product = $products?.find((p) => p.id === params.id);
 
 	if (!product) {
 		throw error(404, {
-			message: `Товар з ID ${id} не знайдений.`
+			message: `Товар з ID ${params.id} не знайдений.`
 		});
 	}
 
