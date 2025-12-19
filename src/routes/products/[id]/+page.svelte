@@ -53,7 +53,7 @@
 	<div class="product-details">
 		<h1 class="product-title">{product?.title}</h1>
 		<div class="product-info">
-			<span class="icon-scale">⚖</span>{product?.weight}
+			<span class="icon-scale">⚖</span>{product?.weight} г
 			<span class="product-min-order">від {product?.minOrder} шт.</span>
 		</div>
 
