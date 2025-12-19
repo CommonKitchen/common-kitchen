@@ -21,7 +21,7 @@
 <div class="category-page-wrapper">
 	<div class="category-header">
 		{#if $currentCategory}
-			<h1>Товари в категорії: {$currentCategory?.title}</h1>
+			<h1>{$currentCategory?.title}</h1>
 		{:else}
 			<h1>Категорія не знайдена</h1>
 		{/if}
