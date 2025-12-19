@@ -1,14 +1,14 @@
 // src/lib/types/types.ts
 
 export interface Category {
-	id: string;
+	id: number;
 	title: string;
 	slug: string;
 	imageUrl: string;
 }
 
 export interface Product {
-	id: string;
+	id: number;
 	title: string;
 	price: number;
 	categoryId: number;
@@ -71,7 +71,7 @@ export interface LegalEntity {
 }
 
 export interface OrderProduct {
-	id: string;
+	id: number;
 	title: string;
 	quantity: number;
 	price: number;
@@ -119,7 +119,7 @@ export interface LayoutData {
 }
 
 export interface CartItem {
-	id: string;
+	id: number;
 	price: number;
 	quantity: number;
 }
