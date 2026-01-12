@@ -1,14 +1,14 @@
 <script lang="ts">
 	import { customer } from '$lib/stores/customerStore.js';
 	import Order from '$lib/components/layout/orders/Order.svelte';
-	import { clearCart, updateCart } from '$lib/stores/cartStore';
+	import { cart } from '$lib/stores/cartStore.svelte';
 	import { goto } from '$app/navigation';
 	import type { Order as OrderType } from '$lib/types/types';
 
 	import { products } from '$lib/stores/productsStore';
 
 	function handleRepeat(order: OrderType) {
-		clearCart();
+		cart.clear();
 
 		order.products.forEach((product) => {
 			const currentProduct = $products.find((item) => item.id === product.id);
@@ -17,7 +17,7 @@
 				return;
 			}
 
-			updateCart(currentProduct.id, currentProduct.price, product.quantity);
+			cart.updateQuantity(currentProduct.id, currentProduct.price, product.quantity);
 		});
 
 		goto('/cart');

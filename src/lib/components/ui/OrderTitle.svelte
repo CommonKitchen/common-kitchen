@@ -1,16 +1,22 @@
 <script lang="ts">
-	const { title, value, isBold = true } = $props();
+	const { title, value, isBold = true, symbol = false } = $props();
 </script>
 
 <div class="info-group">
 	<span class="label">{title}</span>
-	<span class="value" class:is-bold={isBold}>{value || 'не вказано'}</span>
+	<span class="value" class:is-bold={isBold}
+		>{value || 'не вказано'}
+		{#if symbol}
+			<span class="grn">₴</span>
+		{/if}
+	</span>
 </div>
 
 <style>
 	.info-group {
 		display: flex;
 		flex-direction: column;
+		padding-bottom: 4px;
 	}
 
 	.label {
@@ -28,5 +34,9 @@
 
 	.value.is-bold {
 		font-weight: bold;
+	}
+
+	.grn {
+		font-size: 0.9rem;
 	}
 </style>

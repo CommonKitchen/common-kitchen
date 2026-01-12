@@ -2,7 +2,7 @@
 	import { goto } from '$app/navigation';
 	import CartButtons from '$lib/components/ui/CartButtons.svelte';
 	import Button from '$lib/components/ui/Button.svelte';
-	import { cart } from '$lib/stores/cartStore.js';
+	import { cart } from '$lib/stores/cartStore.svelte';
 	import { error } from '@sveltejs/kit';
 	import Image from '$lib/components/ui/Image.svelte';
 
@@ -19,7 +19,7 @@
 		});
 	}
 
-	const cartQuantity = $derived($cart.find((item) => item.id === product?.id)?.quantity || 0);
+	const cartQuantity = $derived(cart.items.find((item) => item.id === product?.id)?.quantity || 0);
 
 	let quantity = $state(1);
 

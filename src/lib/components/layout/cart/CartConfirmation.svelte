@@ -2,7 +2,7 @@
 	import type { CartItem } from '$lib/types/types';
 
 	import OrderTitle from '$lib/components/ui/OrderTitle.svelte';
-	import { clearCart } from '$lib/stores/cartStore';
+	import { cart } from '$lib/stores/cartStore.svelte';
 	import { sessionStore } from '$lib/stores/sessionStore';
 	import { cubicOut } from 'svelte/easing';
 	import { slide } from 'svelte/transition';
@@ -78,14 +78,18 @@
 			delivery: {
 				type: delivery.method,
 				date: delivery.date,
-				amount: delivery.amount,
 				location: delivery.location,
 				pickupLocation: delivery.pickupLocation,
 				deliveryTypeId: delivery.deliveryTypeId
 			},
 			comment: note,
-			subtotal: summary.subtotal,
-			totalAmount: summary.finalTotal,
+			totals: {
+				subtotal: summary.subtotal,
+				discount: summary.discount,
+				subtotalAfterDiscount: summary.subtotalAfterDiscount,
+				deliveryAmount: summary.deliveryAmount,
+				totalAmount: summary.finalTotal
+			},
 			products: products.map((item: CartItem) => ({
 				id: item.id,
 				quantity: item.quantity,
@@ -135,7 +139,7 @@
 
 			// 4. Логика успеха для НЕ-Wayforpay (или если Wayforpay Redirection не удалось)
 			if (!checkoutError) {
-				clearCart();
+				cart.clear;
 				toggleOrderSuccess();
 				toggleConfirmationPage();
 			}
@@ -173,13 +177,17 @@
 		</div>
 		<div class="order-details-toggle">
 			<div class="total-row">
-				<OrderTitle title="Сума замовлення:" value={summary.subtotal} />
+				<OrderTitle title="Сума замовлення:" value={summary.subtotal} symbol={true} />
 			</div>
+			{#if summary.discount !== 0}
+				<OrderTitle title="Знижка, %:" value={summary.discount} />
+				<OrderTitle title="Сума зі знижкою:" value={summary.subtotalAfterDiscount} symbol={true} />
+			{/if}
 			<div class="total-row">
-				<OrderTitle title="Вартість доставки:" value={delivery.amount} />
+				<OrderTitle title="Вартість доставки:" value={summary.deliveryAmount} symbol={true} />
 			</div>
 			<div class="total-row final-total">
-				<OrderTitle title="Разом до оплати:" value={summary.finalTotal} />
+				<OrderTitle title="Разом до оплати:" value={summary.finalTotal} symbol={true} />
 				<div class="toggle-button-row">
 					<button
 						onclick={toggleProducts}
@@ -218,7 +226,7 @@
 			</div>
 		{/if}
 		<div class="action-row">
-			<button onclick={toggleConfirmationPage} class="buttons clear-btn"> Змінити дані </button>
+			<button onclick={toggleConfirmationPage} class="buttons clear-btn">Змінити</button>
 			<button onclick={handleCheckout} class="buttons checkout-btn" disabled={isLoading}>
 				{#if isLoading}
 					<div class="spinner"></div>
@@ -256,8 +264,8 @@
 		display: grid;
 		grid-template-columns: repeat(2, 1fr);
 		gap: 0.4rem 1rem;
-		padding-bottom: 0.5rem;
-		border-bottom: 1px solid var(--tg-theme-secondary-bg-color, #eee);
+		/* padding-bottom: 0.5rem; */
+		/* border-bottom: 1px solid var(--tg-theme-secondary-bg-color, #eee); */
 	}
 
 	.long-row {
@@ -272,7 +280,7 @@
 	.total-row {
 		display: flex;
 		justify-content: space-between;
-		padding: 0.2rem 0;
+		/* padding: 0.2rem 0; */
 	}
 
 	.final-total {

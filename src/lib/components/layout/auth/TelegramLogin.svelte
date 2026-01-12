@@ -74,7 +74,7 @@
 				// if (success) {
 				authorized = true;
 				waiting = false;
-				goto('/customer');
+				goto('/categories');
 				// } else {
 				// 	waiting = false;
 				// }

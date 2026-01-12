@@ -64,6 +64,7 @@ export interface LegalEntity {
 	title: string;
 	phone: string;
 	taxId: string;
+	discount: number;
 	bankAccount: string;
 	bankName: string;
 	bankCode: string;
@@ -76,8 +77,6 @@ export interface OrderProduct {
 	quantity: number;
 	price: number;
 	amount: number;
-	discount: number;
-	discountedAmount: number;
 }
 
 export interface Order {
@@ -112,7 +111,6 @@ export interface ShopDataClient extends ApiData {
 	sessionId?: string; // sessionId может быть null/undefined, если он не найден
 }
 
-// Новый интерфейс для возвращаемого значения load
 export interface LayoutData {
 	shopData: ShopDataClient;
 	isMobile: boolean;

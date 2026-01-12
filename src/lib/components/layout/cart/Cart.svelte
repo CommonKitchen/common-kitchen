@@ -1,16 +1,18 @@
 <!-- $lib/components/layout/cart -->
 <script lang="ts">
-	import { goto } from '$app/navigation';
-	import { cart, updateCart, total as cartAmount, removeItem } from '$lib/stores/cartStore.js';
-
 	import type {
+		Customer,
+		LegalEntity,
+		CustomerLocation,
 		DeliveryType,
 		PickupLocation,
 		PaymentMethod,
 		OrderProduct,
 		Product
 	} from '$lib/types/types';
-	import type { Customer, LegalEntity } from '$lib/types/types';
+
+	import { goto } from '$app/navigation';
+	import { cart } from '$lib/stores/cartStore.svelte';
 
 	import Button from '$lib/components/ui/Button.svelte';
 	import DatePicker from '$lib/components/ui/DatePicker.svelte';
@@ -67,37 +69,29 @@
 			: null;
 
 	let currentEntityId = $state(firstEntity ? firstEntity.id : null);
+
 	let currentCustomerLocationId = $state(firstLocation ? firstLocation.id : null);
 
-	const currentEntity = $derived((): LegalEntity | undefined => {
-		const entityList: LegalEntity[] = customer?.legalEntities ?? [];
-		return entityList.find((entity) => entity.id === currentEntityId);
-	});
-	const hasEntity = $derived(() => !!currentEntity());
-
-	const currentCustomerLocations = $derived(() => {
-		return currentEntity()?.customerLocations ?? [];
-	});
-
-	const currentCustomerLocation = $derived(
-		currentCustomerLocations().find((loc) => loc.id === currentCustomerLocationId)
+	const currentEntity = $derived(
+		currentEntityId
+			? customer?.legalEntities.find((entity: LegalEntity) => entity.id === currentEntityId)
+			: undefined
 	);
 
-	const deliveryAmount = $derived((): number => {
-		if ($cartAmount >= freeShippingThreshold) {
-			return 0;
-		}
+	const hasEntity = $derived(!!currentEntity);
 
-		const selectedOption = $checkoutConfig?.deliveryTypes.find(
-			(item: DeliveryType) => item.id === selectedDeliveryTypeId
-		);
+	const currentCustomerLocations = $derived(currentEntity?.customerLocations ?? []);
 
-		return selectedOption ? selectedOption.amount : 0;
-	});
+	const currentCustomerLocation = $derived(
+		currentCustomerLocations
+			? currentCustomerLocations.find(
+					(loc: CustomerLocation) => loc.id === currentCustomerLocationId
+				)
+			: undefined
+	);
 
-	const isMinOrderReached = $derived($cartAmount >= minAmount);
-	const amountToReachMin = $derived(isMinOrderReached ? 0 : minAmount - $cartAmount);
-	const finalTotal = $derived($cartAmount + deliveryAmount());
+	const isMinOrderReached = $derived(cart.total >= minAmount);
+	const amountToReachMin = $derived(isMinOrderReached ? 0 : minAmount - cart.subtotalAfterDiscount);
 
 	interface CartItemDetail extends OrderProduct {
 		title: string;
@@ -106,7 +100,7 @@
 	}
 
 	const cartItems = $derived(
-		$cart.map((cartItem): CartItemDetail => {
+		cart.items.map((cartItem): CartItemDetail => {
 			const productList: Product[] = $products as Product[];
 			const productDetail = productList.find((p) => p.id === cartItem.id);
 			return {
@@ -115,9 +109,7 @@
 				imageUrl: productDetail?.imageUrl,
 				minOrder: productDetail?.minOrder || 1,
 				quantity: cartItem.quantity,
-				amount: cartItem.price * cartItem.quantity,
-				discount: 0,
-				discountedAmount: cartItem.price * cartItem.quantity
+				amount: cartItem.price * cartItem.quantity
 			};
 		})
 	);
@@ -132,10 +124,15 @@
 			date: string;
 			location: string | null;
 			pickupLocation: string | null | undefined;
-			amount: number;
 		};
 		payment: { id: string | undefined; title: string };
-		summary: { subtotal: number; deliveryAmount: number; finalTotal: number };
+		summary: {
+			subtotal: number;
+			discount: number;
+			subtotalAfterDiscount: number;
+			deliveryAmount: number;
+			finalTotal: number;
+		};
 		note: string;
 		products: CartItemDetail[];
 	}
@@ -145,7 +142,7 @@
 			apiURL: apiURL,
 			customer: {
 				id: currentEntityId || '',
-				title: currentEntity()?.title || 'Не вказано',
+				title: currentEntity?.title || 'Не вказано',
 				phone: customer?.phone || 'Не вказано',
 				location: currentCustomerLocation?.title || 'Не вказано'
 			},
@@ -159,21 +156,44 @@
 					day: '2-digit'
 				}),
 				location: currentCustomerLocationId,
-				pickupLocation: currentPickupLocationId,
-				amount: deliveryAmount()
+				pickupLocation: currentPickupLocationId
 			},
 			payment: {
 				id: selectedPaymentMethodId,
 				title: selectedPaymentMethod.title || 'Не вказано'
 			},
 			summary: {
-				subtotal: $cartAmount,
-				deliveryAmount: deliveryAmount(),
-				finalTotal: finalTotal
+				subtotal: cart.total,
+				discount: cart.discountPercent,
+				subtotalAfterDiscount: cart.subtotalAfterDiscount,
+				deliveryAmount: cart.deliveryAmount,
+				finalTotal: cart.finalTotal
 			},
 			note: note.trim() || '',
 			products: cartItems
 		};
+	});
+
+	$effect(() => {
+		cart.discountPercent = hasEntity ? (currentEntity?.discount ?? 0) : 0;
+	});
+
+	$effect(() => {
+		if (!$checkoutConfig) {
+			cart.deliveryAmount = 0;
+			return;
+		}
+
+		if (cart.total >= freeShippingThreshold) {
+			cart.deliveryAmount = 0;
+			return;
+		}
+
+		const selectedOption = $checkoutConfig?.deliveryTypes.find(
+			(item: DeliveryType) => item.id === selectedDeliveryTypeId
+		);
+
+		cart.deliveryAmount = selectedOption ? selectedOption.amount : 0;
 	});
 
 	$effect(() => {
@@ -191,10 +211,12 @@
 	});
 
 	$effect(() => {
-		const locations = currentEntity()?.customerLocations;
+		const locations = currentEntity?.customerLocations;
 
 		if (locations && locations.length > 0) {
-			const isCurrentLocationValid = locations.some((loc) => loc.id === currentCustomerLocationId);
+			const isCurrentLocationValid = locations.some(
+				(loc: CustomerLocation) => loc.id === currentCustomerLocationId
+			);
 			if (!isCurrentLocationValid) {
 				currentCustomerLocationId = locations[0].id;
 			}
@@ -203,16 +225,15 @@
 		}
 	});
 
-	function changeQuantity(id: string, quantity = 1) {
+	function changeQuantity(id: number, quantity = 1) {
 		const item = cartItems.find((i) => i.id === id);
 
 		if (item) {
 			const newQuantity = item.quantity + quantity;
 			if (newQuantity < item.minOrder) {
-				removeItem(id);
+				cart.removeItem(id);
 			} else {
-				// Припускаємо, що price береться з cartItem, яке має price з кошика
-				updateCart(item.id, item.price, newQuantity);
+				cart.updateQuantity(item.id, item.price, newQuantity);
 			}
 		}
 	}
@@ -228,7 +249,7 @@
 			return false;
 		}
 
-		if ($cart.length === 0) {
+		if (cart.itemCount === 0) {
 			checkoutError = 'Кошик порожній.';
 			return false;
 		}
@@ -266,7 +287,7 @@
 <div class="cart-container">
 	{#if isOrderSuccess}
 		<CartMessage option="success" />
-	{:else if $cart.length === 0}
+	{:else if cart.itemCount === 0}
 		<CartMessage option="empty" />
 	{:else if isConfirmationPage}
 		<CartConfirmation {orderData} {toggleConfirmationPage} {toggleOrderSuccess} />
@@ -276,10 +297,10 @@
 				<Button title="Назад до продукції" onclick={() => goto('/categories')} type="button" />
 				<div class="block-total">
 					<span>Ваш кошик:</span>
-					<span class="total-amount">{$cartAmount}<span>₴</span></span>
+					<span class="total-amount">{cart.total}<span>₴</span></span>
 				</div>
 			</div>
-			{#if hasCustomer && !hasEntity()}
+			{#if hasCustomer && !hasEntity}
 				<div class="warning-block">
 					⚠️ Попередження: Неможливо створити замовлення.<br /> Ваш обліковий запис ще не повністю
 					налаштований для оформлення замовлень.<br /> Щоб отримати можливість замовляти продукцію,
@@ -312,7 +333,7 @@
 						<div class="customer-info">Користувач: {customer.name} {customer.phone}</div>
 						<div class="entity-container">
 							<SelectOptions
-								title="Замовник:"
+								title={`Замовник${cart.discountPercent === 0 ? ':' : ', знижка ' + cart.discountPercent + '%'}`}
 								bind:value={currentEntityId}
 								items={customer.legalEntities}
 							/>
@@ -320,7 +341,7 @@
 							<SelectOptions
 								title="Заклад:"
 								bind:value={currentCustomerLocationId}
-								items={currentCustomerLocations()}
+								items={currentCustomerLocations}
 							/>
 						</div>
 					</div>
@@ -371,16 +392,39 @@
 					></textarea>
 				</div>
 
-				<div class="delivery-block-amount">
-					<span class="delivery-description">Вартість доставки:</span>
-					<span class="text-amount">
-						{deliveryAmount()}<span>₴</span>
-					</span>
-				</div>
+				<div class="sum-block">
+					<div class="block-amount">
+						<span class="amount-description">Сума:</span>
+						<span class="text-amount">
+							{cart.total}<span>₴</span>
+						</span>
+					</div>
 
+					{#if cart.discountPercent}
+						<div class="block-amount">
+							<span class="amount-description">Знижка:</span>
+							<span class="text-amount">
+								{cart.discountPercent}<span>%</span>
+							</span>
+						</div>
+						<div class="block-amount">
+							<span class="amount-description">Сума зі знижкою:</span>
+							<span class="text-amount">
+								{cart.subtotalAfterDiscount}<span>₴</span>
+							</span>
+						</div>
+					{/if}
+
+					<div class="block-amount">
+						<span class="amount-description">Вартість доставки:</span>
+						<span class="text-amount">
+							{cart.deliveryAmount}<span>₴</span>
+						</span>
+					</div>
+				</div>
 				<div class="block-total">
 					<span>Разом до оплати:</span>
-					<span class="total-amount">{finalTotal}<span>₴</span></span>
+					<span class="total-amount">{cart.finalTotal}<span>₴</span></span>
 				</div>
 
 				{#if checkoutError}
@@ -469,7 +513,7 @@
 		font-size: 1.1rem;
 	}
 
-	.delivery-description {
+	.amount-description {
 		color: #333; /* Загальний колір тексту */
 		font-weight: 500; /* Трохи більша вага для помітності */
 	}
@@ -484,11 +528,15 @@
 		font-size: 1rem;
 	}
 
-	.delivery-block-amount {
-		display: flex;
-		justify-content: space-between;
+	.sum-block {
 		padding: 16px 0;
 		font-size: 1.1rem;
+	}
+
+	.block-amount {
+		display: flex;
+		justify-content: space-between;
+		padding: 4px 0;
 	}
 
 	.block-total {

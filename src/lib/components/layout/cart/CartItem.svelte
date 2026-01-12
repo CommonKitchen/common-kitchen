@@ -3,7 +3,7 @@
 	import Remove from '../icons/Remove.svelte';
 	import Image from '$lib/components/ui/Image.svelte';
 	import QuantitySelector from '$lib/components/ui/QuantitySelector.svelte';
-	import { removeItem } from '$lib/stores/cartStore';
+	import { cart } from '$lib/stores/cartStore.svelte';
 
 	const { item, changeQuantity } = $props();
 </script>
@@ -32,7 +32,7 @@
 		</div>
 		<div class="item-total">{item.price * item.quantity}<span>₴</span></div>
 		<ActionIcon
-			onclick={() => removeItem(item.id)}
+			onclick={() => cart.removeItem(item.id)}
 			tooltip="Видалити товар"
 			icon={Remove}
 			width="24"

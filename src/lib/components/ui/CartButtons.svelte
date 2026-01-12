@@ -2,35 +2,34 @@
 	import Button from '$lib/components/ui/Button.svelte';
 	import QuantitySelector from '$lib/components/ui/QuantitySelector.svelte';
 
-	import { updateCart, getQuantity, removeItem } from '$lib/stores/cartStore.js';
+	import { cart } from '$lib/stores/cartStore.svelte';
 
 	const { id, price, minOrder } = $props();
 
-	const cartQuantityStore = getQuantity(id);
-	const currentQuantity = $derived($cartQuantityStore);
+	const currentQuantity = $derived(cart.getItemQuantity(id));
 
 	const minQuantity = minOrder ?? 1;
 
 	function addProduct(event: MouseEvent) {
 		event.stopPropagation();
 		event.preventDefault();
-		updateCart(id, price, minQuantity);
+		cart.updateQuantity(id, price, minQuantity);
 	}
 
 	function changeQuantity(quantity: number) {
 		const newQuantity = currentQuantity + quantity;
 
 		if (newQuantity < minQuantity && quantity < 0) {
-			removeItem(id);
+			cart.removeItem(id);
 			return;
 		}
 
 		if (newQuantity <= 0) {
-			removeItem(id);
+			cart.removeItem(id);
 			return;
 		}
 
-		updateCart(id, price, newQuantity);
+		cart.updateQuantity(id, price, newQuantity);
 	}
 </script>
 

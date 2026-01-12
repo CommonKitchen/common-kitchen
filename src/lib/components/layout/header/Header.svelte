@@ -1,3 +1,5 @@
+<!-- svelte-ignore non_reactive_update -->
+<!-- src/lib/components/header/header.svelte -->
 <script lang="ts">
 	import BurgerMenuButton from '$lib/components/layout/header/BurgerMenuButton.svelte';
 	import Menu from '$lib/components/layout/menu/Menu.svelte';
@@ -8,8 +10,9 @@
 	import logo from '$lib/assets/logo.svg';
 	import Login from '$lib/components/layout/icons/Login.svelte';
 	import Bag from '$lib/components/layout/icons/Bag.svelte';
-	import { itemCount } from '$lib/stores/cartStore.js';
+	import { cart } from '$lib/stores/cartStore.svelte';
 	import Telegram from '$lib/components/ui/Telegram.svelte';
+	import { onMount } from 'svelte';
 
 	const { isMobile } = $props();
 
@@ -23,6 +26,12 @@
 	}
 
 	let isMenuOpen = $state(false);
+
+	let mounted = $state(false);
+
+	onMount(() => {
+		mounted = true;
+	});
 
 	function toggleMenu() {
 		isMenuOpen = !isMenuOpen;
@@ -85,7 +94,12 @@
 				</div>
 				<ActionIcon href="/login" icon={Login} />
 				<!-- <ActionIcon href="/wishlist" icon={Heart} stretch={true} /> -->
-				<ActionIcon href="/cart" icon={Bag} count={$itemCount} />
+				{#if mounted}
+					<ActionIcon href="/cart" icon={Bag} count={cart.itemCount} />
+				{:else}
+					<ActionIcon href="/cart" icon={Bag} />
+				{/if}
+				<!-- <ActionIcon href="/cart" icon={Bag} count={$itemCount} /> -->
 			</div>
 		</div>
 	</div>

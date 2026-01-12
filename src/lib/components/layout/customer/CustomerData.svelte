@@ -168,7 +168,8 @@
 			const newEntity = {
 				...tmpState,
 				id: crypto.randomUUID(),
-				customerLocations: []
+				customerLocations: [],
+				discount: 0
 			};
 			currentEntityId = newEntity.id;
 			return [...entityList, newEntity];
