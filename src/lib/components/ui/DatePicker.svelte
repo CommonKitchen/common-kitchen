@@ -46,7 +46,8 @@
 
 	function isAvailableDate(date: Date): boolean {
 		// 1. Проверка доступных дней недели (1=Пн, 7=Нд)
-		const dayOfWeek = date.getDay() === 0 ? 7 : date.getDay();
+		// const dayOfWeek = date.getDay() === 0 ? 6 : date.getDay();
+		const dayOfWeek = date.getDay();
 		if (!availableDays.includes(dayOfWeek)) {
 			return false;
 		}
