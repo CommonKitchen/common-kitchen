@@ -40,8 +40,9 @@
 				method: 'POST',
 				headers: {
 					'Content-Type': 'application/json',
+					'x-sessionid': $sessionStore ?? '',
 					Accept: 'application/json',
-					'X-SessionId': $sessionStore ?? ''
+					origin: `https://common-kitchen.vercel.app`
 				},
 				body: JSON.stringify(payload)
 			});
