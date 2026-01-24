@@ -4,8 +4,15 @@
 	import { cart } from '$lib/stores/cartStore.svelte';
 	import { goto } from '$app/navigation';
 	import type { Order as OrderType } from '$lib/types/types';
+	import { wayforpayRedirect } from '$lib/utils/wayForPay';
+
+	import { sessionStore } from '$lib/stores/sessionStore';
 
 	import { products } from '$lib/stores/productsStore';
+
+	const { apiURL } = $props();
+
+	let checkoutError = $state('');
 
 	function handleRepeat(order: OrderType) {
 		cart.clear();
@@ -22,6 +29,55 @@
 
 		goto('/cart');
 	}
+
+	async function handlePay(order: OrderType) {
+		const payload = { id: order.id };
+		let data: any = null;
+		checkoutError = '';
+
+		try {
+			const response = await fetch(`${apiURL}/cakes/hs/shop/paymentdata`, {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json',
+					Accept: 'application/json',
+					'X-SessionId': $sessionStore ?? ''
+				},
+				body: JSON.stringify(payload)
+			});
+
+			if (!response.ok) {
+				let errorMessage = `Помилка сервера: ${response.status}`;
+				try {
+					const errorBody = await response.json();
+					errorMessage = errorBody.message || errorMessage;
+				} catch (e) {
+					errorMessage = errorMessage;
+				}
+
+				throw new Error(errorMessage);
+			}
+
+			data = await response.json();
+
+			if (data?.paymentData && typeof data.paymentData === 'object') {
+				try {
+					wayforpayRedirect(data.paymentData);
+					return;
+				} catch (redirectError) {
+					checkoutError =
+						'Помилка перенаправлення до платіжного шлюзу. Спробуйте інший спосіб оплати.';
+					console.error('Redirect Error:', redirectError);
+				}
+			}
+		} catch (error) {
+			checkoutError = 'Не вдалося оплатити замовлення. Спробуйте пізніше.';
+			console.error('API Checkout Error:', error);
+			return;
+		} finally {
+			// isLoading = false;
+		}
+	}
 </script>
 
 <div class="orders-block">
@@ -35,7 +91,7 @@
 		{:else}
 			<div class="orders-list">
 				{#each $customer?.orders as order (order.id)}
-					<Order {order} {handleRepeat} />
+					<Order {order} {handleRepeat} {handlePay} />
 				{/each}
 			</div>
 		{/if}

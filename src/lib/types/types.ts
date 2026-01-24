@@ -89,6 +89,7 @@ export interface Order {
 	total: number;
 	deliveryAmount: number;
 	note: string;
+	paid: boolean;
 	products: OrderProduct[];
 }
 

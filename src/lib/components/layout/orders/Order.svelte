@@ -4,7 +4,7 @@
 	import OrderTitle from '$lib/components/ui/OrderTitle.svelte';
 	import { cubicOut } from 'svelte/easing';
 
-	const { order, handleRepeat } = $props();
+	const { order, handleRepeat, handlePay } = $props();
 
 	let isExpanded = $state(false);
 
@@ -25,7 +25,7 @@
 		</div>
 		<OrderTitle title="Отримання:" value={order.deliveryType} />
 		<OrderTitle title="Оплата:" value={order.paymentMethod} />
-		<OrderTitle title="Сума (з доставкою):" value={`${order.total} ₴`} />
+		<OrderTitle title="Сума (зі знижкою та доставкою):" value={`${order.total} ₴`} />
 		<OrderTitle
 			title="Доставка:"
 			value={order.deliveryAmount === '0' ? 'безкоштовно' : `${order.deliveryAmount} ₴`}
@@ -38,6 +38,14 @@
 	</div>
 	<div class="action-row">
 		<Button title={'Повторити'} onclick={() => handleRepeat(order)} />
+		{#if !order.paid}
+			<Button title={'Оплатити'} onclick={() => handlePay(order)} />
+		{:else}
+			<div class="paid">
+				<img src="./check.webp" alt="Оплачено" />
+				<span>Оплачено</span>
+			</div>
+		{/if}
 		<button
 			onclick={toggleProducts}
 			class="toggle-details-button"
@@ -184,5 +192,14 @@
 	.item-quantity,
 	.item-price {
 		white-space: nowrap; /* Гарантируем, что цена и шт не переносятся отдельно */
+	}
+
+	.paid {
+		display: flex;
+		align-items: center;
+	}
+
+	.paid span {
+		margin-left: 8px;
 	}
 </style>
