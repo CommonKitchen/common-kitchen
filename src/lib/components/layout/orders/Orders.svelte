@@ -41,8 +41,7 @@
 				headers: {
 					'Content-Type': 'application/json',
 					'x-sessionid': $sessionStore ?? '',
-					Accept: 'application/json',
-					origin: `https://common-kitchen.vercel.app`
+					Accept: 'application/json'
 				},
 				body: JSON.stringify(payload)
 			});
