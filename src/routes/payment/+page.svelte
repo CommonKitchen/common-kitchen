@@ -6,12 +6,15 @@
 	type PageData = {
 		paymentStatus: string;
 	};
+
 	type PaymentStatusKeys = 'success' | 'declined' | 'error' | 'initial';
-	type Message = { title: string; text: string };
+
+	type Message = {
+		title: string;
+		text: string;
+	};
 
 	let { data } = $props<{ data: PageData }>();
-
-	const status: string = data.paymentStatus ?? 'initial';
 
 	const messages: Record<PaymentStatusKeys, Message> = {
 		success: {
@@ -32,7 +35,12 @@
 		}
 	};
 
-	const currentMessage: Message = messages[status as PaymentStatusKeys] || messages.error;
+	const isPaymentStatus = (value: string): value is PaymentStatusKeys => value in messages;
+
+	const status: PaymentStatusKeys =
+		data.paymentStatus && isPaymentStatus(data.paymentStatus) ? data.paymentStatus : 'initial';
+
+	const currentMessage = messages[status];
 </script>
 
 <div class="message-block">
@@ -66,7 +74,6 @@
 	}
 	.message-block p {
 		color: #777;
-		margin-bottom: 30px;
 		font-size: 1.1rem;
 		margin-bottom: 10px;
 	}
