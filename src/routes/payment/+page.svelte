@@ -16,6 +16,8 @@
 
 	let { data } = $props<{ data: PageData }>();
 
+	console.log('+page.svelte data:', data);
+
 	const messages: Record<PaymentStatusKeys, Message> = {
 		success: {
 			title: 'Оплата пройшла успішно!',
@@ -37,10 +39,14 @@
 
 	const isPaymentStatus = (value: string): value is PaymentStatusKeys => value in messages;
 
+	console.log('+page.svelte isPaymentStatus:', isPaymentStatus);
+
 	const status: PaymentStatusKeys =
 		data.paymentStatus && isPaymentStatus(data.paymentStatus) ? data.paymentStatus : 'initial';
 
 	const currentMessage = messages[status];
+
+	console.log('+page.svelte currentMessage:', currentMessage);
 </script>
 
 <div class="message-block">
