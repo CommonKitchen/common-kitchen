@@ -24,10 +24,11 @@ export async function POST({ request }) {
 			});
 		}
 
+		console.log('+server.ts paymentData:', paymentData);
 		const { orderReference, reasonCode, reason } = paymentData;
 
 		// WayForPay использует 1100 для успешной операции
-		if (reasonCode === '1100') {
+		if (reasonCode === 1100) {
 			console.log(`Оплата ${orderReference} успешно завершена. Код: ${reasonCode}`);
 			statusToRedirect = 'success';
 		} else if (reasonCode) {
@@ -39,6 +40,8 @@ export async function POST({ request }) {
 			console.log(`Транзакция ${orderReference} - Неопределенный статус. Code: ${reasonCode}`);
 			// statusToRedirect = 'pending';
 		}
+
+		console.log('+server.ts statusToRedirect:', statusToRedirect);
 
 		return redirect(303, `/payment?status=${statusToRedirect}`);
 	} catch (error) {
