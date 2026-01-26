@@ -17,7 +17,6 @@ export async function POST({ request }) {
 			throw redirect(303, '/payment?status=error');
 		}
 
-		console.log('Return URL POST data:', paymentData);
 		const { reasonCode, orderReference } = paymentData;
 
 		let statusToRedirect = 'error';
