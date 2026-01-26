@@ -28,7 +28,7 @@ export async function POST({ request }) {
 		const { orderReference, reasonCode, reason } = paymentData;
 
 		// WayForPay использует 1100 для успешной операции
-		if (reasonCode === 1100) {
+		if (reasonCode === '1100') {
 			console.log(`Оплата ${orderReference} успешно завершена. Код: ${reasonCode}`);
 			statusToRedirect = 'success';
 		} else if (reasonCode) {
