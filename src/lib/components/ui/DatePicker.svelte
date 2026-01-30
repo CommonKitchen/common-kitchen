@@ -26,7 +26,7 @@
 		selectedDate = $bindable(),
 		availableDays = [1, 2, 3, 4, 5],
 		blockedDays = [],
-		cutOffHour = 0
+		cutOffHour = 10
 	} = $props();
 
 	const NOW = new Date();
@@ -62,6 +62,7 @@
 
 	function findMinimalDate(): Date {
 		let date = startOfDay(NOW);
+		date.setDate(date.getDate() + 1); //минильный день - завтра
 		let daysSearched = 0;
 		const MAX_SEARCH_DAYS = 365; // Ограничиваем поиск одним годом
 
