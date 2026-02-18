@@ -1,4 +1,6 @@
+<!-- src/routes/cart/+page.svelte -->
 <script lang="ts">
+	import { goto } from '$app/navigation';
 	import Cart from '$lib/components/layout/cart/Cart.svelte';
 	import { setCustomerData } from '$lib/stores/customerStore';
 
