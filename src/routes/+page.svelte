@@ -4,14 +4,44 @@
 	import Bestsellers from '$lib/components/layout/Bestsellers.svelte';
 	import Categories from '$lib/components/layout/categories/Categories.svelte';
 	import { categories } from '$lib/stores/categoriesStore';
+
+	const imgURL =
+		'https://res.cloudinary.com/dwfbj9x06/image/upload/w_600/v1760969457/mlycppkfrcvylzy4wjg6.png';
 </script>
 
 <svelte:head>
 	<title>Common.Kitchen — Десерти та випічка, що працюють на ваш бізнес</title>
 	<meta
 		name="description"
-		content="Готуємо десерти, що продаються. Стабільна якість, зручне замовлення та асортимент, що приваблює гостей. Спрощуємо роботу вашого закладу!"
+		content="Готуємо десерти та випічку, що продаються. Стабільна якість, зручне замовлення та асортимент, що приваблює гостей. Спрощуємо роботу вашого закладу!"
 	/>
+
+	<meta property="og:site_name" content="Common.Kitchen" />
+	<meta property="og:type" content="website" />
+	<meta property="og:url" content="https://common-kitchen.vercel.app" />
+	<meta
+		property="og:title"
+		content="Common.Kitchen — Десерти та випічка, що працюють на ваш бізнес"
+	/>
+	<meta
+		property="og:description"
+		content="Готуємо десерти та випічку, що продаються. Стабільна якість, зручне замовлення та асортимент, що приваблює гостей. Спрощуємо роботу вашого закладу!"
+	/>
+
+	<meta property="og:image" content={imgURL} />
+	<meta property="og:image:width" content="600" />
+	<meta property="og:image:height" content="600" />
+
+	<meta name="twitter:card" content="summary" />
+	<meta
+		name="twitter:title"
+		content="Common.Kitchen — Десерти та випічка, що працюють на ваш бізнес"
+	/>
+	<meta
+		name="twitter:description"
+		content="Готуємо десерти та випічку, що продаються. Стабільна якість, зручне замовлення та асортимент, що приваблює гостей. Спрощуємо роботу вашого закладу!"
+	/>
+	<meta name="twitter:image" content={imgURL} />
 </svelte:head>
 
 <Main />
