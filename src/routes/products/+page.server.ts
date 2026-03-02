@@ -1,3 +1,4 @@
+// routes/products/+page.server.ts
 import { redirect } from '@sveltejs/kit';
 
 /** @type {import('./$types').PageServerLoad} */

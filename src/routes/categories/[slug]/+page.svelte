@@ -12,11 +12,27 @@
 
 	const { params } = $props();
 
+	const categoryTitle = $derived(
+		$currentCategory?.title
+			? `${$currentCategory?.title} оптом для кав'ярень та кафе — Common.Kitchen`
+			: 'Каталог десертів — Common.Kitchen'
+	);
+	const categoryDesc = $derived(
+		$currentCategory?.title
+			? `Замовляйте ${$currentCategory?.title} оптом для вашого закладу від Common.Kitchen. Висока якість, великий асортимент та зручна доставка.`
+			: 'Широкий асортимент десертів та випічки для вашого бізнесу від Common.Kitchen.'
+	);
+
 	$effect(() => {
 		const slug = params?.slug ?? null;
 		setCurrentCategorySlug(slug);
 	});
 </script>
+
+<svelte:head>
+	<title>{categoryTitle}</title>
+	<meta name="description" content={categoryDesc} />
+</svelte:head>
 
 <div class="category-page-wrapper">
 	<div class="category-header">

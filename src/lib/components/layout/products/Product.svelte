@@ -1,3 +1,4 @@
+<!-- lib/components/layout/products/Product.svelte -->
 <script lang="ts">
 	import CartButtons from '$lib/components/ui/CartButtons.svelte';
 	import Image from '$lib/components/ui/Image.svelte';
@@ -12,7 +13,7 @@
 		<Image src={imageUrl_168x168} alt={title} className="image-container" />
 	</a>
 	<div class="product-content">
-		<div class="product-title">{title}</div>
+		<h3 class="product-title">{title}</h3>
 		<div class="product-info">
 			<div class="product-weight">
 				<span class="icon-scale">⚖</span>

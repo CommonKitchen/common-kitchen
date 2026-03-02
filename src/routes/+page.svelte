@@ -1,3 +1,4 @@
+<!-- route/+page.svelte -->
 <script lang="ts">
 	import Main from '$lib/components/layout/Main.svelte';
 	import Bestsellers from '$lib/components/layout/Bestsellers.svelte';
@@ -5,11 +6,19 @@
 	import { categories } from '$lib/stores/categoriesStore';
 </script>
 
+<svelte:head>
+	<title>Common.Kitchen — Десерти та випічка, що працюють на ваш бізнес</title>
+	<meta
+		name="description"
+		content="Готуємо десерти, що продаються. Стабільна якість, зручне замовлення та асортимент, що приваблює гостей. Спрощуємо роботу вашого закладу!"
+	/>
+</svelte:head>
+
 <Main />
 <Bestsellers />
 
 <div class="container">
-	<h2>Наша продукція</h2>
+	<h2>Десерти та випічка від Common.Kitchen</h2>
 	<Categories categories={$categories} />
 </div>
 

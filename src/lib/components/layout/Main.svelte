@@ -1,15 +1,34 @@
+<!-- lib/components/Main.svelte -->
 <script lang="ts">
 	import Button from '$lib/components/ui/Button.svelte';
 	import { goto } from '$app/navigation';
 </script>
 
-<div class="hero">
+<div
+	class="hero"
+	role="img"
+	aria-label="Десерти, торти та випічка оптом від Common.Kitchen для кафе та кав'ярень"
+>
+	<span class="visually-hidden">
+		Common.Kitchen — постачальник десертів та випічки оптом для кафе та кав'ярень
+	</span>
 	<h1>Готуємо з любов’ю<br />для кожного закладу</h1>
 	<h3>Замовляй, куштуй<br />та залишайся з нами</h3>
 	<Button onclick={() => goto('/categories')} />
 </div>
 
 <style>
+	.visually-hidden {
+		position: absolute;
+		width: 1px;
+		height: 1px;
+		padding: 0;
+		margin: -1px;
+		overflow: hidden;
+		clip: rect(0, 0, 0, 0);
+		white-space: nowrap;
+		border: 0;
+	}
 	.hero {
 		width: 100%;
 		height: 100%;

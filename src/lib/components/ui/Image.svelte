@@ -9,7 +9,7 @@
 
 <div class={className} class:loaded={!isLoading}>
 	<div class="skeleton"></div>
-	<img {...restProps} {src} {alt} onload={handleImageLoad} class="image" />
+	<img {...restProps} {src} {alt} onload={handleImageLoad} class="image" title={alt} />
 </div>
 
 <style>

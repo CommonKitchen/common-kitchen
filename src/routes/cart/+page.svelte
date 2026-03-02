@@ -1,12 +1,11 @@
 <!-- src/routes/cart/+page.svelte -->
 <script lang="ts">
-	import { goto } from '$app/navigation';
 	import Cart from '$lib/components/layout/cart/Cart.svelte';
 	import { setCustomerData } from '$lib/stores/customerStore';
 
 	const { data } = $props();
 
-	const { customer, error } = data;
+	const { customer } = data;
 	if (customer) {
 		setCustomerData(customer);
 	}
@@ -14,13 +13,14 @@
 	const apiURL = $derived(data?.shopData?.apiURL ?? '');
 </script>
 
-{#if error}
-	<p>Виникла помилка отримання даних користувача</p>
-{:else}
-	<div class="cart-block">
-		<Cart {customer} {apiURL} />
-	</div>
-{/if}
+<svelte:head>
+	<title>Кошик — Common.Kitchen</title>
+	<meta name="robots" content="noindex, nofollow" />
+</svelte:head>
+
+<div class="cart-block">
+	<Cart {customer} {apiURL} />
+</div>
 
 <style>
 	.cart-block {

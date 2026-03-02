@@ -32,15 +32,42 @@
 	<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
 	<meta name="apple-mobile-web-app-title" content="Common.Kitchen" />
 	<link rel="manifest" href="/site.webmanifest" />
-	<title>Common.Kitchen</title>
+	<title>Common.Kitchen — Десерти та випічка для вашого закладу</title>
+	<meta
+		name="description"
+		content="Найкращі десерти та випічка оптом для кафе та кав'ярень. | Common.Kitchen"
+	/>
 </svelte:head>
 
 {#if isLoading}
 	<Loader />
-{:else}
+{/if}
+
+<div class="main-layout" class:visible={!isLoading}>
 	<Header {isMobile} />
 	<div class="content-wrap">
 		{@render children?.()}
 	</div>
 	<Footer />
-{/if}
+</div>
+
+<style>
+	.main-layout {
+		opacity: 0;
+		transform: translateY(10px);
+		transition:
+			opacity 0.6s ease-out,
+			transform 0.6s ease-out;
+		visibility: hidden;
+		height: 0;
+		overflow: hidden;
+	}
+
+	.main-layout.visible {
+		opacity: 1;
+		transform: translateY(0);
+		visibility: visible;
+		height: auto;
+		overflow: visible;
+	}
+</style>

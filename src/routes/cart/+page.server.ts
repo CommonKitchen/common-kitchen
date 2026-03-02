@@ -1,5 +1,5 @@
 // src/routes/cart/+page.server.ts
-import { redirect, error, isRedirect } from '@sveltejs/kit';
+import { redirect, error } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
 import { API_SERVER_URL } from '$env/static/private';
 

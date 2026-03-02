@@ -1,3 +1,4 @@
+<!-- route/products/[id]/+page.svelte -->
 <script lang="ts">
 	import { goto } from '$app/navigation';
 	import CartButtons from '$lib/components/ui/CartButtons.svelte';
@@ -7,6 +8,7 @@
 	import Image from '$lib/components/ui/Image.svelte';
 
 	import { products } from '$lib/stores/productsStore';
+	import { page } from '$app/state';
 
 	const { params } = $props();
 	const id = Number(params.id);
@@ -18,6 +20,9 @@
 			message: `Товар з ID ${id} не знайдений.`
 		});
 	}
+
+	const productTitle = `${product.title} — Купити оптом для кафе та кав'ярень | Common.Kitchen`;
+	const productDesc = `Замовити ${product.title} для вашого закладу. Стабільна якість, свіжі інгредієнти та швидка доставка від Common.Kitchen.`;
 
 	const cartQuantity = $derived(cart.items.find((item) => item.id === product?.id)?.quantity || 0);
 
@@ -44,6 +49,34 @@
 
 	const total = $derived((product?.price || 0) * quantity);
 </script>
+
+<svelte:head>
+	<title>{productTitle}</title>
+	<meta name="description" content={productDesc} />
+	{@html `
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org/",
+      "@type": "Product",
+      "name": "${product?.title}",
+      "image": ["${product?.imageUrl}"],
+      "description": "${product?.description}",
+      "brand": {
+        "@type": "Brand",
+        "name": "Common.Kitchen"
+      },
+      "offers": {
+        "@type": "Offer",
+        "url": "${page.url.href}",
+        "priceCurrency": "UAH",
+        "price": "${product?.price}",
+        "availability": "https://schema.org/InStock",
+        "itemCondition": "https://schema.org/NewCondition"
+      }
+    }
+    </script>
+    `}
+</svelte:head>
 
 <div class="product-card">
 	<div class="image-container">
