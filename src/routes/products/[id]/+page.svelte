@@ -48,6 +48,8 @@
 	});
 
 	const total = $derived((product?.price || 0) * quantity);
+
+	const siteUrl = 'https://common-kitchen.vercel.app';
 </script>
 
 <svelte:head>
@@ -76,6 +78,29 @@
     }
     </script>
     `}
+
+	<meta property="og:site_name" content="Common.Kitchen" />
+	<meta property="og:type" content="product" />
+	<meta property="og:url" content="{siteUrl}/products/{product.id}" />
+	<meta property="og:title" content="{product.title} — Десерти та випічка оптом. Common.Kitchen" />
+	<meta
+		property="og:description"
+		content="Ціна: {product.price} грн. Замовляйте десерти та випічку для вашого закладу онлайн."
+	/>
+	<meta property="og:image" content={product.imageUrl} />
+	<meta property="og:image:secure_url" content={product.imageUrl} />
+	<meta property="product:price:amount" content={String(product.price)} />
+	<meta property="product:price:currency" content="UAH" />
+
+	<meta name="twitter:card" content="summary_large_image" />
+	<meta name="twitter:title" content={product.title} />
+	<meta
+		name="twitter:description"
+		content="Десерти та випічка оптом для кафе та кав'ярень. Common.Kitchen"
+	/>
+	<meta name="twitter:image" content={product.imageUrl} />
+
+	<meta name="pinterest-rich-pin" content="true" />
 </svelte:head>
 
 <div class="product-card">
