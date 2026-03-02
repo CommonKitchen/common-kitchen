@@ -84,7 +84,7 @@
 	<meta property="og:url" content="{siteUrl}/products/{product.id}" />
 	<meta
 		property="og:title"
-		content="{product.title} — Десерти та випічка оптом. | Common.Kitchen"
+		content="{product.title} — String({product.price})грн. Десерти та випічка оптом"
 	/>
 	<meta
 		property="og:description"
