@@ -88,7 +88,7 @@
 	/>
 	<meta
 		property="og:description"
-		content="Ціна: {product.price} грн. Замовляйте десерти та випічку для вашого закладу онлайн."
+		content="Замовляйте десерти та випічку для вашого закладу онлайн."
 	/>
 	<meta property="og:image" content={product.imageUrl} />
 	<meta property="og:image:secure_url" content={product.imageUrl} />
