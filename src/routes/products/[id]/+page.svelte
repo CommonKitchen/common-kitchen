@@ -82,7 +82,10 @@
 	<meta property="og:site_name" content="Common.Kitchen" />
 	<meta property="og:type" content="product" />
 	<meta property="og:url" content="{siteUrl}/products/{product.id}" />
-	<meta property="og:title" content="{product.title} — Десерти та випічка оптом. Common.Kitchen" />
+	<meta
+		property="og:title"
+		content="{product.title} — Десерти та випічка оптом. | Common.Kitchen"
+	/>
 	<meta
 		property="og:description"
 		content="Ціна: {product.price} грн. Замовляйте десерти та випічку для вашого закладу онлайн."
@@ -94,10 +97,7 @@
 
 	<meta name="twitter:card" content="summary_large_image" />
 	<meta name="twitter:title" content={product.title} />
-	<meta
-		name="twitter:description"
-		content="Десерти та випічка оптом для кафе та кав'ярень. Common.Kitchen"
-	/>
+	<meta name="twitter:description" content="Десерти та випічка оптом для кафе та кав'ярень." />
 	<meta name="twitter:image" content={product.imageUrl} />
 
 	<meta name="pinterest-rich-pin" content="true" />
