@@ -1,3 +1,4 @@
+// routes/+layout.server.ts
 import type { LayoutServerLoad } from './$types';
 import { error } from '@sveltejs/kit';
 import { API_SERVER_URL } from '$env/static/private';
