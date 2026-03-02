@@ -96,7 +96,7 @@
 	<meta property="product:price:currency" content="UAH" />
 
 	<meta name="twitter:card" content="summary_large_image" />
-	<meta name="twitter:title" content={product.title} />
+	<meta name="twitter:title" content="{product.title} — {product.price}грн" />
 	<meta name="twitter:description" content="Десерти та випічка оптом для кафе та кав'ярень." />
 	<meta name="twitter:image" content={product.imageUrl} />
 
