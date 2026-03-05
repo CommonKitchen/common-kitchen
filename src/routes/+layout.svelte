@@ -32,6 +32,7 @@
 	<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
 	<meta name="apple-mobile-web-app-title" content="Common.Kitchen" />
 	<link rel="manifest" href="/site.webmanifest" />
+	<meta name="google-site-verification" content="-ghqoeI-3WJiWKgn3AqnIsJIh93z6ARvdrEITkp_DlE" />
 	<title>Common.Kitchen — Десерти та випічка для вашого закладу</title>
 	<meta
 		name="description"
